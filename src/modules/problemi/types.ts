@@ -8,7 +8,10 @@ export type ProblemCategory =
   | 'ripartizione'
   | 'contenenza'
   | 'frazioni'
-  | 'due-passaggi';
+  | 'due-passaggi'
+  | 'soldi'
+  | 'misure'
+  | 'perimetro-area';
 
 export const CATEGORY_LABELS: Record<ProblemCategory, string> = {
   aggiungere: 'Aggiungere',
@@ -19,6 +22,9 @@ export const CATEGORY_LABELS: Record<ProblemCategory, string> = {
   contenenza: 'Contenenza',
   frazioni: 'Frazione di una quantità',
   'due-passaggi': 'Due passaggi',
+  soldi: 'Soldi con i centesimi',
+  misure: 'Misure nei problemi',
+  'perimetro-area': 'Perimetro e area',
 };
 
 export const OP_LABELS: Record<Op, string> = {
@@ -67,7 +73,8 @@ export type BarSpec =
   | { kind: 'gruppi'; groups: number; each: number; unit: string }
   | { kind: 'ripartizione'; whole: number; parts: number; unit: string }
   | { kind: 'contenenza'; whole: number; each: number; unit: string }
-  | { kind: 'frazione'; whole: number; parts: number; unit: string };
+  | { kind: 'frazione'; whole: number; parts: number; unit: string }
+  | { kind: 'figura'; shape: { type: 'rettangolo'; b: number; h: number } | { type: 'quadrato'; l: number }; unit: string; ask: 'perimetro' | 'area' };
 
 export interface ProblemData {
   templateId: string;
@@ -83,8 +90,16 @@ export interface ProblemData {
   bars: BarSpec[];
   /** Domanda guida per scegliere l'operazione, senza dirla. */
   opHint: string;
+  /** Numeri che non sono nel testo ma servono (es. 100 perché 1 m = 100 cm). */
+  extras?: Array<{ ref: string; value: number; label: string }>;
+  /** La risposta può avere la virgola. */
+  decimal?: boolean;
+}
+
+export function numText(n: number): string {
+  return String(Math.round(n * 100) / 100).replace('.', ',');
 }
 
 export function plainText(segments: Segment[]): string {
-  return segments.map((s) => ('t' in s ? s.t : s.word ?? String(s.n))).join('');
+  return segments.map((s) => ('t' in s ? s.t : s.word ?? numText(s.n))).join('');
 }

@@ -1,5 +1,6 @@
 import type { ReactElement } from 'react';
-import type { BarSpec } from './types';
+import { Figure } from '../geometria/Figure';
+import { numText, type BarSpec } from './types';
 
 /*
  * Modello a barre (metodo Singapore): rappresenta il problema SENZA dare il risultato.
@@ -63,6 +64,16 @@ export function BarModel({ spec }: { spec: BarSpec }) {
   let height = 110;
   const top = 46;
 
+  if (spec.kind === 'figura') {
+    return (
+      <div className="flex w-full flex-col items-center">
+        <Figure shape={spec.shape} unit={spec.unit} highlight={spec.ask === 'perimetro' ? 'contorno' : 'superficie'} maxWidth={300} />
+        <p className="text-base text-inchiostro-2">
+          {spec.ask === 'perimetro' ? 'Si misura il contorno (in rosso)' : 'Si misura la superficie (in giallo)'}
+        </p>
+      </div>
+    );
+  }
   switch (spec.kind) {
     case 'parti': {
       const tot = spec.a + spec.b;
@@ -70,8 +81,8 @@ export function BarModel({ spec }: { spec: BarSpec }) {
       body = (
         <>
           <Brace x1={X0} x2={X0 + BAR_W} y={top - 4} label={`? ${spec.unit} in tutto`} />
-          <Box x={X0} y={top} w={wa} label={String(spec.a)} fill={C.a} stroke={C.aStroke} />
-          <Box x={X0 + wa} y={top} w={BAR_W - wa} label={String(spec.b)} fill={C.b} stroke={C.bStroke} />
+          <Box x={X0} y={top} w={wa} label={numText(spec.a)} fill={C.a} stroke={C.aStroke} />
+          <Box x={X0 + wa} y={top} w={BAR_W - wa} label={numText(spec.b)} fill={C.b} stroke={C.bStroke} />
         </>
       );
       break;
@@ -80,9 +91,9 @@ export function BarModel({ spec }: { spec: BarSpec }) {
       const wp = (spec.part / spec.whole) * BAR_W;
       body = (
         <>
-          <Brace x1={X0} x2={X0 + BAR_W} y={top - 4} label={`${spec.whole} ${spec.unit}`} />
+          <Brace x1={X0} x2={X0 + BAR_W} y={top - 4} label={`${numText(spec.whole)} ${spec.unit}`} />
           <Box x={X0} y={top} w={BAR_W - wp} label="?" fill={C.q} stroke={C.aStroke} />
-          <Box x={X0 + BAR_W - wp} y={top} w={wp} label={String(spec.part)} fill={C.b} stroke={C.bStroke} hatch />
+          <Box x={X0 + BAR_W - wp} y={top} w={wp} label={numText(spec.part)} fill={C.b} stroke={C.bStroke} hatch />
           <text x={X0 + BAR_W - wp / 2} y={top + H + 20} textAnchor="middle" fontSize="15" fill={C.muted}>
             via
           </text>
@@ -143,7 +154,7 @@ export function BarModel({ spec }: { spec: BarSpec }) {
         <>
           <Brace x1={X0} x2={X0 + BAR_W} y={top - 4} label={`? ${spec.unit} in tutto`} />
           {Array.from({ length: n }, (_, i) => (
-            <Box key={i} x={X0 + i * w} y={top} w={w} label={String(spec.each)} fill={i % 2 ? C.b : C.a} stroke={i % 2 ? C.bStroke : C.aStroke} />
+            <Box key={i} x={X0 + i * w} y={top} w={w} label={numText(spec.each)} fill={i % 2 ? C.b : C.a} stroke={i % 2 ? C.bStroke : C.aStroke} />
           ))}
           <text x={X0 + BAR_W / 2} y={top + H + 20} textAnchor="middle" fontSize="15" fill={C.muted}>
             {n} gruppi uguali
@@ -159,7 +170,7 @@ export function BarModel({ spec }: { spec: BarSpec }) {
       const w = BAR_W / n;
       body = (
         <>
-          <Brace x1={X0} x2={X0 + BAR_W} y={top - 4} label={`${spec.whole} ${spec.unit}`} />
+          <Brace x1={X0} x2={X0 + BAR_W} y={top - 4} label={`${numText(spec.whole)} ${spec.unit}`} />
           {Array.from({ length: n }, (_, i) => (
             <Box
               key={i}
@@ -183,9 +194,9 @@ export function BarModel({ spec }: { spec: BarSpec }) {
       const w = Math.min(70, BAR_W / 4);
       body = (
         <>
-          <Brace x1={X0} x2={X0 + BAR_W} y={top - 4} label={`${spec.whole} ${spec.unit}`} />
-          <Box x={X0} y={top} w={w} label={String(spec.each)} fill={C.a} stroke={C.aStroke} />
-          <Box x={X0 + w} y={top} w={w} label={String(spec.each)} fill={C.a} stroke={C.aStroke} />
+          <Brace x1={X0} x2={X0 + BAR_W} y={top - 4} label={`${numText(spec.whole)} ${spec.unit}`} />
+          <Box x={X0} y={top} w={w} label={numText(spec.each)} fill={C.a} stroke={C.aStroke} />
+          <Box x={X0 + w} y={top} w={w} label={numText(spec.each)} fill={C.a} stroke={C.aStroke} />
           <Box x={X0 + 2 * w} y={top} w={BAR_W - 2 * w} label="…" fill={C.q} stroke={C.aStroke} dashed />
           <text x={X0 + BAR_W / 2} y={top + H + 20} textAnchor="middle" fontSize="15" fill={C.muted}>
             quanti pezzi da {spec.each} ci stanno?

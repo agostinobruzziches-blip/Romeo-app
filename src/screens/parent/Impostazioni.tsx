@@ -5,7 +5,45 @@ import { db, type Stage } from '../../db/schema';
 import { INTRO_ORDER, STAGE_NAMES } from '../../modules/tabelline/stages';
 import { EPOCHS, type EpochId } from '../../content/epochs';
 import { syncCards } from '../../core/cards';
-import { LEVEL_NAMES, PROGRESS_KEY } from '../../modules/problemi/levels';
+import { LEVEL_NAMES, MAX_LEVEL, PROGRESS_KEY } from '../../modules/problemi/levels';
+import { MAX_MIS_LEVEL, MIS_LEVEL_NAMES } from '../../modules/misure/generator';
+import { GEO_LEVEL_NAMES, MAX_GEO_LEVEL } from '../../modules/geometria/shapes';
+import { setLevel } from '../../core/levels';
+import type { ModuleId } from '../../db/schema';
+
+const ALL_MODULES: Array<[ModuleId, string]> = [
+  ['tabelline', 'Tabelline'],
+  ['problemi', 'Problemi'],
+  ['misure', 'Misure'],
+  ['geometria', 'Geometria'],
+];
+
+function LevelSelect({ id, label, progressKey, names, max }: { id: string; label: string; progressKey: string; names: Record<number, string>; max: number }) {
+  const p = useLiveQuery(() => db.problemProgress.get(progressKey), [progressKey]);
+  return (
+    <div className="rounded-xl bg-white p-3">
+      <label htmlFor={id} className="font-bold">
+        {label}
+      </label>
+      <p className="mb-2 text-sm text-inchiostro-2">
+        Si parte dal livello 1. Sale da solo quando in 2 missioni di fila lavora senza errori di ragionamento; non scende
+        mai. Se a scuola è già più avanti, sceglilo qui.
+      </p>
+      <select
+        id={id}
+        className="h-12 w-full rounded-xl border-2 border-carta-2 bg-white px-2 text-base"
+        value={p?.level ?? 1}
+        onChange={(e) => void setLevel(progressKey, Number(e.target.value))}
+      >
+        {Array.from({ length: max }, (_, i) => i + 1).map((l) => (
+          <option key={l} value={l}>
+            {l}. {names[l]}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
 import { BigButton } from '../../ui/BigButton';
 
 function Row({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
@@ -38,7 +76,6 @@ function Toggle({ on, onChange, label }: { on: boolean; onChange: (v: boolean) =
 export function Impostazioni() {
   const s = useLiveQuery(() => db.settings.get('main'), []);
   const progress = useLiveQuery(() => db.tableProgress.toArray(), []);
-  const problemLevel = useLiveQuery(() => db.problemProgress.get(PROGRESS_KEY), []);
   const [newPin, setNewPin] = useState('');
   const [pinMsg, setPinMsg] = useState('');
   if (!s || !progress) return null;
@@ -125,10 +162,11 @@ export function Impostazioni() {
       <div className="rounded-xl bg-white p-3">
         <p className="font-bold">Cosa c’è nella missione</p>
         <p className="mb-2 text-sm text-inchiostro-2">
-          Con tutti e due attivi, circa metà del tempo va alle tabelline e metà ai problemi (da 1 a 4 problemi).
+          Le tabelline ci sono ogni giorno. Tra gli altri argomenti accesi se ne fa <b>uno al giorno</b>, a rotazione
+          (circa metà del tempo). Ogni argomento nuovo parte con una breve lezione “Scopri”.
         </p>
-        <div className="flex gap-2">
-          {(['tabelline', 'problemi'] as const).map((m) => {
+        <div className="grid grid-cols-2 gap-2">
+          {ALL_MODULES.map(([m, label]) => {
             const on = s.activeModules.includes(m);
             return (
               <button
@@ -137,40 +175,24 @@ export function Impostazioni() {
                 aria-pressed={on}
                 onClick={() => {
                   const next = on ? s.activeModules.filter((x) => x !== m) : [...s.activeModules, m];
-                  if (next.length) void updateSettings({ activeModules: (['tabelline', 'problemi'] as const).filter((x) => next.includes(x)) });
+                  if (next.length) void updateSettings({ activeModules: ALL_MODULES.map(([x]) => x).filter((x) => next.includes(x)) });
                 }}
-                className={`h-12 flex-1 rounded-xl text-lg font-bold ${on ? 'bg-oliva text-white' : 'bg-carta-2 text-inchiostro-2'}`}
+                className={`h-12 rounded-xl text-lg font-bold ${on ? 'bg-oliva text-white' : 'bg-carta-2 text-inchiostro-2'}`}
               >
-                {m === 'tabelline' ? 'Tabelline' : 'Problemi'}
+                {label}
               </button>
             );
           })}
         </div>
       </div>
       {s.activeModules.includes('problemi') && (
-        <div className="rounded-xl bg-white p-3">
-          <label htmlFor="livello" className="font-bold">
-            Livello dei problemi
-          </label>
-          <p className="mb-2 text-sm text-inchiostro-2">
-            Si parte dal livello 1 per costruire fiducia. Il livello sale da solo quando in 2 missioni di fila risolve
-            i problemi senza sbagliare il ragionamento; non scende mai.
-          </p>
-          <select
-            id="livello"
-            className="h-12 w-full rounded-xl border-2 border-carta-2 bg-white px-2 text-base"
-            value={problemLevel?.level ?? 1}
-            onChange={(e) =>
-              void db.problemProgress.put({ category: PROGRESS_KEY, level: Number(e.target.value) as 1, goodSessions: 0 })
-            }
-          >
-            {[1, 2, 3, 4, 5].map((l) => (
-              <option key={l} value={l}>
-                {l}. {LEVEL_NAMES[l]}
-              </option>
-            ))}
-          </select>
-        </div>
+        <LevelSelect id="livello" label="Livello dei problemi" progressKey={PROGRESS_KEY} names={LEVEL_NAMES} max={MAX_LEVEL} />
+      )}
+      {s.activeModules.includes('misure') && (
+        <LevelSelect id="livello-misure" label="Livello delle misure (equivalenze)" progressKey="misure" names={MIS_LEVEL_NAMES} max={MAX_MIS_LEVEL} />
+      )}
+      {s.activeModules.includes('geometria') && (
+        <LevelSelect id="livello-geometria" label="Livello di geometria (perimetro e area)" progressKey="geometria" names={GEO_LEVEL_NAMES} max={MAX_GEO_LEVEL} />
       )}
 
       <div className="rounded-xl bg-white p-3">

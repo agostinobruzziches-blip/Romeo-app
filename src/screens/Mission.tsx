@@ -7,10 +7,10 @@ import type { LearningModule, MissionItem, StepEvent } from '../core/module';
 import { createRng } from '../core/random';
 import { awardMedal, finalizeSession, type RewardSummary } from '../core/rewards';
 import { sounds } from '../core/sound';
-import { addAttempt, getSettings, recentFirstAttemptMs, saveSession, startSession } from '../db/repo';
+import { addAttempt, completedSessions, getSettings, recentFirstAttemptMs, saveSession, startSession } from '../db/repo';
 import { db, type EndReason, type Session, type Settings } from '../db/schema';
 import { T } from '../i18n/testi';
-import { activeModules, getModule } from '../modules/registry';
+import { getModule, missionModules } from '../modules/registry';
 import { BigButton } from '../ui/BigButton';
 import { Celebration } from '../ui/Celebration';
 import { Guide, Owl } from '../ui/Guide';
@@ -59,6 +59,7 @@ interface Run {
   fatiguePending: boolean;
   rng: ReturnType<typeof createRng>;
   focusLabel: string;
+  modules: LearningModule[];
 }
 
 export function Mission({ repeat, onExit }: { repeat: boolean; onExit: () => void }) {
@@ -78,7 +79,7 @@ export function Mission({ repeat, onExit }: { repeat: boolean; onExit: () => voi
     started.current = true;
     (async () => {
       const settings = await getSettings();
-      const modules = activeModules(settings.activeModules);
+      const modules = missionModules(settings.activeModules, (await completedSessions()).length);
       const recent = await recentFirstAttemptMs('tabelline');
       const rng = createRng();
       // Il tempo della missione si divide tra i moduli attivi; ognuno riceve un numero FISSO di esercizi.
@@ -120,6 +121,7 @@ export function Mission({ repeat, onExit }: { repeat: boolean; onExit: () => voi
         fatiguePending: false,
         rng,
         focusLabel,
+        modules,
       };
       setPhase('inizio');
     })();
@@ -194,6 +196,14 @@ export function Mission({ repeat, onExit }: { repeat: boolean; onExit: () => voi
   };
 
   const handleAnswer = async (answer: unknown) => {
+    // Lezione "Scopri": non è un esercizio, non ha voto. Si segna come vista e si va avanti.
+    if (r.current.role === 'scopri') {
+      await mod.record(r.current, { firstTry: true, solved: true, wrongAttempts: 0, helpUsed: false, ms: elapsed() }, dayKey());
+      r.session.doneItems += 1;
+      await saveSession(r.session);
+      next();
+      return;
+    }
     const ms = elapsed();
     const ev = mod.evaluate(r.current, answer);
     await addAttempt({
@@ -280,7 +290,7 @@ export function Mission({ repeat, onExit }: { repeat: boolean; onExit: () => voi
     const attempts = await db.attempts.where('sessionId').equals(r.session.id).toArray();
     const improvements = [...r.improvements];
     const milestones: Array<{ ref: string; reason: string }> = [];
-    for (const m of activeModules(r.settings.activeModules)) {
+    for (const m of r.modules) {
       const res = await m.onSessionEnd(r.session, attempts);
       improvements.push(...res.improvements);
       milestones.push(...res.milestones);

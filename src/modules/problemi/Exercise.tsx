@@ -7,7 +7,8 @@ import { db } from '../../db/schema';
 import { BigButton } from '../../ui/BigButton';
 import { NumPad } from '../../ui/NumPad';
 import { BarModel } from './BarModel';
-import { OP_LABELS, plainText, type Op, type Operand, type ProblemData, type Segment } from './types';
+import { OP_LABELS, numText, plainText, type Op, type Operand, type ProblemData, type Segment } from './types';
+import { parseNum, sameNumber } from '../../core/format';
 
 export type PhaseId = 'leggi' | 'numeri' | 'domanda' | 'op' | 'scrivi';
 
@@ -59,7 +60,7 @@ function ProblemText({
             </span>
           );
         }
-        const label = s.word ?? String(s.n);
+        const label = s.word ?? numText(s.n);
         const isSel = selected.has(s.id);
         if (phase === 'numeri') {
           return (
@@ -211,8 +212,9 @@ export function ProblemExercise({ item, locked, onSubmit, onStep, feedback, tool
   const available: Array<Operand & { label: string }> = [
     ...data.segments
       .filter((s): s is Extract<Segment, { n: number }> => 'n' in s && selected.has(s.id))
-      .map((s) => ({ value: s.n, ref: s.id, label: String(s.n) })),
-    ...(sub > 0 ? [{ value: results[sub - 1], ref: 'prev', label: String(results[sub - 1]) }] : []),
+      .map((s) => ({ value: s.n, ref: s.id, label: numText(s.n) })),
+    ...(data.extras ?? []).map((e) => ({ value: e.value, ref: e.ref, label: e.label })),
+    ...(sub > 0 ? [{ value: results[sub - 1], ref: 'prev', label: numText(results[sub - 1]) }] : []),
   ];
   const tapChip = (o: Operand) => {
     const next = [...slots];
@@ -241,9 +243,9 @@ export function ProblemExercise({ item, locked, onSubmit, onStep, feedback, tool
   const operandsReady = slots[0] !== null && slots[1] !== null;
 
   const submitResult = () => {
-    const v = Number(value);
+    const v = parseNum(value);
     if (!last) {
-      if (v === current.result) {
+      if (sameNumber(v, current.result)) {
         onStep?.({ step: 'calcolo', correct: true });
         setSub(sub + 1);
         setShowBar(false);
@@ -344,7 +346,7 @@ export function ProblemExercise({ item, locked, onSubmit, onStep, feedback, tool
                 className="min-h-14 min-w-16 rounded-xl border-4 border-dashed border-egeo/40 bg-white px-2 text-egeo"
                 aria-label={slots[i] ? `Numero ${slots[i]!.value}, tocca per togliere` : 'Spazio vuoto'}
               >
-                {slots[i]?.value ?? ' '}
+                {slots[i] ? numText(slots[i]!.value) : ' '}
               </button>
             </span>
           ))}
@@ -401,7 +403,7 @@ export function ProblemExercise({ item, locked, onSubmit, onStep, feedback, tool
       <div className="mt-auto">{toolbar}</div>
       {phase === 'scrivi' && operandsReady && (
         <div className="mt-2">
-          <NumPad value={value} onChange={setValue} onSubmit={submitResult} disabled={locked} maxLength={4} />
+          <NumPad value={value} onChange={setValue} onSubmit={submitResult} disabled={locked} maxLength={5} decimal={!!data.decimal} />
         </div>
       )}
     </div>
@@ -452,11 +454,11 @@ export function ProblemSolution({ item }: { item: MissionItem<ProblemData> }) {
       </div>
       {data.steps.map((s, i) => (
         <p key={i} className="text-3xl font-bold tabular-nums">
-          {s.a.value} {OP_SIGN[s.op]} {s.b.value} = {s.result}
+          {numText(s.a.value)} {OP_SIGN[s.op]} {numText(s.b.value)} = {numText(s.result)}
         </p>
       ))}
       <p className="text-xl">
-        La risposta è <b>{data.steps[data.steps.length - 1].result} {data.unit}</b>.
+        La risposta è <b>{numText(data.steps[data.steps.length - 1].result)} {data.unit}</b>.
       </p>
       <p className="text-lg text-inchiostro-2">Ci riproveremo con un problema simile.</p>
     </div>

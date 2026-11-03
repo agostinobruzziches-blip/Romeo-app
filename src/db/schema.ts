@@ -1,10 +1,10 @@
 import Dexie, { type Table } from 'dexie';
 import type { EpochId } from '../content/epochs';
 
-export type ModuleId = 'tabelline' | 'problemi';
-export type ItemRole = 'riscaldamento' | 'cuore' | 'ripasso' | 'chiusura';
+export type ModuleId = 'tabelline' | 'problemi' | 'misure' | 'geometria';
+export type ItemRole = 'riscaldamento' | 'scopri' | 'cuore' | 'ripasso' | 'chiusura';
 export type EndReason = 'completata' | 'stanchezza' | 'genitore' | 'interrotta';
-export type ErrorType = 'calcolo' | 'operazione' | 'dati' | 'domanda';
+export type ErrorType = 'calcolo' | 'operazione' | 'dati' | 'domanda' | 'concetto' | 'unita';
 export type Box = 0 | 1 | 2 | 3 | 4 | 5;
 export type Stage = 1 | 2 | 3 | 4;
 
@@ -115,8 +115,14 @@ export interface OwnedCard {
 
 export interface ProblemProgress {
   category: string;
-  level: 1 | 2 | 3 | 4 | 5;
+  level: number;
   goodSessions: number;
+}
+
+/** Una lezione "Scopri" vista (si può rivedere dall'aiuto). */
+export interface LessonSeen {
+  id: string;
+  seenAt: number;
 }
 
 export class ViaggioDB extends Dexie {
@@ -128,6 +134,7 @@ export class ViaggioDB extends Dexie {
   rewards!: Table<RewardEvent, number>;
   cards!: Table<OwnedCard, string>;
   problemProgress!: Table<ProblemProgress, string>;
+  lessons!: Table<LessonSeen, string>;
 
   constructor(name = 'viaggio-nel-tempo') {
     super(name);
@@ -141,6 +148,10 @@ export class ViaggioDB extends Dexie {
       cards: 'cardId, unlockedAt',
       problemProgress: 'category',
     });
+    // v2: lezioni "Scopri" già viste
+    this.version(2).stores({
+      lessons: 'id, seenAt',
+    });
   }
 }
 
@@ -153,6 +164,7 @@ export const TABLE_NAMES = [
   'rewards',
   'cards',
   'problemProgress',
+  'lessons',
 ] as const;
 
 export let db = new ViaggioDB();

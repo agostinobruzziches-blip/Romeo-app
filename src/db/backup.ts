@@ -3,7 +3,7 @@ import { ensureInitialized } from './repo';
 import { TABLE_NAMES, db } from './schema';
 
 export const BACKUP_APP = 'viaggio-nel-tempo';
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 export interface Backup {
   app: string;

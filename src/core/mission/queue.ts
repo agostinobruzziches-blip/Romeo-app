@@ -1,7 +1,7 @@
 import type { ItemRole } from '../../db/schema';
 import type { MissionItem } from '../module';
 
-const ROLE_ORDER: Record<ItemRole, number> = { riscaldamento: 0, cuore: 1, ripasso: 1, chiusura: 2 };
+const ROLE_ORDER: Record<ItemRole, number> = { riscaldamento: 0, scopri: 1, cuore: 1, ripasso: 1, chiusura: 2 };
 
 /** Unisce gli esercizi dei moduli: riscaldamento → cuore/ripasso → chiusura. */
 export function mergeQueues(lists: MissionItem[][]): MissionItem[] {
@@ -21,7 +21,7 @@ export function requeue(queue: MissionItem[], index: number, replay: MissionItem
   const last = queue.length - 1;
   for (let p = index + gap; p < last; p++) {
     const target = queue[p];
-    if (target.role === 'chiusura' || target.key === replay.key) continue;
+    if (target.role === 'chiusura' || target.role === 'scopri' || target.moduleId !== replay.moduleId || target.key === replay.key) continue;
     const out = [...queue];
     out[p] = { ...replay, role: target.role === 'riscaldamento' ? 'ripasso' : target.role };
     return out;

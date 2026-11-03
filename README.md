@@ -15,6 +15,7 @@ Il progetto completo (principi, modello dati, regole) è in [`docs/PROGETTO.md`]
 | 3 | Linea del tempo, epoche, album delle carte | ✅ |
 | 4 | Modulo problemi | ✅ |
 | 5 | PWA offline e installabile | ✅ |
+| + | Misure (equivalenze), geometria (perimetro e area), problemi avanzati, lezioni “Scopri” | ✅ |
 
 ## Provarla sul computer
 
@@ -73,6 +74,8 @@ src/
   modules/     un modulo per argomento, con interfaccia comune (generatore, valutazione, statistiche)
     tabelline/
     problemi/
+    misure/
+    geometria/
   screens/     Home, Missione, Area genitori
   ui/          pulsanti, tastierino, barra, Glauco la civetta
   content/     epoche, carte (curiosità + fonte) e illustrazioni SVG originali
