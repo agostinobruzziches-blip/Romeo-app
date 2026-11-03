@@ -5,6 +5,7 @@ import { db, type Stage } from '../../db/schema';
 import { INTRO_ORDER, STAGE_NAMES } from '../../modules/tabelline/stages';
 import { EPOCHS, type EpochId } from '../../content/epochs';
 import { syncCards } from '../../core/cards';
+import { LEVEL_NAMES, PROGRESS_KEY } from '../../modules/problemi/levels';
 import { BigButton } from '../../ui/BigButton';
 
 function Row({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
@@ -37,6 +38,7 @@ function Toggle({ on, onChange, label }: { on: boolean; onChange: (v: boolean) =
 export function Impostazioni() {
   const s = useLiveQuery(() => db.settings.get('main'), []);
   const progress = useLiveQuery(() => db.tableProgress.toArray(), []);
+  const problemLevel = useLiveQuery(() => db.problemProgress.get(PROGRESS_KEY), []);
   const [newPin, setNewPin] = useState('');
   const [pinMsg, setPinMsg] = useState('');
   if (!s || !progress) return null;
@@ -93,7 +95,7 @@ export function Impostazioni() {
           />
         </Row>
       )}
-      <Row label="Lettura ad alta voce" hint="Per le curiosità delle carte e, dalla fase 4, per i problemi.">
+      <Row label="Lettura ad alta voce" hint="Mostra il pulsante «Leggi per me» nei problemi e «Ascolta» nelle carte.">
         <Toggle label="Lettura ad alta voce" on={s.readAloud} onChange={(v) => void updateSettings({ readAloud: v })} />
       </Row>
       <div className="rounded-xl bg-white p-3">
@@ -120,9 +122,56 @@ export function Impostazioni() {
           ))}
         </select>
       </div>
-      <Row label="Moduli attivi" hint="Problemi: in arrivo nella fase 4.">
-        <span className="rounded-full bg-oliva-chiaro px-3 py-2 font-bold">Tabelline</span>
-      </Row>
+      <div className="rounded-xl bg-white p-3">
+        <p className="font-bold">Cosa c’è nella missione</p>
+        <p className="mb-2 text-sm text-inchiostro-2">
+          Con tutti e due attivi, circa metà del tempo va alle tabelline e metà ai problemi (da 1 a 4 problemi).
+        </p>
+        <div className="flex gap-2">
+          {(['tabelline', 'problemi'] as const).map((m) => {
+            const on = s.activeModules.includes(m);
+            return (
+              <button
+                key={m}
+                type="button"
+                aria-pressed={on}
+                onClick={() => {
+                  const next = on ? s.activeModules.filter((x) => x !== m) : [...s.activeModules, m];
+                  if (next.length) void updateSettings({ activeModules: (['tabelline', 'problemi'] as const).filter((x) => next.includes(x)) });
+                }}
+                className={`h-12 flex-1 rounded-xl text-lg font-bold ${on ? 'bg-oliva text-white' : 'bg-carta-2 text-inchiostro-2'}`}
+              >
+                {m === 'tabelline' ? 'Tabelline' : 'Problemi'}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      {s.activeModules.includes('problemi') && (
+        <div className="rounded-xl bg-white p-3">
+          <label htmlFor="livello" className="font-bold">
+            Livello dei problemi
+          </label>
+          <p className="mb-2 text-sm text-inchiostro-2">
+            Si parte dal livello 1 per costruire fiducia. Il livello sale da solo quando in 2 missioni di fila risolve
+            i problemi senza sbagliare il ragionamento; non scende mai.
+          </p>
+          <select
+            id="livello"
+            className="h-12 w-full rounded-xl border-2 border-carta-2 bg-white px-2 text-base"
+            value={problemLevel?.level ?? 1}
+            onChange={(e) =>
+              void db.problemProgress.put({ category: PROGRESS_KEY, level: Number(e.target.value) as 1, goodSessions: 0 })
+            }
+          >
+            {[1, 2, 3, 4, 5].map((l) => (
+              <option key={l} value={l}>
+                {l}. {LEVEL_NAMES[l]}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <div className="rounded-xl bg-white p-3">
         <p className="font-bold">Tabelline attive e tappa di partenza</p>

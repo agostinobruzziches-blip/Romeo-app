@@ -297,30 +297,46 @@ Pulsante sempre visibile durante la missione. Mette in pausa e mostra al genitor
 
 ---
 
-## 6. Problemi (Fase 4) — anticipazione del modello
+## 6. Problemi (Fase 4)
 
-```ts
-interface ProblemTemplate {
-  id: string;
-  category: 'aggiungere-togliere' | 'confronto' | 'gruppi-uguali'
-          | 'ripartizione' | 'contenenza' | 'due-passaggi' | ...;
-  level: 1|2|3|4|5;                          // numeri e passaggi crescenti
-  contexts: ContextId[];                     // 'mercanti-greci', 'anfore-egizie', 'spesa', ...
-  params: Record<string, { min: number; max: number; step?: number }>;
-  constraint?: (p) => boolean;               // es. divisione esatta
-  text: (p, ctx) => Segment[];               // testo con i numeri marcati: importanti / non importanti
-  question: { correct: string; distractors: string[] };
-  operation: '+' | '-' | '×' | ':';
-  operands: (p) => [number, number];
-  barModel: (p) => BarModelSpec;             // disegno a barre per l'aiuto
-}
-```
-- I numeri nel testo sono "toccabili"; dal livello 3 compaiono numeri **non utili** (es. "3 navi", "il giorno 5") per allenare la scelta dei dati.
-- Il passo 5 si compone toccando i numeri scelti e l'operazione, poi si scrive il risultato: così si distingue **errore di operazione**, **errore di dati** ed **errore di calcolo**.
-- Operazione sbagliata → nessuna soluzione: compare il modello a barre e si riprova.
-- Il pulsante "Ho letto" si attiva dopo un breve tempo proporzionale alla lunghezza del testo (senza conto alla rovescia visibile).
+Obiettivo: capire **quale operazione** usare e **tra quali dati**, poi calcolare. Il flusso lo rallenta di proposito.
 
----
+**I 5 passi** (sempre uguali, ognuno si apre solo dopo il precedente; il testo resta sempre visibile):
+1. **Leggi** – pulsante «🔊 Leggi per me» (Web Speech API, italiano). «Ho letto» si attiva dopo un tempo
+   proporzionale al testo, senza conto alla rovescia.
+2. **Tocca i numeri importanti** – obbligatorio. Se tocca un numero che non serve: «Il numero 5 serve per rispondere
+   alla domanda?»; se ne manca uno lo dice.
+3. **Cosa chiede la domanda?** – 3 frasi; se sbaglia, la domanda nel testo si colora.
+4. **Quale operazione?** – 4 pulsanti grandi (+ − × :). Se sbaglia **non si dà la soluzione**: compare il
+   **modello a barre** (metodo Singapore) e si riprova; al 2° errore una domanda guida, al 3° l'app indica
+   l'operazione spiegando con il disegno. Se sceglie in meno di 1,5 secondi: «Piano piano!».
+5. **Scrivi e calcola** – tocca i numeri nell'ordine giusto (nella sottrazione e nella divisione l'ordine conta),
+   poi scrive il risultato con il tastierino.
+
+Nei problemi a **due passaggi** i passi 4 e 5 si ripetono, con una frase guida («Prima: quanti chili ha raccolto?»).
+
+**Errori registrati separatamente**: `operazione` (non ha capito cosa fare), `dati` (numeri sbagliati o in ordine
+sbagliato), `domanda` (non ha capito cosa si chiede), `calcolo` (ha capito, ha sbagliato il conto).
+La medaglia della tenacia arriva anche qui, se dopo un errore arriva alla risposta giusta.
+
+**Generatore** (`src/modules/problemi/templates.ts`): modelli con numeri casuali e contesti storici (mercanti greci,
+scribi egizi, navi cretesi, legioni romane) misti a contesti quotidiani (carte, biglie, gita).
+
+| Livello | Cosa entra |
+|---|---|
+| 1 | aggiungere e togliere, numeri fino a 20 |
+| 2 | + gruppi uguali e ripartizione, numeri piccoli |
+| 3 | + confronto («quanti in più», «ne ha 5 più di…») e contenenza; a volte un numero che non serve |
+| 4 | + due passaggi e frazione di una quantità (la metà, un terzo…) |
+| 5 | numeri più grandi e soldi |
+
+Si sale di livello quando in **2 missioni di fila** almeno l'80% dei problemi è risolto senza errori di ragionamento
+(operazione, dati, domanda). Non si scende mai. Il genitore può cambiare il livello nelle impostazioni.
+
+**Nella missione**: con tabelline e problemi attivi il tempo si divide circa a metà (da 1 a 4 problemi); prima le
+tabelline, poi i problemi, e si chiude sempre con una tabellina facile.
+
+Da fare in seguito: soldi con i decimali, misure ed equivalenze, perimetro.
 
 ## 7. Tema e contenuti (Fase 3)
 
@@ -341,7 +357,7 @@ interface ProblemTemplate {
 1. ✅ Struttura e modello dati (questo documento)
 2. ✅ MVP: tabelline + missione del giorno + stelle + medaglia della tenacia + area genitori base
 3. ✅ Linea del tempo, epoche e album carte (vedi §7)
-4. Modulo problemi
+4. ✅ Modulo problemi (vedi §6)
 5. PWA offline e deploy
 
 Dopo ogni fase: riepilogo e istruzioni per provarla dal telefono.

@@ -2,7 +2,7 @@
 export const T = {
   motto: 'Prova, prova, prova!',
   saluto: (n: string) => `Ciao ${n}! Pronto per la missione di oggi?`,
-  inizio: (focus: string, count: number) => `Oggi esploriamo ${focus}. Sono ${count} domande, una alla volta.`,
+  inizio: (focus: string, count: number) => `Oggi esploriamo ${focus}. Sono ${count} esercizi, uno alla volta.`,
   inizioPulsante: 'Iniziamo',
   giusto: 'Giusto!',
   quasi: 'Quasi! Riproviamo.',
