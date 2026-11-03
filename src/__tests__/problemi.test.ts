@@ -11,26 +11,29 @@ import { plainText } from '../modules/problemi/types';
 describe('generatore di problemi', () => {
   it('ogni modello, a ogni livello, produce problemi coerenti', () => {
     for (const t of TEMPLATES) {
-      for (let level = t.minLevel; level <= 5; level++) {
+      for (let level = t.minLevel; level <= 7; level++) {
         for (let seed = 1; seed <= 40; seed++) {
           const p = generateProblem(createRng(seed * 97 + level), level, undefined, t.id);
           const ctx = `${t.id} L${level} s${seed}`;
           const nums = p.segments.filter((s) => 'n' in s) as Array<{ n: number; id: string; important: boolean }>;
           const important = new Set(nums.filter((s) => s.important).map((s) => s.id));
           // i numeri da usare nei calcoli sono quelli importanti del testo (o il risultato di prima)
-          const used = new Set(p.steps.flatMap((s) => [s.a.ref, s.b.ref]).filter((r) => r !== 'prev'));
+          const extra = new Set((p.extras ?? []).map((e) => e.ref));
+          const used = new Set(p.steps.flatMap((s) => [s.a.ref, s.b.ref]).filter((r) => r !== 'prev' && !extra.has(r)));
           expect([...used].sort(), ctx).toEqual([...important].sort());
           // nessun numero ripetuto con lo stesso id
           expect(new Set(nums.map((s) => s.id)).size, ctx).toBe(nums.length);
           for (const [i, s] of p.steps.entries()) {
-            expect(Number.isInteger(s.result), ctx).toBe(true);
+            if (!p.decimal) expect(Number.isInteger(s.result), ctx).toBe(true);
+            expect(Math.round(s.result * 100) / 100, ctx).toBe(s.result);
             expect(s.result, ctx).toBeGreaterThan(0);
             if (s.op === ':') expect(s.a.value % s.b.value, ctx).toBe(0);
             if (s.a.ref === 'prev') expect(s.a.value, ctx).toBe(p.steps[i - 1].result);
             if (s.b.ref === 'prev') expect(s.b.value, ctx).toBe(p.steps[i - 1].result);
             const byId = (ref: string) => nums.find((x) => x.id === ref)!.n;
-            if (s.a.ref !== 'prev') expect(s.a.value, ctx).toBe(byId(s.a.ref));
-            if (s.b.ref !== 'prev') expect(s.b.value, ctx).toBe(byId(s.b.ref));
+            const val = (ref: string) => (extra.has(ref) ? p.extras!.find((e) => e.ref === ref)!.value : byId(ref));
+            if (s.a.ref !== 'prev') expect(s.a.value, ctx).toBe(val(s.a.ref));
+            if (s.b.ref !== 'prev') expect(s.b.value, ctx).toBe(val(s.b.ref));
           }
           expect(p.bars, ctx).toHaveLength(p.steps.length);
           expect(new Set(p.questionChoices).size, ctx).toBe(3);

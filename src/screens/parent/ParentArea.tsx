@@ -4,6 +4,8 @@ import { checkPin, setPin } from '../../db/repo';
 import { db } from '../../db/schema';
 import { tabellineModule } from '../../modules/tabelline';
 import { problemiModule } from '../../modules/problemi';
+import { misureModule } from '../../modules/misure';
+import { geometriaModule } from '../../modules/geometria';
 import { BigButton } from '../../ui/BigButton';
 import { PinPad } from '../../ui/PinPad';
 import { Screen } from '../../ui/Screen';
@@ -16,6 +18,8 @@ import { TutorReport } from './TutorReport';
 const TABS = [
   { id: 'tabelline', label: 'Tabelline' },
   { id: 'problemi', label: 'Problemi' },
+  { id: 'misure', label: 'Misure' },
+  { id: 'geometria', label: 'Geometria' },
   { id: 'andamento', label: 'Andamento' },
   { id: 'tutor', label: 'Per la tutor' },
   { id: 'impostazioni', label: 'Impostazioni' },
@@ -90,6 +94,8 @@ export function ParentArea({ onExit }: { onExit: () => void }) {
       <main className="flex-1">
         {tab === 'tabelline' && <Panel />}
         {tab === 'problemi' && <ProblemPanel />}
+        {tab === 'misure' && <misureModule.ParentPanel />}
+        {tab === 'geometria' && <geometriaModule.ParentPanel />}
         {tab === 'andamento' && <Andamento />}
         {tab === 'tutor' && <TutorReport />}
         {tab === 'impostazioni' && <Impostazioni />}

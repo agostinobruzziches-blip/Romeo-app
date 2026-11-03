@@ -2,7 +2,8 @@ import type { LearningModule, MissionItem } from '../../core/module';
 import { addDays, dayKey } from '../../core/dates';
 import { db, type ProblemProgress } from '../../db/schema';
 import { ProblemExercise, ProblemHelp, ProblemSolution, liveState } from './Exercise';
-import { LEVEL_NAMES, PROGRESS_KEY, evaluateLevel } from './levels';
+import { LEVEL_NAMES, MAX_LEVEL, PROGRESS_KEY, evaluateLevel } from './levels';
+import { sameNumber } from '../../core/format';
 import { ProblemParentPanel } from './ParentPanel';
 import { itemResults, problemStats } from './stats';
 import { generateProblem } from './templates';
@@ -53,7 +54,7 @@ export const problemiModule: LearningModule<ProblemData, number> = {
   retryItem: (item) => item,
 
   evaluate(item, answer) {
-    const ok = answer === item.data.steps[item.data.steps.length - 1].result;
+    const ok = sameNumber(answer, item.data.steps[item.data.steps.length - 1].result);
     return { correct: ok, errorType: ok ? undefined : 'calcolo' };
   },
 
@@ -86,7 +87,7 @@ export const problemiModule: LearningModule<ProblemData, number> = {
   async onSessionEnd(session, attempts) {
     const mine = attempts.filter((a) => a.sessionId === session.id && a.moduleId === 'problemi');
     const p = await getProblemProgress();
-    const res = evaluateLevel(p, itemResults(mine));
+    const res = evaluateLevel(p, itemResults(mine), MAX_LEVEL);
     await db.problemProgress.put(res.progress);
     return {
       improvements: res.up ? [`Problemi: livello ${res.progress.level} raggiunto`] : [],
@@ -102,7 +103,7 @@ export const problemiModule: LearningModule<ProblemData, number> = {
     const attempts = (await db.attempts.where('moduleId').equals('problemi').toArray()).filter((a) => ids.has(a.sessionId));
     const stats = problemStats(attempts);
     const { level } = await getProblemProgress();
-    const lines = [`Livello ${level} di 5: ${LEVEL_NAMES[level]}`];
+    const lines = [`Livello ${level} di ${MAX_LEVEL}: ${LEVEL_NAMES[level]}`];
     const problems = stats.reduce((n, s) => n + s.problems, 0);
     if (!problems) return [...lines, 'Nessun problema svolto nel periodo.'];
     const clean = stats.reduce((n, s) => n + s.clean, 0);

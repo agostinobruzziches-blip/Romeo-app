@@ -338,6 +338,43 @@ tabelline, poi i problemi, e si chiude sempre con una tabellina facile.
 
 Da fare in seguito: soldi con i decimali, misure ed equivalenze, perimetro.
 
+## 6b. Misure e geometria: capire, non solo esercitarsi
+
+Due principi valgono per tutti e due i moduli:
+- **Prima si scopre, poi ci si esercita.** Ogni concetto nuovo parte con una lezione **“Scopri”** breve e
+  interattiva (il bambino tocca, conta, sposta: ogni pagina si sblocca facendo qualcosa). La lezione si vede una volta
+  nella missione e si può rivedere dall’aiuto («Aiutami» → «Un altro aiuto»).
+- **Prima si ragiona, poi si calcola.** Ogni esercizio chiede il *perché* prima del numero, e gli errori si registrano
+  per tipo: così si vede se manca il concetto o solo il conto.
+
+### Misure (equivalenze)
+Tabella delle unità come sul quaderno (km hm dam **m** dm cm mm; kg hg dag **g**…; hl dal **l** dl cl ml).
+Esercizio in 4 passi: 1) da m a cm l’unità diventa più grande o più piccola? 2) allora il numero diventa più grande o
+più piccolo? 3) quale operazione: × 10, × 100, × 1000, : 10… (contando i passi nella tabella) 4) risultato.
+Lezioni: le lunghezze (il metro, la tabella, «3 m in cm» un passo alla volta), tornare indietro (cm → m, i litri),
+i pesi (chilo = mille), i numeri con la virgola (la virgola che si sposta). Livelli 1–5, dalla sola lunghezza verso
+l’unità più piccola fino ai decimali in tutte le direzioni.
+
+### Geometria (perimetro e area)
+Esercizio in 4 passi: 1) cosa misuri: il contorno o la superficie? (la figura si colora) 2) come si calcola (scelta
+tra formule con i numeri) 3) in che unità: cm o cm²? 4) risultato. Al livello 1 si conta sui quadretti, e si possono
+toccare quadretti e lati per segnarli mentre si conta.
+Lezioni: il perimetro (si toccano i 14 lati del bordo), l’area (si colorano i 12 quadretti, poi «3 righe da 4: è una
+tabellina!»), perimetro o area? (nella vita: la rete dell’orto), l’area del triangolo (metà di un rettangolo), le
+figure composte (si divide la L in due rettangoli). Livelli 1–5: quadretti → formule → cm e m → triangolo e lato dal
+perimetro → figure a L e altezza dall’area. Perimetro e area si alternano apposta.
+
+### Problemi avanzati
+Livello 6: soldi con i centesimi (spesa, resto, biglietti) e misure diverse nello stesso problema (metri e
+centimetri, litri e millilitri, chili e grammi: prima si trasforma, poi si calcola). Livello 7: perimetro e area nei
+problemi (la rete dell’orto, il parquet, il cortile romano, le tessere del mosaico), con il disegno della figura al posto
+del modello a barre. I numeri che servono ma non sono scritti (100 perché 1 m = 100 cm, 2 per il giro, 4 lati) compaiono
+come tessere con la spiegazione.
+
+### Argomento del giorno
+Le tabelline ci sono ogni giorno; tra problemi, misure e geometria accesi se ne fa **uno per missione, a rotazione**.
+La missione resta di 8–10 minuti e sempre uguale nella forma.
+
 ## 7. Tema e contenuti (Fase 3)
 
 - **Guida: Glauco, la civetta del tempo** (in greco antico *glaux* = civetta, l'animale di Atena).

@@ -21,7 +21,7 @@ const step = (op: Op, a: number, aRef: string, b: number, bRef: string, goal?: s
   op,
   a: { value: a, ref: aRef },
   b: { value: b, ref: bRef },
-  result: op === '+' ? a + b : op === '-' ? a - b : op === '×' ? a * b : a / b,
+  result: Math.round((op === '+' ? a + b : op === '-' ? a - b : op === '×' ? a * b : a / b) * 100) / 100,
   ordered: op === '-' || op === ':',
   goal,
 });
@@ -45,6 +45,14 @@ const twoNames = (rng: Rng) => {
   const [a, b] = shuffle(rng, NAMES);
   return [a, b];
 };
+
+
+/** Prezzo in euro con i centesimi a decine (2,30 €) oppure a mezzi euro (step = 50). */
+function money(rng: Rng, min: number, max: number, step = 10): number {
+  const cents = randInt(rng, min * 100, max * 100);
+  return Math.round(cents / step) * step / 100 || min;
+}
+const r2 = (n: number) => Math.round(n * 100) / 100;
 
 export interface Template {
   id: string;
@@ -579,6 +587,270 @@ export const TEMPLATES: Template[] = [
           { kind: 'ripartizione', whole: total, parts: k, unit: 'caramelle' },
         ],
         opHint: 'Prima mettile tutte insieme, poi dividile in parti uguali.',
+      };
+    },
+  },
+
+  // ================================================================ LIVELLO 6: SOLDI E MISURE
+  {
+    id: 'sol-spesa',
+    category: 'soldi',
+    minLevel: 6,
+    theme: 'storia',
+    make(rng, level) {
+      const a = money(rng, 1, 6);
+      const b = money(rng, 1, 6);
+      return {
+        segments: seg(
+          'Al negozio del museo compri una cartolina del Colosseo da ', N('a', a), ' € e un segnalibro da ', N('b', b), ' €. ',
+          ...maybeDistractor(rng, level),
+          Q('Quanto spendi in tutto?'),
+        ),
+        questionChoices: ['Quanto spendi in tutto', 'Quanto costa il segnalibro', 'Quanto resto ricevi'],
+        steps: [step('+', a, 'a', b, 'b')],
+        unit: 'euro',
+        bars: [{ kind: 'parti', a, b, unit: '€' }],
+        opHint: 'I due prezzi si mettono insieme? Ricorda: euro con euro, centesimi con centesimi.',
+        decimal: true,
+      };
+    },
+  },
+  {
+    id: 'sol-resto',
+    category: 'soldi',
+    minLevel: 6,
+    theme: 'quotidiano',
+    make(rng) {
+      const a = money(rng, 1, 5);
+      const b = money(rng, 1, 4);
+      const c = a + b < 10 ? 10 : 20;
+      return {
+        segments: seg(
+          'Compri un quaderno da ', N('a', a), ' € e una penna da ', N('b', b), ' €. Paghi con una banconota da ', N('c', c), ' €. ',
+          Q('Quanto ricevi di resto?'),
+        ),
+        questionChoices: ['Quanti soldi ti restituiscono', 'Quanto spendi in tutto', 'Quanto costa il quaderno'],
+        steps: [
+          step('+', a, 'a', b, 'b', 'Prima: quanto spendi in tutto?'),
+          step('-', c, 'c', r2(a + b), 'prev', 'Poi: quanto ti danno di resto?'),
+        ],
+        unit: 'euro',
+        bars: [
+          { kind: 'parti', a, b, unit: '€' },
+          { kind: 'togli', whole: c, part: r2(a + b), unit: '€' },
+        ],
+        opHint: 'Prima trova quanto spendi; il resto è quello che avanza dalla banconota.',
+        decimal: true,
+      };
+    },
+  },
+  {
+    id: 'sol-biglietti',
+    category: 'soldi',
+    minLevel: 6,
+    theme: 'quotidiano',
+    make(rng, level) {
+      const b = money(rng, 1, 3, 50);
+      const n = randInt(rng, 2, 6);
+      return {
+        segments: seg(
+          'Un biglietto del treno per andare a vedere le rovine di Paestum costa ', N('b', b), ' €. Partono ', N('n', n), ' amici. ',
+          ...maybeDistractor(rng, level),
+          Q('Quanto spendono in tutto per i biglietti?'),
+        ),
+        questionChoices: ['Quanto costano tutti i biglietti', 'Quanto costa un biglietto', 'Quanti amici partono'],
+        steps: [step('×', n, 'n', b, 'b')],
+        unit: 'euro',
+        bars: [{ kind: 'gruppi', groups: n, each: b, unit: '€' }],
+        opHint: 'Ogni amico paga lo stesso prezzo: sono gruppi uguali?',
+        decimal: true,
+      };
+    },
+  },
+  {
+    id: 'mis-corda',
+    category: 'misure',
+    minLevel: 6,
+    theme: 'storia',
+    make(rng) {
+      const m = randInt(rng, 2, 6);
+      const c = randInt(rng, 2, 9) * 10 + (rng() < 0.5 ? 5 : 0);
+      return {
+        segments: seg(
+          'Un marinaio greco ha una corda lunga ', N('m', m), ' metri. Ne taglia un pezzo di ', N('c', c), ' centimetri. ',
+          Q('Quanti centimetri di corda gli restano?'),
+        ),
+        questionChoices: ['Quanti centimetri restano', 'Quanti centimetri ha tagliato', 'Quanti metri era lunga'],
+        steps: [
+          step('×', m, 'm', 100, 'k100', 'Prima: quanti centimetri è lunga la corda? (1 m = 100 cm)'),
+          step('-', m * 100, 'prev', c, 'c', 'Poi: quanti centimetri restano?'),
+        ],
+        unit: 'cm',
+        bars: [
+          { kind: 'gruppi', groups: m, each: 100, unit: 'cm' },
+          { kind: 'togli', whole: m * 100, part: c, unit: 'cm' },
+        ],
+        opHint: 'Metri e centimetri non si possono sottrarre così: prima trasforma i metri in centimetri.',
+        extras: [{ ref: 'k100', value: 100, label: '100 (1 m = 100 cm)' }],
+      };
+    },
+  },
+  {
+    id: 'mis-brocca',
+    category: 'misure',
+    minLevel: 6,
+    theme: 'quotidiano',
+    make(rng) {
+      const l = randInt(rng, 1, 3);
+      const ml = randInt(rng, 2, 8) * 100 + (rng() < 0.5 ? 50 : 0);
+      return {
+        segments: seg(
+          'Una brocca contiene ', N('l', l), ' litri di spremuta. Versi ', N('ml', ml), ' millilitri nei bicchieri. ',
+          Q('Quanti millilitri restano nella brocca?'),
+        ),
+        questionChoices: ['Quanti ml restano nella brocca', 'Quanti ml hai versato', 'Quanti bicchieri ci sono'],
+        steps: [
+          step('×', l, 'l', 1000, 'k1000', 'Prima: quanti millilitri ci sono nella brocca? (1 l = 1000 ml)'),
+          step('-', l * 1000, 'prev', ml, 'ml', 'Poi: quanti millilitri restano?'),
+        ],
+        unit: 'ml',
+        bars: [
+          { kind: 'gruppi', groups: l, each: 1000, unit: 'ml' },
+          { kind: 'togli', whole: l * 1000, part: ml, unit: 'ml' },
+        ],
+        opHint: 'Litri e millilitri sono unità diverse: prima trasforma i litri in millilitri.',
+        extras: [{ ref: 'k1000', value: 1000, label: '1000 (1 l = 1000 ml)' }],
+      };
+    },
+  },
+  {
+    id: 'mis-pacchi',
+    category: 'misure',
+    minLevel: 6,
+    theme: 'storia',
+    make(rng) {
+      const kg = randInt(rng, 2, 5);
+      const g = randInt(rng, 1, 9) * 100 + randInt(rng, 0, 1) * 50;
+      return {
+        segments: seg(
+          'Un mercante fenicio carica un sacco di sale da ', N('kg', kg), ' chili e un vasetto di porpora da ', N('g', g), ' grammi. ',
+          Q('Quanti grammi pesano in tutto?'),
+        ),
+        questionChoices: ['Quanti grammi pesano insieme', 'Quanti chili pesa il sacco', 'Quanti grammi pesa il vasetto'],
+        steps: [
+          step('×', kg, 'kg', 1000, 'k1000', 'Prima: quanti grammi pesa il sacco? (1 kg = 1000 g)'),
+          step('+', kg * 1000, 'prev', g, 'g', 'Poi: quanti grammi in tutto?'),
+        ],
+        unit: 'g',
+        bars: [
+          { kind: 'gruppi', groups: kg, each: 1000, unit: 'g' },
+          { kind: 'parti', a: kg * 1000, b: g, unit: 'g' },
+        ],
+        opHint: 'Chili e grammi sono unità diverse: prima trasforma i chili in grammi.',
+        extras: [{ ref: 'k1000', value: 1000, label: '1000 (1 kg = 1000 g)' }],
+      };
+    },
+  },
+
+  // ================================================================ LIVELLO 7: PERIMETRO E AREA
+  {
+    id: 'per-recinto',
+    category: 'perimetro-area',
+    minLevel: 7,
+    theme: 'quotidiano',
+    make(rng, level) {
+      const b = randInt(rng, 6, 20);
+      const h = randInt(rng, 3, b - 1);
+      return {
+        segments: seg(
+          'Un orto rettangolare è lungo ', N('b', b), ' metri e largo ', N('h', h), ' metri. ',
+          ...maybeDistractor(rng, level),
+          Q('Quanti metri di rete servono per recintarlo tutto intorno?'),
+        ),
+        questionChoices: ['Quanti metri di rete per tutto il contorno', 'Quanti metri quadrati di terra ci sono', 'Quanto è lungo l’orto'],
+        steps: [
+          step('+', b, 'b', h, 'h', 'Prima: quanto fanno una lunghezza e una larghezza?'),
+          step('×', b + h, 'prev', 2, 'k2', 'Poi: il giro completo ha 2 lunghezze e 2 larghezze.'),
+        ],
+        unit: 'm',
+        bars: [
+          { kind: 'figura', shape: { type: 'rettangolo', b, h }, unit: 'm', ask: 'perimetro' },
+          { kind: 'figura', shape: { type: 'rettangolo', b, h }, unit: 'm', ask: 'perimetro' },
+        ],
+        opHint: 'La rete va sul contorno: è il perimetro. Il rettangolo ha due lati lunghi e due corti.',
+        extras: [{ ref: 'k2', value: 2, label: '2 (il giro)' }],
+      };
+    },
+  },
+  {
+    id: 'are-pavimento',
+    category: 'perimetro-area',
+    minLevel: 7,
+    theme: 'quotidiano',
+    make(rng, level) {
+      const b = randInt(rng, 3, 9);
+      const h = randInt(rng, 2, b);
+      return {
+        segments: seg(
+          'Il pavimento della cameretta è un rettangolo lungo ', N('b', b), ' metri e largo ', N('h', h), ' metri. ',
+          ...maybeDistractor(rng, level),
+          Q('Quanti metri quadrati di parquet servono per coprirlo tutto?'),
+        ),
+        questionChoices: ['Quanta superficie bisogna coprire', 'Quanto è lungo il bordo della stanza', 'Quanto è larga la stanza'],
+        steps: [step('×', b, 'b', h, 'h')],
+        unit: 'm²',
+        bars: [{ kind: 'figura', shape: { type: 'rettangolo', b, h }, unit: 'm', ask: 'area' }],
+        opHint: 'Il parquet copre lo spazio dentro: è l’area. Pensa alle righe di quadretti da 1 m.',
+      };
+    },
+  },
+  {
+    id: 'per-cortile',
+    category: 'perimetro-area',
+    minLevel: 7,
+    theme: 'storia',
+    make(rng) {
+      const l = randInt(rng, 5, 25);
+      return {
+        segments: seg(
+          'Il cortile di una villa romana è un quadrato con il lato di ', N('l', l), ' metri. ',
+          Q('Quanti metri percorre chi fa il giro completo del cortile?'),
+        ),
+        questionChoices: ['La lunghezza di tutto il contorno', 'La superficie del cortile', 'La lunghezza di un lato'],
+        steps: [step('×', l, 'l', 4, 'k4')],
+        unit: 'm',
+        bars: [{ kind: 'figura', shape: { type: 'quadrato', l }, unit: 'm', ask: 'perimetro' }],
+        opHint: 'Il giro completo è il perimetro. Quanti lati uguali ha un quadrato?',
+        extras: [{ ref: 'k4', value: 4, label: '4 (i lati del quadrato)' }],
+      };
+    },
+  },
+  {
+    id: 'are-mosaico',
+    category: 'perimetro-area',
+    minLevel: 7,
+    theme: 'storia',
+    make(rng) {
+      const b = randInt(rng, 3, 4);
+      const h = randInt(rng, 2, 3);
+      const k = randInt(rng, 3, 9);
+      return {
+        segments: seg(
+          'Un mosaico romano è un rettangolo lungo ', N('b', b), ' dm e largo ', N('h', h), ' dm. In ogni decimetro quadrato ci sono ',
+          N('k', k), ' tessere colorate. ',
+          Q('Quante tessere ci sono in tutto il mosaico?'),
+        ),
+        questionChoices: ['Quante tessere in tutto', 'Quanti dm² misura il mosaico', 'Quante tessere in un dm²'],
+        steps: [
+          step('×', b, 'b', h, 'h', 'Prima: quanti decimetri quadrati misura il mosaico?'),
+          step('×', b * h, 'prev', k, 'k', 'Poi: quante tessere in tutto?'),
+        ],
+        unit: 'tessere',
+        bars: [
+          { kind: 'figura', shape: { type: 'rettangolo', b, h }, unit: 'dm', ask: 'area' },
+          { kind: 'gruppi', groups: b * h, each: k, unit: 'tessere' },
+        ],
+        opHint: 'Prima trova l’area (lo spazio dentro), poi pensa che ogni dm² ha lo stesso numero di tessere.',
       };
     },
   },
