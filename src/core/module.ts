@@ -50,12 +50,19 @@ export interface SessionModuleResult {
   milestones: Array<{ ref: string; reason: string }>;
 }
 
+/** Esito di un passo intermedio (es. scelta dell'operazione in un problema). */
+export interface StepEvent extends Evaluation {
+  step: string;
+}
+
 export interface ExerciseProps<I, A> {
   item: MissionItem<I>;
   attemptNo: number;
   /** Disabilita l'inserimento (es. mentre si mostra il feedback). */
   locked: boolean;
   onSubmit: (answer: A) => void;
+  /** Solo moduli a più passi: registra l'esito di un passo intermedio. */
+  onStep?: (ev: StepEvent) => void;
   /** Spazio fisso per il messaggio "Quasi! Riproviamo" o "Giusto!". */
   feedback: ReactNode;
   /** Pulsanti "Aiutami" e "Chiedi a papà/mamma", sempre nello stesso posto. */
@@ -66,6 +73,14 @@ export interface LearningModule<I = any, A = any> {
   id: ModuleId;
   title: string;
   estimatedSecondsPerItem: number;
+  /** Peso nella divisione del tempo della missione tra i moduli attivi. */
+  timeShare: number;
+  minItems: number;
+  maxItems: number;
+  /** Esercizio a più passi: resta montato tra un tentativo e l'altro e segnala i passi con onStep. */
+  multiStep?: boolean;
+  /** I tempi di risposta sono confrontabili tra esercizi (serve al segnale di "rallentamento"). */
+  timedFatigue: boolean;
 
   /** 1. GENERATORE */
   plan(ctx: PlanContext, count: number): Promise<PlanResult<I>>;

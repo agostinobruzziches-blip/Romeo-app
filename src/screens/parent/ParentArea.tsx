@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { checkPin, setPin } from '../../db/repo';
 import { db } from '../../db/schema';
 import { tabellineModule } from '../../modules/tabelline';
+import { problemiModule } from '../../modules/problemi';
 import { BigButton } from '../../ui/BigButton';
 import { PinPad } from '../../ui/PinPad';
 import { Screen } from '../../ui/Screen';
@@ -13,6 +14,7 @@ import { TutorReport } from './TutorReport';
 
 const TABS = [
   { id: 'tabelline', label: 'Tabelline' },
+  { id: 'problemi', label: 'Problemi' },
   { id: 'andamento', label: 'Andamento' },
   { id: 'tutor', label: 'Per la tutor' },
   { id: 'impostazioni', label: 'Impostazioni' },
@@ -60,6 +62,7 @@ export function ParentArea({ onExit }: { onExit: () => void }) {
   const [tab, setTab] = useState<TabId>('tabelline');
   if (!unlocked) return <Gate onOk={() => setUnlocked(true)} onExit={onExit} />;
   const Panel = tabellineModule.ParentPanel;
+  const ProblemPanel = problemiModule.ParentPanel;
   return (
     <div className="mx-auto flex min-h-dvh max-w-md flex-col px-4 pt-[max(env(safe-area-inset-top),12px)] pb-6">
       <header className="flex items-center justify-between py-2">
@@ -84,6 +87,7 @@ export function ParentArea({ onExit }: { onExit: () => void }) {
       </nav>
       <main className="flex-1">
         {tab === 'tabelline' && <Panel />}
+        {tab === 'problemi' && <ProblemPanel />}
         {tab === 'andamento' && <Andamento />}
         {tab === 'tutor' && <TutorReport />}
         {tab === 'impostazioni' && <Impostazioni />}

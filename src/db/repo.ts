@@ -1,7 +1,7 @@
 import { dayKey } from '../core/dates';
 import { allFactPairs, newFact } from '../modules/tabelline/leitner';
 import { INTRO_ORDER } from '../modules/tabelline/stages';
-import { db, type Attempt, type EndReason, type Session, type Settings } from './schema';
+import { db, type Attempt, type EndReason, type ModuleId, type Session, type Settings } from './schema';
 
 export const DEFAULT_SETTINGS: Settings = {
   id: 'main',
@@ -116,9 +116,12 @@ export async function missionDoneToday(): Promise<boolean> {
 }
 
 /** Tempi dei primi tentativi recenti, per dimensionare la missione. */
-export async function recentFirstAttemptMs(limit = 60): Promise<number[]> {
-  const list = await db.attempts.orderBy('at').reverse().limit(limit * 2).toArray();
-  return list.filter((a) => a.attemptNo === 1).slice(0, limit).map((a) => a.ms);
+export async function recentFirstAttemptMs(moduleId: ModuleId = 'tabelline', limit = 60): Promise<number[]> {
+  const list = await db.attempts.orderBy('at').reverse().limit(limit * 4).toArray();
+  return list
+    .filter((a) => a.attemptNo === 1 && a.moduleId === moduleId)
+    .slice(0, limit)
+    .map((a) => a.ms);
 }
 
 export async function totalStars(): Promise<number> {

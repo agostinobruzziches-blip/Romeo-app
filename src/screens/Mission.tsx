@@ -3,7 +3,7 @@ import { dayKey } from '../core/dates';
 import { MIN_ITEMS_BEFORE_OFFER, detectFatigue, type AttemptTrace, type ItemTrace } from '../core/fatigue';
 import { mergeQueues, requeue, shorten } from '../core/mission/queue';
 import { missionItemCount, secondsPerItem } from '../core/mission/size';
-import type { LearningModule, MissionItem } from '../core/module';
+import type { LearningModule, MissionItem, StepEvent } from '../core/module';
 import { createRng } from '../core/random';
 import { awardMedal, finalizeSession, type RewardSummary } from '../core/rewards';
 import { sounds } from '../core/sound';
@@ -44,6 +44,8 @@ interface Run {
   current: MissionItem;
   attemptNo: number;
   wrong: number;
+  /** Risposte finali sbagliate (dopo 3 si mostra la soluzione). */
+  finalWrong: number;
   helpLevel: number;
   helpUsed: boolean;
   attemptStart: number;
@@ -77,18 +79,23 @@ export function Mission({ repeat, onExit }: { repeat: boolean; onExit: () => voi
     (async () => {
       const settings = await getSettings();
       const modules = activeModules(settings.activeModules);
-      const fallback = modules.reduce((s, m) => s + m.estimatedSecondsPerItem, 0) / modules.length;
-      const recent = await recentFirstAttemptMs();
-      const count = missionItemCount(settings.missionMinutes, secondsPerItem(recent, fallback));
+      const recent = await recentFirstAttemptMs('tabelline');
       const rng = createRng();
-      const share = Math.round(count / modules.length);
+      // Il tempo della missione si divide tra i moduli attivi; ognuno riceve un numero FISSO di esercizi.
+      const totalWeight = modules.reduce((s, m) => s + m.timeShare, 0);
       const plans = await Promise.all(
-        modules.map((m, i) =>
-          m.plan({ settings, today: dayKey(), rng }, i === modules.length - 1 ? count - share * i : share),
-        ),
+        modules.map((m) => {
+          const seconds = (settings.missionMinutes * 60 * m.timeShare) / totalWeight;
+          const perItem = m.timedFatigue ? secondsPerItem(recent, m.estimatedSecondsPerItem) : m.estimatedSecondsPerItem;
+          const count =
+            modules.length === 1
+              ? missionItemCount(settings.missionMinutes, perItem)
+              : Math.min(m.maxItems, Math.max(m.minItems, Math.round(seconds / perItem)));
+          return m.plan({ settings, today: dayKey(), rng }, count);
+        }),
       );
       const queue = mergeQueues(plans.map((p) => p.items));
-      const focusLabel = plans.map((p) => p.focusLabel).join(' e ');
+      const focusLabel = plans.map((p) => p.focusLabel).join(', e poi ');
       const session = await startSession(queue.length, repeat, focusLabel);
       const median = recent.length ? [...recent].sort((a, b) => a - b)[Math.floor(recent.length / 2)] : 0;
       run.current = {
@@ -99,6 +106,7 @@ export function Mission({ repeat, onExit }: { repeat: boolean; onExit: () => voi
         current: queue[0],
         attemptNo: 1,
         wrong: 0,
+        finalWrong: 0,
         helpLevel: 0,
         helpUsed: false,
         attemptStart: 0,
@@ -134,6 +142,7 @@ export function Mission({ repeat, onExit }: { repeat: boolean; onExit: () => voi
   const beginItem = () => {
     r.attemptNo = 1;
     r.wrong = 0;
+    r.finalWrong = 0;
     r.helpLevel = 0;
     r.helpUsed = false;
     r.pausedMs = 0;
@@ -146,7 +155,7 @@ export function Mission({ repeat, onExit }: { repeat: boolean; onExit: () => voi
 
   const finishItem = async (solved: boolean) => {
     const outcome = {
-      firstTry: solved && r.attemptNo === 1,
+      firstTry: solved && r.wrong === 0,
       solved,
       wrongAttempts: r.wrong,
       helpUsed: r.helpUsed,
@@ -154,7 +163,7 @@ export function Mission({ repeat, onExit }: { repeat: boolean; onExit: () => voi
     };
     const res = await mod.record(r.current, outcome, dayKey());
     r.improvements.push(...res.improvements);
-    if ((!outcome.firstTry || outcome.helpUsed) && !r.requeued.has(r.current.key)) {
+    if (!mod.multiStep && (!outcome.firstTry || outcome.helpUsed) && !r.requeued.has(r.current.key)) {
       const next = requeue(r.queue, r.index, mod.replay(r.current, r.rng));
       if (next) {
         r.queue = next;
@@ -204,11 +213,11 @@ export function Mission({ repeat, onExit }: { repeat: boolean; onExit: () => voi
       at: Date.now(),
     });
     r.attempts.push({ correct: ev.correct, ms });
-    if (r.attemptNo === 1) r.items.push({ itemIndex: r.index, firstCorrect: ev.correct, firstMs: ms });
+    if (r.attemptNo === 1 && mod.timedFatigue) r.items.push({ itemIndex: r.index, firstCorrect: ev.correct, firstMs: ms });
     checkFatigue();
 
     if (ev.correct) {
-      if (r.attemptNo === 1) {
+      if (r.wrong === 0) {
         r.session.firstTryCorrect += 1;
         sounds.giusto();
         setPhase('giusto');
@@ -222,7 +231,8 @@ export function Mission({ repeat, onExit }: { repeat: boolean; onExit: () => voi
       return;
     }
     r.wrong += 1;
-    if (r.wrong >= 3) {
+    r.finalWrong += 1;
+    if (r.finalWrong >= 3) {
       await finishItem(false);
       setPhase('soluzione');
       return;
@@ -233,6 +243,36 @@ export function Mission({ repeat, onExit }: { repeat: boolean; onExit: () => voi
     r.pausedMs = 0;
     setMessage(r.wrong === 1 ? T.quasi : T.quasiAiuto);
     rerender();
+  };
+
+  /** Passo intermedio di un esercizio a più passi: si registra, l'esercizio resta com'è. */
+  const step = async (ev: StepEvent) => {
+    const ms = elapsed();
+    await addAttempt({
+      sessionId: r.session.id,
+      moduleId: r.current.moduleId,
+      itemKey: r.current.key,
+      itemIndex: r.index,
+      role: r.current.role,
+      format: `${r.current.format}:${ev.step}`,
+      tag: r.current.tag,
+      category: r.current.category,
+      attemptNo: r.attemptNo,
+      correct: ev.correct,
+      errorType: ev.errorType,
+      ms,
+      helpUsed: r.helpUsed ? `livello-${r.helpLevel}` : undefined,
+      at: Date.now(),
+    });
+    r.attempts.push({ correct: ev.correct, ms });
+    if (!ev.correct) {
+      r.wrong += 1;
+      r.attemptNo += 1;
+    }
+    // il tempo del passo successivo parte da adesso
+    r.attemptStart = performance.now();
+    r.pausedMs = 0;
+    checkFatigue();
   };
 
   const end = async (reason: EndReason) => {
@@ -298,47 +338,6 @@ export function Mission({ repeat, onExit }: { repeat: boolean; onExit: () => voi
           </Guide>
         </div>
         <BigButton onClick={beginItem}>{T.inizioPulsante}</BigButton>
-      </Screen>
-    );
-  }
-
-  if (phase === 'aiuto') {
-    return (
-      <Screen>
-        {progress}
-        <div className="flex flex-1 flex-col items-center justify-center gap-6 overflow-y-auto py-4">
-          <Owl size={72} />
-          <mod.Help item={r.current} level={r.helpLevel} />
-        </div>
-        <div className="flex flex-col gap-2">
-          {r.helpLevel < mod.maxHelpLevel && (
-            <BigButton variant="aiuto" onClick={openHelp}>
-              {T.altroAiuto}
-            </BigButton>
-          )}
-          <BigButton onClick={() => setPhase('esercizio')}>{T.tornaAProvare}</BigButton>
-        </div>
-      </Screen>
-    );
-  }
-
-  if (phase === 'genitore') {
-    return (
-      <Screen>
-        {progress}
-        <div className="flex flex-1 flex-col justify-center gap-4">
-          <h2 className="text-2xl font-bold">Pausa: tocca a {r.settings.parentLabel}</h2>
-          <p className="rounded-2xl bg-white p-4 text-lg leading-relaxed">{mod.parentTip(r.current, r.settings)}</p>
-          <p className="text-base text-inchiostro-2">
-            Se lo vedi stanco va benissimo fermarsi: la missione vale come completata.
-          </p>
-        </div>
-        <div className="flex flex-col gap-2">
-          <BigButton onClick={resume}>Riprendi</BigButton>
-          <BigButton variant="tenue" onClick={() => void end('genitore')}>
-            Fermiamoci qui
-          </BigButton>
-        </div>
       </Screen>
     );
   }
@@ -546,18 +545,65 @@ export function Mission({ repeat, onExit }: { repeat: boolean; onExit: () => voi
     </div>
   );
 
+  const helpOverlay =
+    phase === 'aiuto' ? (
+      <Screen>
+        {progress}
+        <div className="flex flex-1 flex-col items-center justify-center gap-6 overflow-y-auto py-4">
+          <Owl size={72} />
+          <mod.Help item={r.current} level={r.helpLevel} />
+        </div>
+        <div className="flex flex-col gap-2">
+          {r.helpLevel < mod.maxHelpLevel && (
+            <BigButton variant="aiuto" onClick={openHelp}>
+              {T.altroAiuto}
+            </BigButton>
+          )}
+          <BigButton onClick={() => setPhase('esercizio')}>{T.tornaAProvare}</BigButton>
+        </div>
+      </Screen>
+    ) : null;
+
+  const parentOverlay =
+    phase === 'genitore' ? (
+      <Screen>
+        {progress}
+        <div className="flex flex-1 flex-col justify-center gap-4">
+          <h2 className="text-2xl font-bold">Pausa: tocca a {r.settings.parentLabel}</h2>
+          <p className="rounded-2xl bg-white p-4 text-lg leading-relaxed">{mod.parentTip(r.current, r.settings)}</p>
+          <p className="text-base text-inchiostro-2">
+            Se lo vedi stanco va benissimo fermarsi: la missione vale come completata.
+          </p>
+        </div>
+        <div className="flex flex-col gap-2">
+          <BigButton onClick={resume}>Riprendi</BigButton>
+          <BigButton variant="tenue" onClick={() => void end('genitore')}>
+            Fermiamoci qui
+          </BigButton>
+        </div>
+      </Screen>
+    ) : null;
+
+  // Aiuto e pausa si aprono SOPRA l'esercizio, che resta com'era (risposta scritta, passo del problema).
+  const overlay = helpOverlay ?? parentOverlay;
   return (
-    <Screen>
-      {progress}
-      <mod.Exercise
-        key={`${r.current.uid}-${r.attemptNo}`}
-        item={r.current}
-        attemptNo={r.attemptNo}
-        locked={answered}
-        onSubmit={(a) => void submit(a)}
-        feedback={feedback}
-        toolbar={toolbar}
-      />
-    </Screen>
+    <>
+      <div className={overlay ? 'hidden' : undefined}>
+        <Screen>
+          {progress}
+          <mod.Exercise
+            key={mod.multiStep ? r.current.uid : `${r.current.uid}-${r.attemptNo}`}
+            item={r.current}
+            attemptNo={r.attemptNo}
+            locked={answered}
+            onSubmit={(a) => void submit(a)}
+            onStep={(ev) => void step(ev)}
+            feedback={feedback}
+            toolbar={toolbar}
+          />
+        </Screen>
+      </div>
+      {overlay}
+    </>
   );
 }

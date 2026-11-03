@@ -19,6 +19,10 @@ export const tabellineModule: LearningModule<TabData, TabAnswer> = {
   id: 'tabelline',
   title: 'Tabelline',
   estimatedSecondsPerItem: 20,
+  timeShare: 55,
+  minItems: 8,
+  maxItems: 40,
+  timedFatigue: true,
 
   async plan(ctx, count) {
     const facts = new Map((await db.facts.toArray()).map((f) => [f.key, f]));
