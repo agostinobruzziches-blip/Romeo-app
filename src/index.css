@@ -1,0 +1,51 @@
+@import 'tailwindcss';
+@import '@fontsource/atkinson-hyperlegible/400.css';
+@import '@fontsource/atkinson-hyperlegible/700.css';
+
+@theme {
+  --font-sans: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  --color-carta: #fbf5e9;      /* sfondo pergamena */
+  --color-carta-2: #f3e8d2;
+  --color-inchiostro: #2b2a33; /* testo */
+  --color-inchiostro-2: #5b5866;
+  --color-terracotta: #c8553d;
+  --color-terracotta-scuro: #a4432f;
+  --color-egeo: #2e5e8c;
+  --color-egeo-chiaro: #dce8f3;
+  --color-oliva: #3e7d5a;
+  --color-oliva-chiaro: #dcefe2;
+  --color-ambra: #b7791f;
+  --color-ambra-chiaro: #fbecc9;
+  --color-oro: #d9a520;
+  --color-rosso-mappa: #e8a29a;
+  --color-giallo-mappa: #f3d27a;
+  --color-verde-mappa: #8cc8a0;
+  --color-grigio-mappa: #e6e1d8;
+}
+
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  background: var(--color-carta);
+  color: var(--color-inchiostro);
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+/* Nessun movimento negli esercizi: le uniche animazioni sono nella schermata dei premi. */
+@keyframes cade {
+  0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translateY(105vh) rotate(260deg); opacity: 0.9; }
+}
+@keyframes appare {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.festa-stella { animation: cade 3.2s ease-in forwards; }
+.festa-appare { animation: appare 0.6s ease-out both; }
+@media (prefers-reduced-motion: reduce) {
+  .festa-stella { display: none; }
+  .festa-appare { animation: none; }
+}

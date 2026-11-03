@@ -103,7 +103,9 @@ interface Fact {
   key: string;            // `${min}x${max}`, es. "7x8"
   a: number; b: number;   // a ≤ b
   box: 0|1|2|3|4|5;       // livello di padronanza (Leitner)
-  dueAt: number;          // quando riproporlo (timestamp, inizio giornata)
+  dueDay: string;         // quando riproporlo ('YYYY-MM-DD')
+  lastPromotedDay: string;// si sale di livello al massimo una volta al giorno
+  everSecure: boolean;    // è già arrivato a livello 3 almeno una volta
   seen: number;
   firstTry: number;       // giuste al primo colpo
   afterRetry: number;     // giuste dopo un errore (tenacia)
@@ -170,11 +172,11 @@ Indici Dexie:
 ```ts
 db.version(1).stores({
   settings: 'id',
-  facts: 'key, box, dueAt',
+  facts: 'key, box, dueDay',
   tableProgress: 'table',
   sessions: 'id, day, startedAt',
   attempts: '++id, sessionId, moduleId, itemKey, category, at',
-  rewards: '++id, kind, at, sessionId',
+  rewards: '++id, kind, at, sessionId, ref',
   cards: 'cardId, unlockedAt',
   problemProgress: 'category',
 });
@@ -233,7 +235,7 @@ La missione chiede a ogni modulo attivo un certo numero di esercizi, li mette in
 | 4 | 7 giorni |
 | 5 | 14 giorni ("conquistato") |
 
-- Giusta al primo colpo → **+1 livello**
+- Giusta al primo colpo → **+1 livello** (al massimo una volta al giorno)
 - Giusta dopo un errore (tenacia) → resta al livello attuale e torna più avanti nella stessa missione
 - Sbagliata e risolta con "Aiutami" → scende di 1 (mai sotto 0), torna più avanti nella stessa missione
 - Il livello non si vede come voto: Romeo vede solo "fatti conquistati" che crescono.
@@ -261,16 +263,18 @@ Ordine di introduzione proposto: 2, 10, 5, 3, 4, 9, 6, 8, 7 (dalle più facili; 
 
 ### 5.6 Errori e medaglia della tenacia
 - Feedback: "Quasi! Riproviamo" — nessun suono negativo, nessun colore rosso sull'intera schermata.
-- Fino a **3 tentativi**, poi l'app mostra la soluzione con l'aiuto e la ripropone più tardi.
+- Fino a **3 tentativi**, poi l'app mostra la soluzione con l'aiuto e la ripropone più tardi (sostituendo un esercizio successivo, così il totale non cambia).
+- Vero/falso sbagliato: non si "tira a indovinare" l'altra risposta, si chiede direttamente il risultato.
+- Durante la missione non c'è un pulsante "esci" per il bambino: si chiude dal pulsante del genitore.
 - **Medaglia della tenacia**: quando dopo un errore Romeo arriva alla risposta giusta. Nel riepilogo si contano le **"conquiste"** = giuste al primo colpo + medaglie della tenacia, con la stessa grafica e lo stesso peso.
 - Il motto "Prova, prova, prova!" compare quando si guadagna una medaglia.
 
 ### 5.7 Stelle, carte e serie di giorni
 - **1 stella** per ogni missione completata (anche se fermata per stanchezza, vedi §5.8).
-- **+1 stella** di miglioramento personale: un fatto nuovo conquistato o una tappa superata in quella missione. Mai per la velocità.
+- **+1 stella** di miglioramento personale: un fatto che diventa "sicuro" (livello 3) per la prima volta, una tappa superata o una tabellina conquistata in quella missione. Mai per la velocità.
 - Ogni **3 stelle** si sblocca una carta dell'epoca corrente.
 - **Carte rare** per traguardi: "Tabellina del 7 conquistata", "10 medaglie della tenacia", "Prima settimana di esplorazione"…
-- **Serie di giorni**: contano i giorni di esplorazione; un giorno saltato è un "giorno di riposo" (fino a 2 a settimana) e non interrompe la serie. Bonus stella a 3, 7, 14, 30 giorni. Non compare mai un messaggio di "serie persa": si mostra sempre anche il totale dei giorni.
+- **Serie di giorni**: contano i giorni di esplorazione; fino a 2 giorni saltati di fila sono "giorni di riposo" e non interrompono la serie. Bonus stella a 3, 7, 14, 30 giorni. Non compare mai un messaggio di "serie persa": si mostra sempre anche il totale dei giorni.
 
 ### 5.8 Rilevamento stanchezza
 Segnali calcolati sugli ultimi tentativi (mai mostrati come rimprovero):
@@ -281,7 +285,7 @@ Segnali calcolati sugli ultimi tentativi (mai mostrati come rimprovero):
 Quando scatta: la guida dice *"Hai lavorato tanto! Vuoi fermarti qui? La stella te la sei guadagnata."* con due pulsanti: **"Mi fermo"** (riepilogo + premio pieno) e **"Ancora un po'"** (massimo 3 esercizi facili, poi fine). La missione conta come completata.
 
 ### 5.9 "Chiedi a papà/mamma"
-Pulsante sempre visibile durante la missione. Mette in pausa e mostra al genitore un suggerimento specifico, per esempio:
+Pulsante sempre visibile durante la missione. Mette in pausa e mostra al genitore un suggerimento specifico (e la possibilità di chiudere la missione, che vale come completata), per esempio:
 > *Sta lavorando su 7 × 8. Chiedigli: "Quanto fa 7 × 7?" e poi "Se aggiungi ancora un 7?". Non dire il risultato.*
 
 ### 5.10 Area genitori (PIN a 4 cifre)
@@ -331,7 +335,7 @@ interface ProblemTemplate {
 
 ## 8. Fasi di lavoro
 1. ✅ Struttura e modello dati (questo documento)
-2. MVP: tabelline + missione del giorno + stelle + medaglia della tenacia + area genitori base
+2. ✅ MVP: tabelline + missione del giorno + stelle + medaglia della tenacia + area genitori base
 3. Linea del tempo, epoche e album carte
 4. Modulo problemi
 5. PWA offline e deploy
