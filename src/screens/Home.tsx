@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { dayKey } from '../core/dates';
 import { computeStreak } from '../core/streak';
 import { COMPLETED, checkPin } from '../db/repo';
-import { nextCommonCard } from '../core/cards';
+import { loadCollection, nextCommonCard } from '../core/cards';
 import { CARDS } from '../content/cards';
 import { db } from '../db/schema';
 import { T } from '../i18n/testi';
@@ -32,7 +32,7 @@ export function Home({
     return {
       cards: allCards.length,
       unseen: allCards.filter((c) => !c.seen).length,
-      next: nextCommonCard(stars),
+      next: nextCommonCard(await loadCollection()),
       settings,
       stars,
       medals,

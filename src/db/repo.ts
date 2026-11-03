@@ -13,6 +13,7 @@ export const DEFAULT_SETTINGS: Settings = {
   volume: 0.2,
   readAloud: true,
   parentLabel: 'papà/mamma',
+  startEpoch: 'preistoria',
   pinHash: '',
   pinSalt: '',
   createdAt: 0,

@@ -3,6 +3,8 @@ import { useState, type ReactNode } from 'react';
 import { setPin, updateSettings } from '../../db/repo';
 import { db, type Stage } from '../../db/schema';
 import { INTRO_ORDER, STAGE_NAMES } from '../../modules/tabelline/stages';
+import { EPOCHS, type EpochId } from '../../content/epochs';
+import { syncCards } from '../../core/cards';
 import { BigButton } from '../../ui/BigButton';
 
 function Row({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
@@ -91,9 +93,33 @@ export function Impostazioni() {
           />
         </Row>
       )}
-      <Row label="Lettura ad alta voce" hint="Per i problemi (in arrivo nella fase 4).">
+      <Row label="Lettura ad alta voce" hint="Per le curiosità delle carte e, dalla fase 4, per i problemi.">
         <Toggle label="Lettura ad alta voce" on={s.readAloud} onChange={(v) => void updateSettings({ readAloud: v })} />
       </Row>
+      <div className="rounded-xl bg-white p-3">
+        <label htmlFor="epoca" className="font-bold">
+          Epoca di partenza delle carte
+        </label>
+        <p className="mb-2 text-sm text-inchiostro-2">
+          Le carte comuni arrivano a partire da quest’epoca, poi si va avanti nel tempo e alla fine si torna alle epoche
+          precedenti. Le carte già vinte restano tutte; cambia solo l’ordine delle prossime.
+        </p>
+        <select
+          id="epoca"
+          className="h-12 w-full rounded-xl border-2 border-carta-2 bg-white px-2 text-lg"
+          value={s.startEpoch ?? 'preistoria'}
+          onChange={async (e) => {
+            await updateSettings({ startEpoch: e.target.value as EpochId });
+            await syncCards();
+          }}
+        >
+          {EPOCHS.map((e) => (
+            <option key={e.id} value={e.id}>
+              {e.name} ({e.period})
+            </option>
+          ))}
+        </select>
+      </div>
       <Row label="Moduli attivi" hint="Problemi: in arrivo nella fase 4.">
         <span className="rounded-full bg-oliva-chiaro px-3 py-2 font-bold">Tabelline</span>
       </Row>
