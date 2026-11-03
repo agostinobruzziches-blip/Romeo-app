@@ -69,7 +69,7 @@ export function BackupPanel() {
       <BigButton
         variant="tenue"
         onClick={async () => {
-          if (!window.confirm('Cancellare tutti i progressi di Romeo? Le impostazioni restano.')) return;
+          if (!window.confirm('Cancellare tutti i progressi? Le impostazioni restano.')) return;
           if (!window.confirm('Sicuro? Non si può annullare (a meno di avere un backup).')) return;
           await resetAll(true);
           setMsg('Progressi azzerati.');

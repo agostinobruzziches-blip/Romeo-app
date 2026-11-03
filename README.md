@@ -1,4 +1,4 @@
-# Romeo e il Viaggio nel Tempo
+# Viaggio nel Tempo
 
 Web app di matematica per un bambino di quinta elementare: brevi missioni quotidiane, una domanda per schermata,
 nessun timer visibile, errori trattati con gentilezza e la **medaglia della tenacia** per chi ci riprova.

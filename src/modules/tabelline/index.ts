@@ -53,7 +53,7 @@ export const tabellineModule: LearningModule<TabData, TabAnswer> = {
 
   parentTip(item: Item, settings: Settings) {
     const { x, y } = item.data;
-    const name = settings.childName || 'Romeo';
+    const name = settings.childName || 'il bambino';
     const base = `${name} sta lavorando su ${x} × ${y}.`;
     if (item.format === 'fattore-mancante') {
       return `${base} Chiedigli di contare di ${x} in ${x}, alzando un dito a ogni salto, fino a ${x * y}. Quante dita ha alzato? Non dire il risultato: lascia che ci arrivi da solo.`;

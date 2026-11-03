@@ -30,7 +30,7 @@ export function Home({ onStart, onParent }: { onStart: (repeat: boolean) => void
   const [pinError, setPinError] = useState('');
 
   if (!data) return <Screen>{null}</Screen>;
-  const name = data.settings?.childName || 'Romeo';
+  const name = data.settings?.childName || 'Esploratore';
 
   if (askPin) {
     return (

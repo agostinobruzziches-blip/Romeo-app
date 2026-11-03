@@ -116,7 +116,7 @@ export interface ProblemProgress {
   goodSessions: number;
 }
 
-export class RomeoDB extends Dexie {
+export class ViaggioDB extends Dexie {
   settings!: Table<Settings, string>;
   facts!: Table<Fact, string>;
   tableProgress!: Table<TableProgress, number>;
@@ -126,7 +126,7 @@ export class RomeoDB extends Dexie {
   cards!: Table<OwnedCard, string>;
   problemProgress!: Table<ProblemProgress, string>;
 
-  constructor(name = 'romeo-viaggio-nel-tempo') {
+  constructor(name = 'viaggio-nel-tempo') {
     super(name);
     this.version(1).stores({
       settings: 'id',
@@ -152,10 +152,10 @@ export const TABLE_NAMES = [
   'problemProgress',
 ] as const;
 
-export let db = new RomeoDB();
+export let db = new ViaggioDB();
 
 /** Solo per i test: usa un database separato. */
-export function useTestDb(name: string): RomeoDB {
-  db = new RomeoDB(name);
+export function useTestDb(name: string): ViaggioDB {
+  db = new ViaggioDB(name);
   return db;
 }

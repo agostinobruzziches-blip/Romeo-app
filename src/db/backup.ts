@@ -2,7 +2,7 @@ import { dayKey } from '../core/dates';
 import { ensureInitialized } from './repo';
 import { TABLE_NAMES, db } from './schema';
 
-export const BACKUP_APP = 'romeo-viaggio-nel-tempo';
+export const BACKUP_APP = 'viaggio-nel-tempo';
 export const SCHEMA_VERSION = 1;
 
 export interface Backup {
@@ -19,7 +19,7 @@ export async function exportBackup(): Promise<Backup> {
 }
 
 export function backupFileName(): string {
-  return `romeo-backup-${dayKey()}.json`;
+  return `viaggio-nel-tempo-backup-${dayKey()}.json`;
 }
 
 /** Controlla che il file sia un backup di questa app prima di sovrascrivere qualsiasi cosa. */

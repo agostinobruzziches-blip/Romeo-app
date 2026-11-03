@@ -49,7 +49,7 @@ export function Impostazioni() {
 
   return (
     <div className="flex flex-col gap-3">
-      <Row label="Nome">
+      <Row label="Nome del bambino" hint="Resta solo su questo telefono.">
         <input
           className="h-12 w-40 rounded-xl border-2 border-carta-2 px-3 text-lg"
           value={s.childName}
@@ -63,7 +63,7 @@ export function Impostazioni() {
           onChange={(e) => void updateSettings({ parentLabel: e.target.value })}
         />
       </Row>
-      <Row label="Durata missione" hint="Il numero di domande si calcola dai minuti e dal ritmo di Romeo.">
+      <Row label="Durata missione" hint="Il numero di domande si calcola dai minuti e dal ritmo del bambino.">
         <div className="flex items-center gap-2">
           <button type="button" className={stepBtn} onClick={() => void updateSettings({ missionMinutes: Math.max(5, s.missionMinutes - 1) })}>
             −
@@ -101,7 +101,7 @@ export function Impostazioni() {
       <div className="rounded-xl bg-white p-3">
         <p className="font-bold">Tabelline attive e tappa di partenza</p>
         <p className="mb-2 text-sm text-inchiostro-2">
-          Si lavora su una tabellina alla volta, nell’ordine qui sotto. Se Romeo ne sa già bene una, puoi farla partire da
+          Si lavora su una tabellina alla volta, nell’ordine qui sotto. Se ne sa già bene una, puoi farla partire da
           una tappa più avanti o segnarla come conquistata.
         </p>
         <ul className="flex flex-col gap-2">

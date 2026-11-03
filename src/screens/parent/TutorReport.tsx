@@ -33,7 +33,7 @@ export function TutorReport() {
   return (
     <div className="flex flex-col gap-3">
       <p className="text-base text-inchiostro-2">
-        Un riepilogo in testo semplice da mandare alla ragazza che segue Romeo nello studio.
+        Un riepilogo in testo semplice da mandare a chi lo segue nello studio.
       </p>
       <div className="flex gap-2">
         {[7, 14, 30].map((d) => (

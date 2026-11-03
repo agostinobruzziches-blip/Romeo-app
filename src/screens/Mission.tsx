@@ -124,7 +124,7 @@ export function Mission({ repeat, onExit }: { repeat: boolean; onExit: () => voi
     );
   }
   const mod: LearningModule = getModule(r.current.moduleId);
-  const name = r.settings.childName || 'Romeo';
+  const name = r.settings.childName || 'Esploratore';
 
   // ---------- azioni ----------
   const beginItem = () => {

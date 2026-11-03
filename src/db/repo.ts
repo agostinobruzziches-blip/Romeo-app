@@ -5,7 +5,7 @@ import { db, type Attempt, type EndReason, type Session, type Settings } from '.
 
 export const DEFAULT_SETTINGS: Settings = {
   id: 'main',
-  childName: 'Romeo',
+  childName: 'Esploratore',
   missionMinutes: 9,
   activeModules: ['tabelline'],
   activeTables: [2, 3, 4, 5, 6, 7, 8, 9, 10],

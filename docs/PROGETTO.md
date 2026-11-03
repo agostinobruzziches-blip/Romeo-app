@@ -1,4 +1,4 @@
-# Romeo e il Viaggio nel Tempo — Progetto (Fase 1)
+# Viaggio nel Tempo — Progetto
 
 Documento di proposta: struttura del progetto, modello dati e regole di funzionamento.
 Nessun codice applicativo è ancora scritto: si parte dopo la conferma.
@@ -86,7 +86,7 @@ La separazione `core/` (logica pura) ↔ `modules/` ↔ `screens/` è la chiave 
 // Una sola riga: chi usa l'app e come è configurata
 interface Settings {
   id: 'main';
-  childName: string;                 // "Romeo"
+  childName: string;                 // impostato dal genitore, resta sul telefono
   missionMinutes: number;            // default 9 (range 5–15)
   activeModules: ModuleId[];         // ['tabelline'] poi ['tabelline','problemi']
   activeTables: number[];            // es. [2,3,4,5,6,7,8,9,10]
@@ -216,7 +216,7 @@ La missione chiede a ogni modulo attivo un certo numero di esercizi, li mette in
 ## 5. Regole di funzionamento
 
 ### 5.1 Missione del giorno
-- **Numero fisso di esercizi** calcolato all'avvio da `missionMinutes` e dal tempo medio reale di Romeo (es. 9 minuti ≈ 22–26 tabelline). La barra di avanzamento conta gli esercizi, **non il tempo**: è prevedibile e non è un timer.
+- **Numero fisso di esercizi** calcolato all'avvio da `missionMinutes` e dal tempo medio reale del bambino (es. 9 minuti ≈ 22–26 tabelline). La barra di avanzamento conta gli esercizi, **non il tempo**: è prevedibile e non è un timer.
 - Ordine sempre uguale:
   1. **Riscaldamento**: 3 fatti già sicuri (livello 4–5) → si parte con un successo
   2. **Cuore**: la tappa attuale delle tabelline (e in Fase 4 i problemi)
@@ -238,7 +238,7 @@ La missione chiede a ogni modulo attivo un certo numero di esercizi, li mette in
 - Giusta al primo colpo → **+1 livello** (al massimo una volta al giorno)
 - Giusta dopo un errore (tenacia) → resta al livello attuale e torna più avanti nella stessa missione
 - Sbagliata e risolta con "Aiutami" → scende di 1 (mai sotto 0), torna più avanti nella stessa missione
-- Il livello non si vede come voto: Romeo vede solo "fatti conquistati" che crescono.
+- Il livello non si vede come voto: il bambino vede solo "fatti conquistati" che crescono.
 
 ### 5.3 Le 4 tappe di ogni tabellina
 1. **In ordine** (7×1 … 7×10) — quello che già sa fare, per partire sicuro
@@ -266,7 +266,7 @@ Ordine di introduzione proposto: 2, 10, 5, 3, 4, 9, 6, 8, 7 (dalle più facili; 
 - Fino a **3 tentativi**, poi l'app mostra la soluzione con l'aiuto e la ripropone più tardi (sostituendo un esercizio successivo, così il totale non cambia).
 - Vero/falso sbagliato: non si "tira a indovinare" l'altra risposta, si chiede direttamente il risultato.
 - Durante la missione non c'è un pulsante "esci" per il bambino: si chiude dal pulsante del genitore.
-- **Medaglia della tenacia**: quando dopo un errore Romeo arriva alla risposta giusta. Nel riepilogo si contano le **"conquiste"** = giuste al primo colpo + medaglie della tenacia, con la stessa grafica e lo stesso peso.
+- **Medaglia della tenacia**: quando dopo un errore il bambino arriva alla risposta giusta. Nel riepilogo si contano le **"conquiste"** = giuste al primo colpo + medaglie della tenacia, con la stessa grafica e lo stesso peso.
 - Il motto "Prova, prova, prova!" compare quando si guadagna una medaglia.
 
 ### 5.7 Stelle, carte e serie di giorni

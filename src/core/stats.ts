@@ -56,7 +56,7 @@ export const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0)
 /** Testo semplice per la tutor: si condivide dal menu del telefono, nessun link. */
 export async function tutorReport(days = 7): Promise<string> {
   const settings = await db.settings.get('main');
-  const name = settings?.childName || 'Romeo';
+  const name = settings?.childName || 'Esploratore';
   const p = await periodStats(days);
   const lines: string[] = [];
   lines.push(`${name} – Viaggio nel Tempo`);
