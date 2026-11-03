@@ -12,7 +12,7 @@ Il progetto completo (principi, modello dati, regole) è in [`docs/PROGETTO.md`]
 |---|---|---|
 | 1 | Struttura e modello dati | ✅ |
 | 2 | Tabelline, missione del giorno, stelle, medaglia della tenacia, area genitori base | ✅ |
-| 3 | Linea del tempo, epoche, album delle carte | — |
+| 3 | Linea del tempo, epoche, album delle carte | ✅ |
 | 4 | Modulo problemi | — |
 | 5 | PWA offline e installabile | — |
 
@@ -57,6 +57,7 @@ src/
     tabelline/
   screens/     Home, Missione, Area genitori
   ui/          pulsanti, tastierino, barra, Glauco la civetta
+  content/     epoche, carte (curiosità + fonte) e illustrazioni SVG originali
   i18n/        tutte le frasi del bambino
 ```
 

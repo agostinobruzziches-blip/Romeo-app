@@ -3,6 +3,7 @@ import { addDays, dayKey, formatDay } from './dates';
 import { COMPLETED } from '../db/repo';
 import { db, type EndReason, type Session } from '../db/schema';
 import { activeModules } from '../modules/registry';
+import { CARDS } from '../content/cards';
 
 export const END_LABELS: Record<EndReason, string> = {
   completata: 'completata',
@@ -84,6 +85,9 @@ export async function tutorReport(days = 7): Promise<string> {
       lines.push(`- ${formatDay(s.day)}: ${kinds.join(', ')}`);
     }
   }
+  const cards = await db.cards.count();
+  lines.push('');
+  lines.push(`Carte storiche raccolte: ${cards} su ${CARDS.length}`);
   lines.push('');
   lines.push('Motto: prova, prova, prova!');
   return lines.join('\n');

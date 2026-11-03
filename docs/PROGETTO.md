@@ -322,21 +322,22 @@ interface ProblemTemplate {
 
 ---
 
-## 7. Tema e contenuti (Fase 3) — anticipazione
+## 7. Tema e contenuti (Fase 3)
 
-- **Guida proposta: Glauco, la civetta del tempo** (in greco antico *glaux* significa civetta, l'animale di Atena). Frasi brevi e gentili, sempre lo stesso tono. Alternativa: un piccolo automa di bronzo ispirato a Talos, il gigante di bronzo del mito cretese.
-- **Linea del tempo**: Preistoria → Egizi → Cretesi → Greci → Romani → Medioevo. Ogni epoca si sblocca con un numero di stelle; 8 carte per epoca (6 comuni + 2 rare).
-- Palette: Preistoria ocra e terra; Egizi sabbia, lapislazzuli e oro; Cretesi azzurro mare e rosso affresco; Greci bianco, blu e terracotta; Romani rosso pompeiano e oro; Medioevo verde e pergamena.
-- Ogni carta: nome, illustrazione SVG originale, una curiosità vera di 1–2 frasi. Nel catalogo ogni curiosità avrà anche una nota sulla fonte, per poterla verificare. Esempi del tono:
-  - *Le prime Olimpiadi di cui abbiamo notizia si svolsero a Olimpia nel 776 a.C.*
-  - *La Grande Piramide di Giza è rimasta per migliaia di anni la costruzione più alta fatta dall'uomo.*
-
----
+- **Guida: Glauco, la civetta del tempo** (in greco antico *glaux* = civetta, l'animale di Atena).
+- **Linea del tempo** verticale: Preistoria → Egizi → Cretesi → Greci → Romani → Medioevo. Ogni epoca ha i suoi colori.
+- **48 carte** (`src/content/cards.ts`), 8 per epoca: 6 comuni e 2 rare. Ogni carta ha un'illustrazione SVG originale
+  (`src/content/art/`), una curiosità vera di 1–2 frasi e una **fonte** per poterla verificare.
+- **Sblocco**: una carta comune ogni **3 stelle**, in ordine cronologico. Un'epoca si apre con la sua prima carta.
+- **Carte rare** legate ai traguardi: ogni tabellina conquistata (dal 2 al 10), la prima e la decima medaglia della
+  tenacia (il fuoco e Odisseo il tenace), 7 giorni di esplorazione.
+- Le carte nuove si mostrano dopo il premio, con la curiosità; nell'album si possono riascoltare con la lettura ad alta voce.
+- Le carte si assegnano anche in modo retroattivo: chi aveva già stelle dalla Fase 2 le ritrova all'apertura.
 
 ## 8. Fasi di lavoro
 1. ✅ Struttura e modello dati (questo documento)
 2. ✅ MVP: tabelline + missione del giorno + stelle + medaglia della tenacia + area genitori base
-3. Linea del tempo, epoche e album carte
+3. ✅ Linea del tempo, epoche e album carte (vedi §7)
 4. Modulo problemi
 5. PWA offline e deploy
 

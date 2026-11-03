@@ -1,7 +1,10 @@
 import { completedSessions, totalMedals, totalStars } from '../db/repo';
 import { db, type EndReason, type RewardEvent, type Session } from '../db/schema';
 import { dayKey } from './dates';
+import { syncCards } from './cards';
 import { STREAK_BONUS_AT, computeStreak, type StreakInfo } from './streak';
+import type { CardDef } from '../content/cards';
+import type { Epoch } from '../content/epochs';
 
 export const MEDAL_MILESTONES = [1, 10, 25, 50, 100, 200];
 export const DAY_MILESTONES = [7, 30, 60, 100];
@@ -15,6 +18,8 @@ export interface RewardSummary {
   streak: StreakInfo;
   totalStars: number;
   totalMedals: number;
+  newCards: CardDef[];
+  newEpochs: Epoch[];
 }
 
 async function hasRef(ref: string): Promise<boolean> {
@@ -77,6 +82,7 @@ export async function finalizeSession(
     events.push({ at: now, sessionId: session.id, kind: 'stella', reason: s });
   }
   if (events.length) await db.rewards.bulkAdd(events);
+  const cards = await syncCards(session.id);
 
   const days = (await completedSessions()).map((s) => s.day);
   return {
@@ -88,5 +94,7 @@ export async function finalizeSession(
     streak: computeStreak(days, dayKey()),
     totalStars: await totalStars(),
     totalMedals: await totalMedals(),
+    newCards: cards.newCards,
+    newEpochs: cards.newEpochs,
   };
 }

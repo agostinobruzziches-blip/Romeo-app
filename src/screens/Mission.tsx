@@ -16,6 +16,8 @@ import { Celebration } from '../ui/Celebration';
 import { Guide, Owl } from '../ui/Guide';
 import { Medal, Star } from '../ui/Icons';
 import { ProgressBar } from '../ui/ProgressBar';
+import { CardView } from '../ui/CardView';
+import { EPOCH_BY_ID } from '../content/epochs';
 import { Screen } from '../ui/Screen';
 
 type Phase =
@@ -31,6 +33,7 @@ type Phase =
   | 'chiusura'
   | 'riepilogo'
   | 'premio'
+  | 'carta'
   | 'fine';
 
 interface Run {
@@ -61,6 +64,7 @@ export function Mission({ repeat, onExit }: { repeat: boolean; onExit: () => voi
   const [message, setMessage] = useState<string | null>(null);
   const [summary, setSummary] = useState<RewardSummary | null>(null);
   const [, force] = useState(0);
+  const [cardIdx, setCardIdx] = useState(0);
   const run = useRef<Run | null>(null);
   const started = useRef(false);
   const busy = useRef(false);
@@ -463,8 +467,39 @@ export function Mission({ repeat, onExit }: { repeat: boolean; onExit: () => voi
             Giorni di esplorazione: <b>{summary.streak.current}</b> di fila ({summary.streak.totalDays} in tutto)
           </p>
         </div>
-        <BigButton onClick={() => setPhase('fine')}>{T.avanti}</BigButton>
+        <BigButton onClick={() => setPhase(summary.newCards.length ? 'carta' : 'fine')}>{T.avanti}</BigButton>
       </Screen>
+    );
+  }
+
+  if (phase === 'carta' && summary && summary.newCards[cardIdx]) {
+    const card = summary.newCards[cardIdx];
+    const epoch = EPOCH_BY_ID[card.epoch];
+    const opened = summary.newEpochs.find((e) => e.id === card.epoch);
+    const last = cardIdx >= summary.newCards.length - 1;
+    return (
+      <div style={{ background: epoch.colors.bg }}>
+        <Screen>
+          <div className="flex flex-1 flex-col items-center justify-center gap-4 overflow-y-auto py-2 text-center">
+            {opened ? (
+              <p className="festa-appare rounded-2xl bg-white px-4 py-2 text-xl font-bold" style={{ color: epoch.colors.accent }}>
+                Nuova epoca: {opened.name}!
+              </p>
+            ) : (
+              <p className="text-2xl font-bold" style={{ color: epoch.colors.ink }}>
+                {card.rare ? 'Carta rara!' : 'Nuova carta!'}
+              </p>
+            )}
+            <div className="festa-appare flex w-full justify-center">
+              <CardView id={card.id} owned size="grande" />
+            </div>
+            <p className="rounded-2xl bg-white p-3 text-lg leading-snug" style={{ color: epoch.colors.ink }}>
+              {card.fact}
+            </p>
+          </div>
+          <BigButton onClick={() => (last ? setPhase('fine') : setCardIdx(cardIdx + 1))}>{T.avanti}</BigButton>
+        </Screen>
+      </div>
     );
   }
 
