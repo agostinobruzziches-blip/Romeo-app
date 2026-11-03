@@ -1,9 +1,9 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useEffect, useState } from 'react';
-import { CARDS, CARD_BY_ID, STARS_PER_CARD, COMMON_ORDER } from '../content/cards';
+import { CARDS, CARD_BY_ID } from '../content/cards';
+import { loadCollection, starsForCard } from '../core/cards';
 import { EPOCH_BY_ID, type EpochId } from '../content/epochs';
 import { canSpeak, speak, stopSpeaking } from '../core/speech';
-import { totalStars } from '../db/repo';
 import { db } from '../db/schema';
 import { BigButton } from '../ui/BigButton';
 import { CardView } from '../ui/CardView';
@@ -41,7 +41,7 @@ export function Album({ epochId, onBack }: { epochId: EpochId; onBack: () => voi
   const data = useLiveQuery(async () => {
     const owned = await db.cards.toArray();
     const settings = await db.settings.get('main');
-    return { owned: new Map(owned.map((c) => [c.cardId, c])), stars: await totalStars(), readAloud: settings?.readAloud ?? true };
+    return { owned: new Map(owned.map((c) => [c.cardId, c])), col: await loadCollection(), readAloud: settings?.readAloud ?? true };
   }, []);
   if (!data) return null;
   const cards = CARDS.filter((c) => c.epoch === epochId);
@@ -49,8 +49,8 @@ export function Album({ epochId, onBack }: { epochId: EpochId; onBack: () => voi
   const hintFor = (id: string) => {
     const c = CARD_BY_ID[id];
     if (c.rare) return c.milestoneLabel;
-    const need = (COMMON_ORDER.indexOf(id) + 1) * STARS_PER_CARD - data.stars;
-    return `tra ${need} ${need === 1 ? 'stella' : 'stelle'}`;
+    const need = starsForCard(data.col, id);
+    return need === null ? undefined : `tra ${need} ${need === 1 ? 'stella' : 'stelle'}`;
   };
 
   return (

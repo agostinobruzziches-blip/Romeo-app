@@ -18,7 +18,8 @@ export interface CardDef {
 }
 
 /**
- * Le carte comuni si sbloccano in quest'ordine, una ogni STARS_PER_CARD stelle.
+ * Le carte comuni si sbloccano una ogni STARS_PER_CARD stelle, in ordine di epoca a partire
+ * dall'epoca di partenza scelta dal genitore (vedi core/cards.ts).
  * Le carte rare si sbloccano con i traguardi (tabellina conquistata, medaglie, giorni).
  */
 export const STARS_PER_CARD = 3;
@@ -494,4 +495,3 @@ export const CARDS: CardDef[] = [
 ];
 
 export const CARD_BY_ID = Object.fromEntries(CARDS.map((c) => [c.id, c])) as Record<string, CardDef>;
-export const COMMON_ORDER = CARDS.filter((c) => !c.rare).map((c) => c.id);

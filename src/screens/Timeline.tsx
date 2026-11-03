@@ -1,9 +1,8 @@
 import { useLiveQuery } from 'dexie-react-hooks';
-import { nextCommonCard, starsToOpen, unlockedEpochs } from '../core/cards';
+import { currentEpoch, loadCollection, nextCommonCard, starsToOpen, unlockedEpochs } from '../core/cards';
 import { CARDS } from '../content/cards';
 import { EPOCHS, type EpochId } from '../content/epochs';
 import { Art, EPOCH_EMBLEM } from '../content/art';
-import { totalStars } from '../db/repo';
 import { db } from '../db/schema';
 import { BigButton } from '../ui/BigButton';
 import { Guide } from '../ui/Guide';
@@ -11,13 +10,13 @@ import { Guide } from '../ui/Guide';
 /** La linea del tempo: ogni epoca è un mondo da sbloccare, dall'alto (più antica) in basso. */
 export function Timeline({ onOpen, onExit }: { onOpen: (e: EpochId) => void; onExit: () => void }) {
   const data = useLiveQuery(async () => {
-    const owned = (await db.cards.toArray()).map((c) => c.cardId);
-    return { owned: new Set(owned), stars: await totalStars(), unseen: new Set((await db.cards.filter((c) => !c.seen).toArray()).map((c) => c.cardId)) };
+    const col = await loadCollection();
+    return { col, owned: col.owned, unseen: new Set((await db.cards.filter((c) => !c.seen).toArray()).map((c) => c.cardId)) };
   }, []);
   if (!data) return null;
-  const open = unlockedEpochs(data.owned);
-  const current = [...EPOCHS].reverse().find((e) => open.has(e.id))?.id;
-  const next = nextCommonCard(data.stars);
+  const open = unlockedEpochs(data.owned, data.col.start);
+  const current = currentEpoch(data.col);
+  const next = nextCommonCard(data.col);
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-md flex-col px-4 pt-[max(env(safe-area-inset-top),12px)] pb-6">
@@ -45,7 +44,7 @@ export function Timeline({ onOpen, onExit }: { onOpen: (e: EpochId) => void; onE
           const cards = CARDS.filter((c) => c.epoch === e.id);
           const have = cards.filter((c) => data.owned.has(c.id)).length;
           const fresh = cards.some((c) => data.unseen.has(c.id));
-          const missing = starsToOpen(e.id, data.stars);
+          const missing = starsToOpen(e.id, data.col);
           return (
             <li key={e.id} className="relative">
               <span

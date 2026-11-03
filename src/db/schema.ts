@@ -1,4 +1,5 @@
 import Dexie, { type Table } from 'dexie';
+import type { EpochId } from '../content/epochs';
 
 export type ModuleId = 'tabelline' | 'problemi';
 export type ItemRole = 'riscaldamento' | 'cuore' | 'ripasso' | 'chiusura';
@@ -17,6 +18,8 @@ export interface Settings {
   volume: number;
   readAloud: boolean;
   parentLabel: string;
+  /** Epoca da cui parte la raccolta delle carte (default Preistoria). */
+  startEpoch?: EpochId;
   pinHash: string;
   pinSalt: string;
   createdAt: number;

@@ -329,6 +329,9 @@ interface ProblemTemplate {
 - **48 carte** (`src/content/cards.ts`), 8 per epoca: 6 comuni e 2 rare. Ogni carta ha un'illustrazione SVG originale
   (`src/content/art/`), una curiosità vera di 1–2 frasi e una **fonte** per poterla verificare.
 - **Sblocco**: una carta comune ogni **3 stelle**, in ordine cronologico. Un'epoca si apre con la sua prima carta.
+- **Epoca di partenza** (impostazioni genitori): la raccolta può partire, per esempio, dai Greci che studia a scuola; poi si
+  va avanti nel tempo (Romani, Medioevo) e alla fine si torna alle epoche precedenti. Cambiarla non toglie e non regala carte:
+  le carte comuni restano sempre una ogni 3 stelle.
 - **Carte rare** legate ai traguardi: ogni tabellina conquistata (dal 2 al 10), la prima e la decima medaglia della
   tenacia (il fuoco e Odisseo il tenace), 7 giorni di esplorazione.
 - Le carte nuove si mostrano dopo il premio, con la curiosità; nell'album si possono riascoltare con la lettura ad alta voce.
