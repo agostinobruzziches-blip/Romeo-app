@@ -8,6 +8,7 @@ import { BigButton } from '../../ui/BigButton';
 import { PinPad } from '../../ui/PinPad';
 import { Screen } from '../../ui/Screen';
 import { Andamento } from './Andamento';
+import { AppPanel } from './AppPanel';
 import { BackupPanel } from './BackupPanel';
 import { Impostazioni } from './Impostazioni';
 import { TutorReport } from './TutorReport';
@@ -19,6 +20,7 @@ const TABS = [
   { id: 'tutor', label: 'Per la tutor' },
   { id: 'impostazioni', label: 'Impostazioni' },
   { id: 'backup', label: 'Backup' },
+  { id: 'app', label: 'App' },
 ] as const;
 type TabId = (typeof TABS)[number]['id'];
 
@@ -92,6 +94,7 @@ export function ParentArea({ onExit }: { onExit: () => void }) {
         {tab === 'tutor' && <TutorReport />}
         {tab === 'impostazioni' && <Impostazioni />}
         {tab === 'backup' && <BackupPanel />}
+        {tab === 'app' && <AppPanel />}
       </main>
     </div>
   );
