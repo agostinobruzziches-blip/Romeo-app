@@ -14,7 +14,7 @@ Il progetto completo (principi, modello dati, regole) è in [`docs/PROGETTO.md`]
 | 2 | Tabelline, missione del giorno, stelle, medaglia della tenacia, area genitori base | ✅ |
 | 3 | Linea del tempo, epoche, album delle carte | ✅ |
 | 4 | Modulo problemi | ✅ |
-| 5 | PWA offline e installabile | — |
+| 5 | PWA offline e installabile | ✅ |
 
 ## Provarla sul computer
 
@@ -40,11 +40,28 @@ l'indirizzo `http://<ip-del-computer>:5173` che compare nel terminale.
 
 L'app usa percorsi relativi e la navigazione con `#`, quindi funziona con qualunque nome di repository.
 
+## Installarla sul telefono
+
+Apri l'indirizzo dell'app una volta **con internet**, poi:
+
+- **iPhone (Safari)**: pulsante **Condividi** → **Aggiungi alla schermata Home** → **Aggiungi**.
+- **Android (Chrome)**: menu **⋮** → **Installa app** (o **Aggiungi a schermata Home**).
+  In **Area genitori → App** c'è anche il pulsante **Installa l'app** quando il telefono lo permette.
+
+Da installata si apre a schermo intero, in verticale, con l'icona della civetta Glauco.
+
+**Senza internet**: dopo la prima apertura tutti i file sono salvati sul telefono e l'app funziona anche offline
+(la lettura ad alta voce dipende dalle voci installate sul telefono).
+
+**Aggiornamenti**: quando c'è internet la nuova versione si scarica da sola e si applica solo dalla schermata iniziale,
+mai durante una missione. In **Area genitori → App** si vedono la versione e lo stato (installata, offline, dati protetti).
+
 ## Dati e privacy
 
 - Tutti i dati sono nel browser del telefono (IndexedDB). Ogni telefono ha i suoi dati:
   per spostarli usa **Area genitori → Backup → Esporta** e poi **Importa** sull'altro telefono.
 - Cancellare i dati del sito dal browser cancella anche i progressi: fai un backup ogni tanto.
+- L'app chiede al browser di proteggere i dati dalla pulizia automatica ("archiviazione persistente").
 - L'area genitori è protetta da un PIN di 4 cifre (serve a tenere fuori il bambino, non è una protezione forte).
 
 ## Struttura

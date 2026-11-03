@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { configureSound } from './core/sound';
+import { requestPersistentStorage, useServiceWorker } from './core/pwa';
 import { ensureInitialized } from './db/repo';
 import { db } from './db/schema';
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -32,8 +33,10 @@ export default function App() {
   const [ready, setReady] = useState(false);
   const [route, setRoute] = useState<Route>(() => parse(window.location.hash));
   const settings = useLiveQuery(() => db.settings.get('main'), [ready]);
+  const sw = useServiceWorker();
 
   useEffect(() => {
+    void requestPersistentStorage();
     ensureInitialized()
       .then(() => syncCards())
       .then(() => setReady(true));
@@ -45,6 +48,11 @@ export default function App() {
   useEffect(() => {
     if (settings) configureSound(settings.soundOn, settings.volume);
   }, [settings]);
+
+  // Una nuova versione si installa solo dalla schermata iniziale: mai a metà di una missione.
+  useEffect(() => {
+    if (sw.needRefresh && route.name === 'home') void sw.update();
+  }, [sw.needRefresh, route.name]);
 
   const go = (r: Route) => {
     setRoute(r);

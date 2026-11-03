@@ -358,6 +358,8 @@ Da fare in seguito: soldi con i decimali, misure ed equivalenze, perimetro.
 2. ✅ MVP: tabelline + missione del giorno + stelle + medaglia della tenacia + area genitori base
 3. ✅ Linea del tempo, epoche e album carte (vedi §7)
 4. ✅ Modulo problemi (vedi §6)
-5. PWA offline e deploy
+5. ✅ PWA offline e deploy: app installabile (manifest, icone, schermo intero in verticale), tutti i file in cache
+   dopo la prima apertura, aggiornamenti applicati solo dalla schermata iniziale, archiviazione persistente,
+   pubblicazione automatica su GitHub Pages a ogni merge su `main`
 
 Dopo ogni fase: riepilogo e istruzioni per provarla dal telefono.
