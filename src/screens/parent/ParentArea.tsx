@@ -11,11 +11,13 @@ import { PinPad } from '../../ui/PinPad';
 import { Screen } from '../../ui/Screen';
 import { Andamento } from './Andamento';
 import { AppPanel } from './AppPanel';
+import { Guida } from './Guida';
 import { BackupPanel } from './BackupPanel';
 import { Impostazioni } from './Impostazioni';
 import { TutorReport } from './TutorReport';
 
 const TABS = [
+  { id: 'guida', label: 'Guida' },
   { id: 'tabelline', label: 'Tabelline' },
   { id: 'problemi', label: 'Problemi' },
   { id: 'misure', label: 'Misure' },
@@ -66,7 +68,18 @@ function Gate({ onOk, onExit }: { onOk: () => void; onExit: () => void }) {
 export function ParentArea({ onExit }: { onExit: () => void }) {
   const [unlocked, setUnlocked] = useState(false);
   const [tab, setTab] = useState<TabId>('tabelline');
-  if (!unlocked) return <Gate onOk={() => setUnlocked(true)} onExit={onExit} />;
+  const missions = useLiveQuery(() => db.sessions.count(), []);
+  if (!unlocked)
+    return (
+      <Gate
+        onOk={() => {
+          // la prima volta (nessuna missione ancora) si apre la guida
+          if (!missions) setTab('guida');
+          setUnlocked(true);
+        }}
+        onExit={onExit}
+      />
+    );
   const Panel = tabellineModule.ParentPanel;
   const ProblemPanel = problemiModule.ParentPanel;
   return (
@@ -92,6 +105,7 @@ export function ParentArea({ onExit }: { onExit: () => void }) {
         ))}
       </nav>
       <main className="flex-1">
+        {tab === 'guida' && <Guida />}
         {tab === 'tabelline' && <Panel />}
         {tab === 'problemi' && <ProblemPanel />}
         {tab === 'misure' && <misureModule.ParentPanel />}
