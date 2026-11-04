@@ -57,6 +57,13 @@ Da installata si apre a schermo intero, in verticale, con l'icona della civetta 
 **Aggiornamenti**: quando c'è internet la nuova versione si scarica da sola e si applica solo dalla schermata iniziale,
 mai durante una missione. In **Area genitori → App** si vedono la versione e lo stato (installata, offline, dati protetti).
 
+## Guida per genitori e tutor
+
+In **Area genitori → Guida** (si apre da sola la prima volta) c’è tutto: come impostare l’app, com’è fatta la
+missione, come aiutare senza dare la soluzione, come leggere errori e segnali di stanchezza. Il pulsante
+**«Condividi la guida con la tutor»** la manda come testo semplice. Il contenuto è in
+`src/screens/parent/guideContent.ts`.
+
 ## Dati e privacy
 
 - Tutti i dati sono nel browser del telefono (IndexedDB). Ogni telefono ha i suoi dati:
