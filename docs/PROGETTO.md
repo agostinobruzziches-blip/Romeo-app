@@ -119,7 +119,7 @@ interface Fact {
 interface TableProgress {
   table: number;                      // 2..10
   stage: 1|2|3|4;                     // in ordine → mescolata → due tabelline → mix
-  goodSessionsAtStage: number;        // sessioni consecutive ≥ 90%
+  goodSessionsAtStage: number;        // missioni "quasi" (75–85%) sulla tappa
   conqueredAt?: number;               // "Tabellina del 7 conquistata"
 }
 
@@ -216,7 +216,7 @@ La missione chiede a ogni modulo attivo un certo numero di esercizi, li mette in
 ## 5. Regole di funzionamento
 
 ### 5.1 Missione del giorno
-- **Numero fisso di esercizi** calcolato all'avvio da `missionMinutes` e dal tempo medio reale del bambino (es. 9 minuti ≈ 22–26 tabelline). La barra di avanzamento conta gli esercizi, **non il tempo**: è prevedibile e non è un timer.
+- **Numero fisso di esercizi** calcolato all'avvio da `missionMinutes` e dal tempo medio reale del bambino (es. 9 minuti ≈ 22–26 tabelline; mai più di 30 tabelline da sole, 20 quando c’è anche l’argomento del giorno). La barra di avanzamento conta gli esercizi, **non il tempo**: è prevedibile e non è un timer.
 - Ordine sempre uguale:
   1. **Riscaldamento**: 3 fatti già sicuri (livello 4–5) → si parte con un successo
   2. **Cuore**: la tappa attuale delle tabelline (e in Fase 4 i problemi)
@@ -246,7 +246,12 @@ La missione chiede a ogni modulo attivo un certo numero di esercizi, li mette in
 3. **Due tabelline mescolate** (la tabellina nuova + una già conquistata)
 4. **Mix generale** di tutte le tabelline attive
 
-Si avanza quando in **2 sessioni consecutive** la tappa ha almeno il **90% di risposte giuste al primo colpo** su almeno 10 domande. Non si torna mai indietro di tappa: se una tappa va male si resta lì.
+Regole aggiornate dopo la prova con Romeo (prima era troppo lento: almeno 8 missioni per tabellina):
+- con almeno **l’85% di giuste al primo colpo** (su almeno 6 domande della tappa) si passa alla tappa dopo **nella missione stessa**;
+- con il **95% su almeno 8 domande** si **saltano due tappe**;
+- con il 75–85% per 2 missioni si avanza lo stesso, così non si resta mai bloccati;
+- non si torna mai indietro. Chi sa già una tabellina la conquista in circa 2 missioni (tutte e 9 in circa 18).
+- Nel ripasso entrano anche domande della tabellina successiva, per dare varietà fin dall’inizio.
 
 Ordine di introduzione proposto: 2, 10, 5, 3, 4, 9, 6, 8, 7 (dalle più facili; il 7 e l'8 alla fine, ma con molti "fatti vicini" già noti).
 
@@ -330,7 +335,7 @@ scribi egizi, navi cretesi, legioni romane) misti a contesti quotidiani (carte, 
 | 4 | + due passaggi e frazione di una quantità (la metà, un terzo…) |
 | 5 | numeri più grandi e soldi |
 
-Si sale di livello quando in **2 missioni di fila** almeno l'80% dei problemi è risolto senza errori di ragionamento
+Si sale di livello **dopo una missione** in cui almeno l'80% dei problemi è risolto senza errori di ragionamento (oppure dopo 2 missioni con il 60–80%)
 (operazione, dati, domanda). Non si scende mai. Il genitore può cambiare il livello nelle impostazioni.
 
 **Nella missione**: con tabelline e problemi attivi il tempo si divide circa a metà (da 1 a 4 problemi); prima le

@@ -91,12 +91,12 @@ export const GUIDE: GuideSection[] = [
     id: 'argomenti',
     title: 'Gli argomenti',
     blocks: [
-      '**Tabelline.** Ogni fatto (7 × 8 vale anche per 8 × 7) ha un livello da 0 a 5 e torna dopo 1, 2, 4, 7, 14 giorni se è giusto. Ogni tabellina ha 4 tappe: in ordine → mescolata → con un’altra tabellina → mix generale. Si passa di tappa con il 90% di risposte giuste al primo colpo in 2 missioni di fila.',
+      '**Tabelline.** Ogni fatto (7 × 8 vale anche per 8 × 7) ha un livello da 0 a 5 e torna dopo 1, 2, 4, 7, 14 giorni se è giusto. Ogni tabellina ha 4 tappe: in ordine → mescolata → con un’altra tabellina → mix generale. Si passa alla tappa dopo **già in una missione** con l’85% di risposte giuste al primo colpo; con il 95% si **saltano due tappe**. Chi sa già una tabellina la conquista in circa 2 missioni. Nel ripasso compaiono anche domande della tabellina successiva, per non vedere sempre la stessa.',
       '**Problemi.** Sempre 5 passi, uno alla volta: leggi (anche ad alta voce), tocca i numeri importanti, cosa chiede la domanda, quale operazione, scrivi e calcola. Se sbaglia l’operazione non riceve la soluzione: vede il **disegno a barre** e riprova. Servono a rallentarlo, perché quando va di fretta sceglie le operazioni a caso.',
       '**Misure (equivalenze).** Tabella delle unità come sul quaderno. Prima ragiona: l’unità diventa più grande o più piccola? Allora il numero? × 10, × 100 o : 100? Solo alla fine scrive il risultato.',
       '**Geometria (perimetro e area).** Prima: misuro il contorno o la superficie? Poi la formula, poi l’unità (cm o cm²), infine il calcolo. Ai primi livelli conta sui quadretti, toccandoli.',
       '**Lezioni «Scopri».** Brevi, interattive, una pagina per idea: ogni pagina si sblocca facendo qualcosa (spostare, contare, rispondere). Compaiono una volta, quando un concetto è nuovo.',
-      'I **livelli** di problemi, misure e geometria salgono da soli quando in 2 missioni di fila lavora senza errori di ragionamento, e **non scendono mai**. Puoi cambiarli in Impostazioni.',
+      'I **livelli** di problemi, misure e geometria salgono da soli **dopo una missione** con almeno l’80% di esercizi senza errori di ragionamento (oppure dopo 2 missioni discrete), e **non scendono mai**. Puoi cambiarli in Impostazioni.',
     ],
   },
   {

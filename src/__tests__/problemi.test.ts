@@ -62,15 +62,21 @@ describe('generatore di problemi', () => {
 
 describe('livelli', () => {
   const base = { category: 'generale', level: 1 as const, goodSessions: 0 };
-  it('si sale con 2 missioni buone di fila, mai si scende', () => {
+  it('si sale subito con una missione buona, mai si scende', () => {
     const r1 = evaluateLevel(base, [{ clean: true }, { clean: true }]);
-    expect(r1.up).toBe(false);
-    const r2 = evaluateLevel(r1.progress, [{ clean: true }, { clean: true }, { clean: true }]);
-    expect(r2.up).toBe(true);
-    expect(r2.progress.level).toBe(2);
-    const r3 = evaluateLevel({ ...base, level: 3, goodSessions: 1 }, [{ clean: false }, { clean: false }]);
+    expect(r1.up).toBe(true);
+    expect(r1.progress.level).toBe(2);
+    const r3 = evaluateLevel({ ...base, level: 3 }, [{ clean: false }, { clean: false }]);
     expect(r3.progress.level).toBe(3);
-    expect(r3.progress.goodSessions).toBe(0);
+  });
+  it('con risultati discreti (60–80%) si sale dopo 2 missioni', () => {
+    const items = [{ clean: true }, { clean: true }, { clean: false }];
+    const r1 = evaluateLevel(base, items);
+    expect(r1.up).toBe(false);
+    expect(evaluateLevel(r1.progress, items).up).toBe(true);
+  });
+  it('all’ultimo livello si resta lì', () => {
+    expect(evaluateLevel({ ...base, level: 5 }, [{ clean: true }, { clean: true }]).up).toBe(false);
   });
   it('con un solo problema la missione non conta', () => {
     expect(evaluateLevel(base, [{ clean: true }]).progress).toEqual(base);

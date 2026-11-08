@@ -21,7 +21,8 @@ export const tabellineModule: LearningModule<TabData, TabAnswer> = {
   estimatedSecondsPerItem: 20,
   timeShare: 55,
   minItems: 8,
-  maxItems: 40,
+  // con l'argomento del giorno: al massimo 20 tabelline, il resto del tempo è per l'argomento
+  maxItems: 20,
   timedFatigue: true,
 
   async plan(ctx, count) {
@@ -94,7 +95,11 @@ export const tabellineModule: LearningModule<TabData, TabAnswer> = {
       milestones.push({ ref: `tabellina-${focus}`, reason: `Tabellina del ${focus} conquistata` });
       improvements.push(`Tabellina del ${focus} conquistata`);
     } else if (res.advanced) {
-      improvements.push(`Nuova tappa: tabellina del ${focus}, ${STAGE_NAMES[res.progress.stage]}`);
+      improvements.push(
+        res.steps >= 2
+          ? `Salto di due tappe! Tabellina del ${focus}, ${STAGE_NAMES[res.progress.stage]}`
+          : `Nuova tappa: tabellina del ${focus}, ${STAGE_NAMES[res.progress.stage]}`,
+      );
     }
     return { improvements, milestones };
   },

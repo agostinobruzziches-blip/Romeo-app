@@ -50,25 +50,40 @@ describe('fatti e Leitner', () => {
 });
 
 describe('tappe', () => {
-  it('si avanza con il 90% in 2 sessioni consecutive', () => {
-    const p: TableProgress = { table: 7, stage: 1, goodSessionsAtStage: 0 };
-    const r1 = evaluateStage(p, 19, 20, 1);
-    expect(r1.advanced).toBe(false);
-    expect(r1.progress.goodSessionsAtStage).toBe(1);
-    const r2 = evaluateStage(r1.progress, 9, 10, 2);
-    expect(r2.advanced).toBe(true);
-    expect(r2.progress.stage).toBe(2);
+  const p1: TableProgress = { table: 2, stage: 1, goodSessionsAtStage: 0 };
+  it('con l’85% si passa alla tappa dopo già in una missione', () => {
+    const r = evaluateStage(p1, 6, 7, 1);
+    expect(r.advanced).toBe(true);
+    expect(r.progress.stage).toBe(2);
   });
-  it('una sessione sotto il 90% azzera il conteggio ma non fa tornare indietro', () => {
-    const r = evaluateStage({ table: 7, stage: 3, goodSessionsAtStage: 1 }, 7, 10, 1);
+  it('con il 95% su almeno 8 domande si saltano due tappe', () => {
+    const r = evaluateStage(p1, 10, 10, 1);
+    expect(r.steps).toBe(2);
+    expect(r.progress.stage).toBe(3);
+  });
+  it('chi sa già la tabellina la conquista in 2 missioni', () => {
+    const r1 = evaluateStage(p1, 12, 12, 1);
+    const r2 = evaluateStage(r1.progress, 12, 12, 2);
+    expect(r2.conquered).toBe(true);
+    expect(r2.progress.conqueredAt).toBe(2);
+  });
+  it('tra 75% e 85% per 2 missioni si avanza lo stesso: non si resta bloccati', () => {
+    const r1 = evaluateStage({ table: 7, stage: 2, goodSessionsAtStage: 0 }, 8, 10, 1);
+    expect(r1.advanced).toBe(false);
+    const r2 = evaluateStage(r1.progress, 8, 10, 2);
+    expect(r2.advanced).toBe(true);
+    expect(r2.progress.stage).toBe(3);
+  });
+  it('sotto il 75% si resta nella tappa, ma non si torna mai indietro', () => {
+    const r = evaluateStage({ table: 7, stage: 3, goodSessionsAtStage: 1 }, 5, 10, 1);
     expect(r.progress.stage).toBe(3);
     expect(r.progress.goodSessionsAtStage).toBe(0);
   });
-  it('sotto le 10 domande la sessione non conta', () => {
-    expect(evaluateStage({ table: 7, stage: 1, goodSessionsAtStage: 1 }, 5, 5, 1).counted).toBe(false);
+  it('sotto le 6 domande la missione non conta', () => {
+    expect(evaluateStage(p1, 5, 5, 1).counted).toBe(false);
   });
-  it('dopo la tappa 4 la tabellina è conquistata', () => {
-    const r = evaluateStage({ table: 7, stage: 4, goodSessionsAtStage: 1 }, 10, 10, 99);
+  it('dalla tappa 4 si conquista la tabellina', () => {
+    const r = evaluateStage({ table: 7, stage: 4, goodSessionsAtStage: 0 }, 9, 10, 99);
     expect(r.conquered).toBe(true);
     expect(r.progress.conqueredAt).toBe(99);
   });
@@ -117,6 +132,30 @@ describe('generatore della missione', () => {
   });
 });
 
+describe('velocità di avanzamento', () => {
+  it('all’inizio non c’è solo la tabellina del 2: il ripasso porta domande della tabellina dopo', () => {
+    const plan = planTabelline({ facts: factsMap(), progress: progressMap(), activeTables: [2, 3, 4, 5, 6, 7, 8, 9, 10], today: TODAY, rng: createRng(5), count: 15 });
+    const review = plan.items.filter((i) => i.role === 'ripasso');
+    expect(review.length).toBeGreaterThan(0);
+    expect(review.every((i) => i.data.x === 10 || i.data.y === 10)).toBe(true);
+  });
+  it('chi risponde sempre giusto conquista tutte le tabelline in circa 2 missioni ciascuna', () => {
+    let progress = progressMap();
+    const active = [2, 3, 4, 5, 6, 7, 8, 9, 10];
+    let missions = 0;
+    while (focusTable(active, progress) !== null && missions < 60) {
+      missions++;
+      // missione corta, come quando c'è anche l'argomento del giorno
+      const plan = planTabelline({ facts: factsMap(), progress, activeTables: active, today: TODAY, rng: createRng(missions), count: 15 });
+      const core = plan.items.filter((i) => i.tag === `t${plan.focus}-s${plan.stage}`);
+      const p = progress.get(plan.focus!)!;
+      const r = evaluateStage(p, core.length, core.length, missions);
+      progress = new Map(progress).set(plan.focus!, r.progress);
+    }
+    expect(missions).toBeLessThanOrEqual(18);
+  });
+});
+
 describe('aiuti', () => {
   it('il fatto vicino non dice il risultato', () => {
     expect(neighborHint(7, 8)).toContain('7 × 7');
@@ -126,9 +165,10 @@ describe('aiuti', () => {
 });
 
 describe('missione', () => {
-  it('numero di esercizi fisso, tra 10 e 40', () => {
+  it('numero di esercizi fisso, tra 10 e 30', () => {
     expect(missionItemCount(9, 20)).toBe(27);
     expect(missionItemCount(1, 20)).toBe(10);
+    expect(missionItemCount(9, 12)).toBe(30);
   });
   const q = (n: number) =>
     Array.from({ length: n }, (_, i) => ({ uid: `${i}`, moduleId: 'tabelline' as const, role: (i === n - 1 ? 'chiusura' : 'cuore') as 'cuore', key: `k${i}`, format: 'prodotto', data: {} }));

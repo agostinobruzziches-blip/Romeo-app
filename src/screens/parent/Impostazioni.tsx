@@ -26,7 +26,7 @@ function LevelSelect({ id, label, progressKey, names, max }: { id: string; label
         {label}
       </label>
       <p className="mb-2 text-sm text-inchiostro-2">
-        Si parte dal livello 1. Sale da solo quando in 2 missioni di fila lavora senza errori di ragionamento; non scende
+        Si parte dal livello 1. Sale da solo dopo una missione con almeno l’80% di esercizi senza errori di ragionamento (o dopo 2 missioni discrete); non scende
         mai. Se a scuola è già più avanti, sceglilo qui.
       </p>
       <select
