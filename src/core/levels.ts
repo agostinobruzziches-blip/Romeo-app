@@ -28,8 +28,10 @@ export function cleanItems(attempts: Attempt[], moduleId: ModuleId, finalFormat:
 }
 
 /**
- * Si sale di livello quando in 2 missioni di fila almeno l'80% degli esercizi è "pulito". Non si scende mai.
- * Servono almeno `minItems` esercizi perché la missione conti.
+ * Si sale di livello:
+ * - SUBITO se in una missione almeno l'80% degli esercizi è "pulito" (senza errori di ragionamento);
+ * - dopo 2 missioni (anche non di fila) con almeno il 60%, per non restare mai bloccati.
+ * Non si scende mai. Servono almeno `minItems` esercizi perché la missione conti.
  */
 export function evaluateLevel(
   p: ProblemProgress,
@@ -37,15 +39,19 @@ export function evaluateLevel(
   max = 5,
   minItems = 2,
 ): { progress: ProblemProgress; up: boolean } {
-  if (items.length < minItems) return { progress: p, up: false };
+  if (items.length < minItems || p.level >= max) return { progress: p, up: false };
   const ratio = items.filter((i) => i.clean).length / items.length;
-  if (ratio < 0.5) return { progress: { ...p, goodSessions: 0 }, up: false };
-  if (ratio < 0.8) return { progress: p, up: false };
-  const good = p.goodSessions + 1;
-  if (good >= 2 && p.level < max) {
-    return { progress: { ...p, level: (p.level + 1) as ProblemProgress['level'], goodSessions: 0 }, up: true };
+  const up = (): { progress: ProblemProgress; up: boolean } => ({
+    progress: { ...p, level: p.level + 1, goodSessions: 0 },
+    up: true,
+  });
+  if (ratio >= 0.8) return up();
+  if (ratio >= 0.6) {
+    const near = p.goodSessions + 1;
+    if (near >= 2) return up();
+    return { progress: { ...p, goodSessions: near }, up: false };
   }
-  return { progress: { ...p, goodSessions: Math.min(good, 2) }, up: false };
+  return { progress: p, up: false };
 }
 
 /** Conteggio degli errori per tipo, per i pannelli dei genitori. */

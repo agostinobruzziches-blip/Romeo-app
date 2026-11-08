@@ -2,7 +2,7 @@ import type { MissionItem } from '../../core/module';
 import { pick, shuffle, type Rng } from '../../core/random';
 import type { Fact, ItemRole, Stage, TableProgress } from '../../db/schema';
 import { factKey } from './leitner';
-import { STAGE_NAMES, focusTable, partnerTable } from './stages';
+import { INTRO_ORDER, STAGE_NAMES, focusTable, partnerTable } from './stages';
 
 export type TabFormat = 'prodotto' | 'fattore-mancante' | 'vero-falso';
 
@@ -125,7 +125,8 @@ export function planTabelline(input: TabPlanInput): TabPlan {
   const secure = shuffle(rng, all.filter((f) => f.box >= 4));
   const easy = shuffle(rng, all.filter((f) => isEasy(f) && !(focus && (f.a === focus || f.b === focus))));
   const warmPool = [...secure, ...easy.filter((f) => !secure.includes(f))];
-  const warm = warmPool.slice(0, 3);
+  // missioni corte (quando c'è anche l'argomento del giorno): riscaldamento più breve, più spazio alla tappa
+  const warm = warmPool.slice(0, count < 20 ? 2 : 3);
   const closePool = shuffle(rng, all.filter((f) => f.box >= 3 && !warm.includes(f)));
   const close = closePool[0] ?? warmPool.find((f) => !warm.includes(f)) ?? warmPool[0];
 
@@ -140,10 +141,24 @@ export function planTabelline(input: TabPlanInput): TabPlan {
     .filter((f) => !warm.includes(f) && f !== close)
     .sort((p, q) => p.box - q.box || (p.dueDay < q.dueDay ? -1 : 1));
 
+  // Varietà: se il ripasso è scarso, si aggiungono domande della PROSSIMA tabellina (non contano per la tappa),
+  // così all'inizio non si vede sempre e solo la stessa tabellina.
+  const explore: Fact[] = [];
+  if (focus !== null) {
+    const next = INTRO_ORDER.filter((t) => t !== focus && activeTables.includes(t) && !progress.get(t)?.conqueredAt)[0];
+    if (next !== undefined) {
+      const used = new Set([...due, ...warm, close].map((f) => f?.key));
+      for (const f of shuffle(rng, all.filter((f) => (f.a === next || f.b === next) && f.a !== focus && f.b !== focus))) {
+        if (!used.has(f.key)) explore.push(f);
+      }
+    }
+  }
+  const reviewList = [...due, ...explore];
+
   let coreBudget = middle;
   let reviewBudget = 0;
   if (focus !== null) {
-    reviewBudget = Math.min(due.length, Math.round(middle * 0.35));
+    reviewBudget = Math.min(reviewList.length, Math.round(middle * 0.25));
     coreBudget = middle - reviewBudget;
   } else {
     reviewBudget = middle; // tutte conquistate: solo ripasso misto
@@ -190,7 +205,7 @@ export function planTabelline(input: TabPlanInput): TabPlan {
   const reviewPool =
     focus === null
       ? mixedSequence(rng, all.filter((f) => f.a > 1).map((f) => [f.a, f.b] as [number, number]), facts, reviewBudget)
-      : due.slice(0, reviewBudget).map((f) => [f.a, f.b] as [number, number]);
+      : reviewList.slice(0, reviewBudget).map((f) => [f.a, f.b] as [number, number]);
   for (const [a, b] of reviewPool) {
     review.push(makeItem('ripasso', ...orient(rng, a, b), chooseFormat(rng, stage, 'ripasso'), rng));
   }

@@ -7,7 +7,10 @@ export function secondsPerItem(recentFirstAttemptMs: number[], fallback: number)
   return Math.min(30, Math.max(12, s));
 }
 
+/** Oltre questo numero di tabelline una missione diventa noiosa, anche se c'è ancora tempo. */
+export const MAX_TABELLINE_ALONE = 30;
+
 /** Numero fisso di esercizi della missione, deciso all'inizio: la barra conta esercizi, non tempo. */
 export function missionItemCount(minutes: number, secPerItem: number): number {
-  return Math.min(40, Math.max(10, Math.round((minutes * 60) / secPerItem)));
+  return Math.min(MAX_TABELLINE_ALONE, Math.max(10, Math.round((minutes * 60) / secPerItem)));
 }
