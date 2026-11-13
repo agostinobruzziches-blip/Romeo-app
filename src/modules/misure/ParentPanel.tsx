@@ -2,6 +2,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { addDays, dayKey } from '../../core/dates';
 import { cleanItems, errorCounts, getLevel } from '../../core/levels';
 import { db } from '../../db/schema';
+import { ModuleSwitch } from '../../screens/parent/ModuleSwitch';
 import { MAX_MIS_LEVEL, MIS_LEVEL_NAMES } from './generator';
 import { FAMILY_LABEL, type Family } from './units';
 
@@ -19,6 +20,7 @@ export function MisParentPanel() {
   if (!data) return null;
   return (
     <div className="flex flex-col gap-4">
+      <ModuleSwitch id="misure" name="Le misure" />
       <div className="rounded-xl bg-white p-3">
         <p className="font-bold">
           Livello {data.level} di {MAX_MIS_LEVEL}

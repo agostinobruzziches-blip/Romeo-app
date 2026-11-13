@@ -90,6 +90,41 @@ export function Impostazioni() {
 
   return (
     <div className="flex flex-col gap-3">
+      <div className="rounded-xl bg-white p-3">
+        <p className="text-lg font-bold">Argomenti della missione</p>
+        <p className="mb-2 text-sm text-inchiostro-2">
+          Le tabelline ci sono ogni giorno. Tra gli altri argomenti accesi se ne fa <b>uno al giorno</b>, a rotazione
+          (circa metà del tempo). Ogni argomento nuovo parte con una breve lezione “Scopri”. <b>Tocca per accendere o spegnere.</b>
+        </p>
+        <div className="grid grid-cols-2 gap-2">
+          {ALL_MODULES.map(([m, label]) => {
+            const on = s.activeModules.includes(m);
+            return (
+              <button
+                key={m}
+                type="button"
+                aria-pressed={on}
+                onClick={() => {
+                  const next = on ? s.activeModules.filter((x) => x !== m) : [...s.activeModules, m];
+                  if (next.length) void updateSettings({ activeModules: ALL_MODULES.map(([x]) => x).filter((x) => next.includes(x)) });
+                }}
+                className={`h-12 rounded-xl text-lg font-bold ${on ? 'bg-oliva text-white' : 'bg-carta-2 text-inchiostro-2'}`}
+              >
+                {on ? `✓ ${label}` : label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      {s.activeModules.includes('problemi') && (
+        <LevelSelect id="livello" label="Livello dei problemi" progressKey={PROGRESS_KEY} names={LEVEL_NAMES} max={MAX_LEVEL} />
+      )}
+      {s.activeModules.includes('misure') && (
+        <LevelSelect id="livello-misure" label="Livello delle misure (equivalenze)" progressKey="misure" names={MIS_LEVEL_NAMES} max={MAX_MIS_LEVEL} />
+      )}
+      {s.activeModules.includes('geometria') && (
+        <LevelSelect id="livello-geometria" label="Livello di geometria (perimetro e area)" progressKey="geometria" names={GEO_LEVEL_NAMES} max={MAX_GEO_LEVEL} />
+      )}
       <Row label="Nome del bambino" hint="Resta solo su questo telefono.">
         <input
           className="h-12 w-40 rounded-xl border-2 border-carta-2 px-3 text-lg"
@@ -159,41 +194,6 @@ export function Impostazioni() {
           ))}
         </select>
       </div>
-      <div className="rounded-xl bg-white p-3">
-        <p className="font-bold">Cosa c’è nella missione</p>
-        <p className="mb-2 text-sm text-inchiostro-2">
-          Le tabelline ci sono ogni giorno. Tra gli altri argomenti accesi se ne fa <b>uno al giorno</b>, a rotazione
-          (circa metà del tempo). Ogni argomento nuovo parte con una breve lezione “Scopri”.
-        </p>
-        <div className="grid grid-cols-2 gap-2">
-          {ALL_MODULES.map(([m, label]) => {
-            const on = s.activeModules.includes(m);
-            return (
-              <button
-                key={m}
-                type="button"
-                aria-pressed={on}
-                onClick={() => {
-                  const next = on ? s.activeModules.filter((x) => x !== m) : [...s.activeModules, m];
-                  if (next.length) void updateSettings({ activeModules: ALL_MODULES.map(([x]) => x).filter((x) => next.includes(x)) });
-                }}
-                className={`h-12 rounded-xl text-lg font-bold ${on ? 'bg-oliva text-white' : 'bg-carta-2 text-inchiostro-2'}`}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-      {s.activeModules.includes('problemi') && (
-        <LevelSelect id="livello" label="Livello dei problemi" progressKey={PROGRESS_KEY} names={LEVEL_NAMES} max={MAX_LEVEL} />
-      )}
-      {s.activeModules.includes('misure') && (
-        <LevelSelect id="livello-misure" label="Livello delle misure (equivalenze)" progressKey="misure" names={MIS_LEVEL_NAMES} max={MAX_MIS_LEVEL} />
-      )}
-      {s.activeModules.includes('geometria') && (
-        <LevelSelect id="livello-geometria" label="Livello di geometria (perimetro e area)" progressKey="geometria" names={GEO_LEVEL_NAMES} max={MAX_GEO_LEVEL} />
-      )}
 
       <div className="rounded-xl bg-white p-3">
         <p className="font-bold">Tabelline attive e tappa di partenza</p>

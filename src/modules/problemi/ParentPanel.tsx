@@ -1,7 +1,8 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { addDays, dayKey } from '../../core/dates';
 import { db } from '../../db/schema';
-import { LEVEL_NAMES, PROGRESS_KEY } from './levels';
+import { LEVEL_NAMES, MAX_LEVEL, PROGRESS_KEY } from './levels';
+import { ModuleSwitch } from '../../screens/parent/ModuleSwitch';
 import { problemStats } from './stats';
 import { CATEGORY_LABELS } from './types';
 
@@ -22,11 +23,9 @@ export function ProblemParentPanel() {
   );
   return (
     <div className="flex flex-col gap-4">
-      {!data.active && (
-        <p className="rounded-xl bg-ambra-chiaro p-3">I problemi non sono attivi: accendili in Impostazioni → Moduli attivi.</p>
-      )}
+      <ModuleSwitch id="problemi" name="I problemi" />
       <div className="rounded-xl bg-white p-3">
-        <p className="font-bold">Livello attuale: {data.level} di 5</p>
+        <p className="font-bold">Livello attuale: {data.level} di {MAX_LEVEL}</p>
         <p className="text-inchiostro-2">{LEVEL_NAMES[data.level]}</p>
       </div>
       <div className="grid grid-cols-2 gap-2">

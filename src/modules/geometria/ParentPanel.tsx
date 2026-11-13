@@ -2,6 +2,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { addDays, dayKey } from '../../core/dates';
 import { cleanItems, errorCounts, getLevel } from '../../core/levels';
 import { db } from '../../db/schema';
+import { ModuleSwitch } from '../../screens/parent/ModuleSwitch';
 import { GEO_CATEGORY_LABELS, GEO_LEVEL_NAMES, MAX_GEO_LEVEL } from './shapes';
 
 export function GeoParentPanel() {
@@ -18,6 +19,7 @@ export function GeoParentPanel() {
   if (!data) return null;
   return (
     <div className="flex flex-col gap-4">
+      <ModuleSwitch id="geometria" name="Gli esercizi di geometria" />
       <div className="rounded-xl bg-white p-3">
         <p className="font-bold">
           Livello {data.level} di {MAX_GEO_LEVEL}
