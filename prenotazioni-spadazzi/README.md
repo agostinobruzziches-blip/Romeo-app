@@ -16,11 +16,19 @@ Pagina web con cui i pazienti prenotano una visita medico-legale solo negli orar
 
 `demo/` è una PWA statica senza build: `index.html` (tutto incluso: stile, configurazione, logica), `manifest.webmanifest`, `sw.js`, `icon.svg`.
 
-Tre sezioni, raggiungibili dalla barra gialla in alto:
+Quattro sezioni, raggiungibili dalla barra gialla in alto:
 
-- **Come funziona** (`#presentazione`): spiegazione, vantaggi e le domande aperte per Federica. Il pulsante "Copia le risposte" prepara un testo da mandare su WhatsApp o per mail.
-- **Prova come paziente** (`#prenota`): il percorso vero in 5 passaggi. Gli slot sono calcolati con la stessa logica prevista per il sistema reale: finestre di disponibilità, slot da 30 minuti, impegni sottratti, limite delle 18:00 del giorno prima. Le disponibilità di Roma e gli impegni sono simulati.
-- **Lato dottoressa** (`#dottoressa`): notifica, mail con Conferma e Rifiuta, evento in calendario, mail al paziente, pagina di disdetta, promemoria, cartella Drive, come si aprono gli orari di Roma. Si può passare da conferma manuale ad automatica.
+- **Come funziona** (`#presentazione`): spiegazione, vantaggi, istruzioni per provarla e le domande aperte per Federica. Il pulsante "Copia le risposte" prepara un testo da mandare su WhatsApp o per mail.
+- **Prenota** (`#prenota`): il percorso vero in 5 passaggi. Si possono fare più prenotazioni. Gli slot sono calcolati con la stessa logica prevista per il sistema reale: finestre di disponibilità, slot da 30 minuti, impegni sottratti (anche le altre prenotazioni della demo), limite delle 18:00 del giorno prima.
+- **Cambia o disdici** (`#gestisci`): la pagina che il paziente apre dal link nella mail. Permette di spostare la visita su un altro orario libero o di disdirla, fino alle 18:00 del giorno prima; dopo quell'ora indica come contattare lo studio.
+- **Lato dottoressa** (`#dottoressa`): elenco delle prenotazioni. Per ognuna:
+  - stato e storico di cosa è successo;
+  - azioni: conferma, rifiuta, sposta, annulla;
+  - notifiche, mail a lei, evento in calendario, mail al paziente (con quelle già inviate), promemoria, cartella Drive.
+
+  Si può passare da conferma manuale ad automatica, e un pulsante riporta la demo all'inizio.
+
+Le prenotazioni della demo restano nel `localStorage` del browser (chiave `spadazzi-demo-v2`), così Federica può interrompere e riprendere le prove. Nel sistema vero ogni prenotazione è un evento di Google Calendar con i dati nei tag privati, più una riga nel Foglio "Registro".
 
 Nessun dato esce dal browser: i PDF scelti non vengono caricati, si legge solo il nome del file.
 
@@ -52,7 +60,7 @@ In alternativa, senza collegare la repo: `npx wrangler pages deploy prenotazioni
 
 ### Decisioni già prese
 
-- Limite per prenotare e disdire: 18:00 del giorno prima. Si prenota fino a 60 giorni in avanti.
+- Limite per prenotare, cambiare data e disdire: 18:00 del giorno prima. Si prenota fino a 60 giorni in avanti.
 - Prezzi e testi in un file di configurazione, gestito da Agostino.
 - Allegati: al massimo 5 PDF da 10 MB.
 - Niente dominio per ora: si usa `pages.dev`.
@@ -60,6 +68,7 @@ In alternativa, senza collegare la repo: `npx wrangler pages deploy prenotazioni
 ### Da chiedere a Federica (sono anche nella demo)
 
 - Conferma manuale o automatica.
+- Se il paziente cambia data: resta confermata o va riconfermata (oppure niente cambio, solo disdetta).
 - Elenco dei medici dello studio di Fiano.
 - Convenzione dei nomi delle cartelle su Drive.
 - Visite fuori studio prenotabili dal link.

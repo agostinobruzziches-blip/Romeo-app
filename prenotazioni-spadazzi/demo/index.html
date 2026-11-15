@@ -236,6 +236,22 @@ hr.sep { border: 0; border-top: 1px solid var(--line); margin: 0; }
 footer { border-top: 1px solid var(--line); }
 footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size: 0.95rem; color: var(--muted); display: grid; gap: 4px; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* Elenco prenotazioni (gestione) */
+.bks { display: grid; gap: 8px; }
+.bk { font: inherit; text-align: left; width: 100%; display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; padding: 12px 16px; min-height: 64px; border: 2px solid var(--line); border-radius: var(--r); background: var(--bg); color: var(--fg); cursor: pointer; }
+.bk:hover { border-color: var(--accent); }
+.bk[aria-current="true"] { border-color: var(--accent); background: var(--surface); box-shadow: inset 0 0 0 1px var(--accent); }
+.bk .q { font-family: var(--font-ui); font-weight: 700; font-variant-numeric: tabular-nums; }
+.bk .w { grid-column: 1; color: var(--muted); font-size: 1.02rem; min-width: 0; overflow-wrap: anywhere; }
+.bk .pill { grid-column: 2; grid-row: 1 / span 2; }
+.panel { border: 2px solid var(--accent); border-radius: var(--r); padding: 18px; display: grid; gap: 14px; }
+.cambio { display: grid; gap: 4px; padding: 14px 18px; background: var(--surface); border-radius: var(--r); font-family: var(--font-ui); font-size: 1.05rem; }
+.cambio s { color: var(--muted); }
+.storico { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; font-family: var(--font-ui); font-size: 1rem; }
+.storico li { display: grid; grid-template-columns: 5.2rem 1fr; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); }
+.storico li:first-child { border-top: 0; }
+.storico .h { color: var(--muted); font-variant-numeric: tabular-nums; }
+.oldmails { list-style: none; margin: 0; padding: 0; font-family: var(--font-ui); font-size: 0.98rem; display: grid; gap: 4px; color: var(--muted); }
 </style>
 
 <div class="demo-bar" role="region" aria-label="Avviso demo">
@@ -243,7 +259,8 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
     <span><strong>DEMO</strong> · dati finti, nessuna prenotazione reale</span>
     <nav class="tabs" aria-label="Sezioni della demo">
       <a href="#presentazione">Come funziona</a>
-      <a href="#prenota">Prova come paziente</a>
+      <a href="#prenota">Prenota</a>
+      <a href="#gestisci">Cambia o disdici</a>
       <a href="#dottoressa">Lato dottoressa</a>
     </nav>
   </div>
@@ -275,11 +292,21 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
     <div class="hero">
       <p class="eyebrow">Per Federica</p>
       <h1 id="t-pres">I pazienti prenotano da soli, solo quando sei libera</h1>
-      <p class="muted">Mandi un link. Il paziente sceglie sede, tipo di visita e orario tra quelli davvero liberi. Tu confermi con un tocco dal telefono. Mail di conferma, promemoria, evento in calendario e cartella su Drive partono da soli.</p>
+      <p class="muted">Mandi un link. Il paziente sceglie sede, tipo di visita e orario tra quelli davvero liberi. Tu confermi con un tocco dal telefono. Mail di conferma, promemoria, evento in calendario e cartella su Drive partono da soli. Se il paziente deve cambiare data o disdire, lo fa da solo dal link nella mail.</p>
       <div class="btn-row">
-        <a class="btn btn-primary" href="#prenota">Prova come paziente</a>
+        <a class="btn btn-primary" href="#prenota">Prova a prenotare</a>
         <a class="btn btn-ghost" href="#dottoressa">Guarda cosa ricevi tu</a>
       </div>
+    </div>
+
+    <div class="notice wait">
+      <b>Come provarla</b>
+      <ol class="list">
+        <li><a href="#prenota">Prenota</a> una o più visite, come farebbe un paziente.</li>
+        <li>In <a href="#gestisci">Cambia o disdici</a> sposta una visita a un altro giorno, o disdicila.</li>
+        <li>In <a href="#dottoressa">Lato dottoressa</a> confermi, sposti o annulli tu, e vedi notifiche, mail e calendario cambiare a ogni passo.</li>
+      </ol>
+      <p class="small">Le prove restano solo su questo telefono o computer. In fondo al lato dottoressa puoi ricominciare da capo.</p>
     </div>
 
     <hr class="sep">
@@ -290,13 +317,14 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
         <li><b>Tu apri gli orari, dal Calendar che usi già</b><span class="muted small">Fiano è automatico: ogni giovedì 9–14, tolti gli appuntamenti già in agenda (anche quelli della segretaria). Per Roma crei un evento "Disponibile" nel calendario "Disponibile Roma", per esempio martedì 15–18.</span></li>
         <li><b>Il paziente prenota in 5 passaggi</b><span class="muted small">Sede, tipo di visita (con il fondo spese), giorno e ora, dati e documenti PDF, riepilogo. Vede solo orari liberi in <em>tutti</em> i tuoi calendari: studio, personale, università.</span></li>
         <li><b>Tu ricevi una notifica e confermi</b><span class="muted small">Nel frattempo l'orario è già bloccato. Alla conferma il paziente riceve la mail con tutto quello che deve sapere. Il giorno prima gli arriva il promemoria.</span></li>
+        <li><b>Cambi e disdette si gestiscono da soli</b><span class="muted small">Fino alle 18:00 del giorno prima il paziente può spostare la visita su un altro orario libero o disdirla. L'orario lasciato torna prenotabile e tu ricevi una notifica. Anche tu puoi spostare o annullare una visita: il paziente viene avvisato per mail.</span></li>
       </ol>
     </div>
 
     <div class="stack">
       <h2>Cosa ci guadagni</h2>
       <div class="vantaggi">
-        <div><b>Meno telefonate e messaggi</b><p>Il paziente trova da solo orario, indirizzo, fondo spese e documenti da portare.</p></div>
+        <div><b>Meno telefonate e messaggi</b><p>Il paziente trova da solo orario, indirizzo, fondo spese e documenti da portare, e sposta la visita senza chiamarti.</p></div>
         <div><b>Nessun doppio impegno</b><p>Un orario occupato in qualsiasi tuo calendario non viene mai offerto.</p></div>
         <div><b>Nessun pannello nuovo</b><p>Gestisci tutto da Google Calendar e dalla mail, sul telefono o sul PC.</p></div>
         <div><b>Pazienti che arrivano preparati</b><p>Mail di conferma e promemoria con documenti, indicazioni e modalità di pagamento.</p></div>
@@ -311,7 +339,7 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
         <li>Le visite CAF UCI del giovedì pomeriggio: le prenota il CAF.</li>
         <li>CTU e visite INPS: le concordi tu con il medico della controparte.</li>
         <li>Il numero di telefono per Roma: per Roma si scrive alla mail dello studio.</li>
-        <li>Visite in giornata: si prenota entro le 18:00 del giorno prima.</li>
+        <li>Visite in giornata: si prenota, si cambia o si disdice entro le 18:00 del giorno prima.</li>
       </ul>
     </div>
 
@@ -329,13 +357,19 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
         <label class="opt"><input type="radio" name="conferma" value="Non so ancora"> Non so ancora</label>
       </fieldset>
       <fieldset>
-        <legend>Fino a quando si può prenotare o disdire?</legend>
+        <legend>Se il paziente cambia data da solo?</legend>
+        <label class="opt"><input type="radio" name="cambio" value="Resta confermata, mi basta la notifica"> Resta confermata, mi basta la notifica</label>
+        <label class="opt"><input type="radio" name="cambio" value="Devo riconfermarla io"> Devo riconfermarla io</label>
+        <label class="opt"><input type="radio" name="cambio" value="Il paziente non deve poter cambiare data, solo disdire"> Il paziente non deve poter cambiare data, solo disdire</label>
+      </fieldset>
+      <fieldset>
+        <legend>Fino a quando si può prenotare, cambiare o disdire?</legend>
         <label class="opt"><input type="radio" name="limite" value="Entro le 18:00 del giorno prima"> Entro le 18:00 del giorno prima</label>
         <label class="opt"><input type="radio" name="limite" value="Entro mezzanotte del giorno prima"> Entro mezzanotte del giorno prima</label>
         <label class="opt"><input type="radio" name="limite" value="Altro (vedi note)"> Altro (scrivilo nelle note)</label>
       </fieldset>
       <fieldset>
-        <legend>Dove vuoi le notifiche delle nuove richieste?</legend>
+        <legend>Dove vuoi le notifiche?</legend>
         <label class="opt"><input type="radio" name="notifiche" value="Basta la mail (app Gmail)"> Basta la mail (app Gmail)</label>
         <label class="opt"><input type="radio" name="notifiche" value="Notifica dedicata sul telefono"> Notifica dedicata sul telefono</label>
         <label class="opt"><input type="radio" name="notifiche" value="Entrambe"> Entrambe</label>
@@ -378,15 +412,20 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
     <div id="wizard" class="view"></div>
   </section>
 
+  <!-- ============ CAMBIA O DISDICI (PAZIENTE) ============ -->
+  <section id="v-gestisci" class="view" hidden aria-label="Cambia o disdici la visita">
+    <div id="gestisci" class="view"></div>
+  </section>
+
   <!-- ============ LATO DOTTORESSA ============ -->
   <section id="v-dottoressa" class="view" hidden aria-labelledby="t-dott">
     <div class="stack">
       <p class="eyebrow">Lato dottoressa</p>
-      <h1 id="t-dott" style="font-size:2rem">Cosa succede dopo una prenotazione</h1>
-      <p class="muted" id="dott-intro"></p>
+      <h1 id="t-dott" style="font-size:2rem">Le tue prenotazioni</h1>
+      <p class="muted">Tocca una prenotazione per vedere cosa è successo e cosa puoi fare. Nel sistema vero questo lo fai dalla mail e da Google Calendar.</p>
     </div>
     <div class="toggle">
-      <span><b>Conferma delle richieste</b><br><span class="muted small">Da decidere: in questa demo puoi provare entrambe.</span></span>
+      <span><b>Conferma delle nuove richieste</b><br><span class="muted small">Da decidere. Vale per le prossime prenotazioni della demo.</span></span>
       <div class="seg" role="group" aria-label="Modalità di conferma">
         <button type="button" data-mode="manuale">Manuale</button>
         <button type="button" data-mode="automatica">Automatica</button>
@@ -412,14 +451,14 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
 const CONFIG = {
   durataMin: 30,
   orizzonteGiorni: 60,
-  limiteGiornoPrima: '18:00',
+  limiteGiornoPrima: '18:00',          // prenotare, cambiare e disdire
   mittente: 'studiofedericaspadazzi@gmail.com',
   sedi: [
-    { id: 'fiano', nome: 'Studio di Fiano Romano', indirizzo: 'Via Tiberina 31/b, 00065 Fiano Romano (RM)',
+    { id: 'fiano', nome: 'Studio di Fiano Romano', breve: 'Fiano', indirizzo: 'Via Tiberina 31/b, 00065 Fiano Romano (RM)',
       indicazioni: 'Dietro la pasticceria Fieni, negli studi medici al secondo piano.', telefono: '333 1412965',
       quando: 'Il giovedì mattina',
       disponibilita: { tipo: 'settimanale', regole: [{ giorno: 4, dalle: '09:00', alle: '14:00' }] } },
-    { id: 'roma', nome: 'Studio di Roma', indirizzo: 'Via Lombardia 30, 00187 Roma',
+    { id: 'roma', nome: 'Studio di Roma', breve: 'Roma', indirizzo: 'Via Lombardia 30, 00187 Roma',
       indicazioni: 'Traversa di Via Veneto.', telefono: null, contatto: 'studiofedericaspadazzi@gmail.com',
       quando: 'Giorni e orari variabili',
       disponibilita: { tipo: 'calendario', calendario: 'Disponibile Roma' } },
@@ -471,20 +510,62 @@ const fmtGiornoBreve = new Intl.DateTimeFormat('it-IT', { weekday: 'short', day:
 const fmtOra = new Intl.DateTimeFormat('it-IT', { hour: '2-digit', minute: '2-digit' });
 const giorno = d => cap(fmtGiorno.format(d));
 const ora = d => fmtOra.format(d);
+const breve = ms => cap(fmtGiornoBreve.format(new Date(ms))) + ', ' + ora(new Date(ms));
+const lungo = ms => giorno(new Date(ms)) + ', ore ' + ora(new Date(ms));
 const euro = n => n === 0 ? 'Nessuno' : n + ' €';
 function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
 function atTime(d, hhmm) { const [h, m] = hhmm.split(':').map(Number); const x = new Date(d); x.setHours(h, m, 0, 0); return x; }
+function inizioGiorno(ms) { const x = new Date(ms); x.setHours(0, 0, 0, 0); return x; }
 function dayKey(d) { return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
 function rng(str) { let h = 2166136261; for (const c of str) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return () => { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return ((h >>> 0) % 1000) / 1000; }; }
 const sedeById = id => CONFIG.sedi.find(s => s.id === id);
 const prestById = id => CONFIG.prestazioni.find(p => p.id === id);
 const invById = id => CONFIG.invianti.find(i => i.id === id);
 
+/* =====================================================================
+   ARCHIVIO DELLA DEMO
+   Nel sistema vero ogni prenotazione è un evento di Google Calendar
+   (dati nei tag privati) più una riga nel Foglio "Registro".
+   Qui sta nel localStorage del browser, solo per le prove.
+   ===================================================================== */
+const STORE = 'spadazzi-demo-v2';
+let DB = { prenotazioni: [], confermaManuale: true };
+const attiva = p => p.stato === 'in_attesa' || p.stato === 'confermata';
+const trova = id => DB.prenotazioni.find(p => p.id === id);
+function salva() { try { localStorage.setItem(STORE, JSON.stringify(DB)); } catch (_) {} }
+function carica() {
+  try { const x = JSON.parse(localStorage.getItem(STORE) || 'null'); if (x && Array.isArray(x.prenotazioni)) DB = x; } catch (_) {}
+  DB.prenotazioni = DB.prenotazioni.filter(p => p.slot > Date.now());
+  if (!DB.prenotazioni.length) DB.prenotazioni.push(esempio());
+}
+const nuovoId = () => Math.random().toString(36).slice(2, 10).toUpperCase();
+
+/* Cosa può succedere a una prenotazione. "chi" decide chi riceve la notifica. */
+const EVENTI = {
+  richiesta:            { chi: 'paziente',   notifica: 'Nuova richiesta da confermare', testo: e => `Richiesta del paziente per ${breve(e.a)}` },
+  prenotata:            { chi: 'paziente',   notifica: 'Nuova visita prenotata',        testo: e => `Prenotata dal paziente per ${breve(e.a)}` },
+  confermata:           { chi: 'dottoressa', testo: () => 'Confermata da te' },
+  rifiutata:            { chi: 'dottoressa', testo: () => 'Rifiutata da te' },
+  spostata_paziente:    { chi: 'paziente',   notifica: 'Il paziente ha cambiato data',  testo: e => `Spostata dal paziente: da ${breve(e.da)} a ${breve(e.a)}` },
+  spostata_dottoressa:  { chi: 'dottoressa', testo: e => `Spostata da te: da ${breve(e.da)} a ${breve(e.a)}` },
+  disdetta_paziente:    { chi: 'paziente',   notifica: 'Visita disdetta dal paziente',  testo: () => 'Disdetta dal paziente' },
+  annullata_dottoressa: { chi: 'dottoressa', testo: () => 'Annullata da te' },
+};
+function registra(p, tipo, extra = {}) { p.storico.push({ t: Date.now(), tipo, ...extra }); salva(); }
+function limiteModifica(p) { return atTime(addDays(inizioGiorno(p.slot), -1), CONFIG.limiteGiornoPrima); }
+const pazientePuoModificare = p => attiva(p) && Date.now() < limiteModifica(p).getTime();
+
+const PILL = {
+  in_attesa: '<span class="pill wait">DA CONFERMARE</span>', confermata: '<span class="pill ok">CONFERMATA</span>',
+  rifiutata: '<span class="pill no">RIFIUTATA</span>', disdetta: '<span class="pill no">DISDETTA</span>', annullata: '<span class="pill no">ANNULLATA</span>',
+};
+
 /* ---------- calcolo slot (stessa logica del sistema vero) ----------
    1. finestre di disponibilità del giorno (regola fissa o blocchi "Disponibile Roma")
    2. divise in slot da 30 minuti, senza pausa
    3. tolti gli slot che si sovrappongono a impegni in QUALSIASI calendario
-   4. tolti gli slot oltre il limite "entro le 18:00 del giorno prima"          */
+      (qui: impegni finti + prenotazioni attive della demo)
+   4. tolti i giorni oltre il limite "entro le 18:00 del giorno prima"          */
 function finestre(sede, d) {
   if (sede.disponibilita.tipo === 'settimanale')
     return sede.disponibilita.regole.filter(r => r.giorno === d.getDay()).map(r => [atTime(d, r.dalle), atTime(d, r.alle)]);
@@ -503,25 +584,54 @@ function slotDelGiorno(sede, d) {
   }
   return out;
 }
-const prenotatiInDemo = new Set();
 function giorniDisponibili(sede) {
   const oggi = new Date(); oggi.setHours(0, 0, 0, 0);
   const adesso = new Date();
+  const presi = new Set(DB.prenotazioni.filter(attiva).map(p => p.slot));
   const res = [];
   for (let i = 1; i <= CONFIG.orizzonteGiorni; i++) {
     const d = addDays(oggi, i);
-    const limite = atTime(addDays(d, -1), CONFIG.limiteGiornoPrima);
-    if (adesso >= limite) continue;
-    const liberi = slotDelGiorno(sede, d).filter(s => !s.occupato && !prenotatiInDemo.has(s.inizio.getTime())).map(s => s.inizio);
+    if (adesso >= atTime(addDays(d, -1), CONFIG.limiteGiornoPrima)) continue;
+    const liberi = slotDelGiorno(sede, d).filter(s => !s.occupato && !presi.has(s.inizio.getTime())).map(s => s.inizio);
     if (liberi.length) res.push({ d, liberi });
   }
   return res;
 }
 
-function fondoSpese(p, dati) {
-  const prest = prestById(p.prest);
-  if (dati.inviante === 'avvocato' && dati.invPaga === 'si')
-    return { cifra: 0, testo: CONFIG.testi.esenzione.replace('{inviante}', dati.invNome || "l'avvocato o l'agenzia") , esente: true };
+/* Scelta di giorno e orario, usata per prenotare, per cambiare data (paziente) e per spostare (dottoressa).
+   st = { giornoAperto, slot, mostraTutti } dello schermo che la usa. */
+function sceltaOrario(sede, st) {
+  const giorni = giorniDisponibili(sede);
+  if (!giorni.length) return '<p class="notice wait">In questo momento non ci sono orari liberi.</p>';
+  if (st.giornoAperto == null) st.giornoAperto = dayKey(giorni[0].d);
+  const visibili = st.mostraTutti ? giorni : giorni.slice(0, 6);
+  return `<div class="days">
+    ${visibili.map(g => {
+      const k = dayKey(g.d), open = st.giornoAperto === k;
+      return `<div class="day ${open ? 'open' : ''}">
+        <button type="button" data-giorno="${k}" aria-expanded="${open}">
+          <span>${giorno(g.d)}</span><span class="n">${g.liberi.length} ${g.liberi.length === 1 ? 'orario' : 'orari'}</span>
+        </button>
+        ${open ? `<div class="slots" role="group" aria-label="Orari di ${giorno(g.d)}">
+          ${g.liberi.map(t => `<button type="button" class="slot" data-slot="${t.getTime()}" aria-pressed="${st.slot === t.getTime()}">${ora(t)}</button>`).join('')}
+        </div>` : ''}
+      </div>`;
+    }).join('')}
+  </div>
+  ${!st.mostraTutti && giorni.length > 6 ? '<button type="button" class="btn btn-ghost btn-block" data-act="altri">Mostra altri giorni</button>' : ''}`;
+}
+/* Gestisce i tocchi dentro sceltaOrario; restituisce true se il tocco era suo. */
+function toccoOrario(b, st, ridisegna, root) {
+  if (b.dataset.act === 'altri') { st.mostraTutti = true; ridisegna(); return true; }
+  if (b.dataset.giorno) { st.giornoAperto = st.giornoAperto === b.dataset.giorno ? null : b.dataset.giorno; ridisegna(); root.querySelector(`[data-giorno="${b.dataset.giorno}"]`)?.focus(); return true; }
+  if (b.dataset.slot) { st.slot = Number(b.dataset.slot); ridisegna(); root.querySelector(`[data-slot="${b.dataset.slot}"]`)?.focus(); return true; }
+  return false;
+}
+
+function fondoSpese(p) {
+  const prest = prestById(p.prest), d = p.dati;
+  if (d.inviante === 'avvocato' && d.invPaga === 'si')
+    return { cifra: 0, testo: CONFIG.testi.esenzione.replace('{inviante}', d.invNome || "l'avvocato o l'agenzia"), esente: true };
   return { cifra: prest.fondo, testo: prest.notaFondo || '', esente: false };
 }
 function documenti(prestId) {
@@ -534,27 +644,31 @@ function invianteTesto(d) {
   if (d.inviante === 'altro' && d.invAltro) return 'Altro: ' + d.invAltro;
   return i.etichetta;
 }
+function riga(dt, dd, step) {
+  return `<div><dt>${dt}</dt><dd>${dd}</dd>${step ? `<button type="button" class="link-btn" data-goto="${step}">Modifica<span class="sr"> ${dt}</span></button>` : ''}</div>`;
+}
+function contattoSede(sede) {
+  return sede.telefono ? `chiami lo studio al ${esc(sede.telefono)}` : `scriva a ${esc(sede.contatto)}`;
+}
 
 /* =====================================================================
-   PERCORSO PAZIENTE
+   PRENOTA (PAZIENTE)
    ===================================================================== */
 const TITOLI = ['Dove vuole fare la visita?', 'Che tipo di visita le serve?', 'Scelga giorno e orario', 'I suoi dati', 'Controlli e invii'];
 const vuoti = () => ({ nome: '', cognome: '', tel: '', email: '', inviante: '', invNome: '', invPaga: '', invAltro: '', files: [], privacy: false });
-const S = { step: 1, sede: null, prest: null, giornoAperto: null, slot: null, dati: vuoti(), errori: null, mostraTutti: false,
-            inviata: null, confermaManuale: true };
+const S = { step: 1, sede: null, prest: null, giornoAperto: null, slot: null, mostraTutti: false, dati: vuoti(), errori: null, ultima: null };
 
 function progress() {
-  return `<div class="progress" aria-hidden="false">
+  return `<div class="progress">
     <ol aria-hidden="true">${[1, 2, 3, 4, 5].map(i => `<li class="${i <= S.step ? 'done' : ''}"></li>`).join('')}</ol>
     <p>Passo ${S.step} di 5</p></div>`;
 }
-function nav(avantiLabel = 'Avanti', disabilitato = false) {
+function nav(avantiLabel = 'Avanti') {
   return `<div class="btn-row">
     ${S.step > 1 ? '<button type="button" class="btn btn-ghost" data-act="indietro">Indietro</button>' : ''}
-    <button type="button" class="btn btn-primary" data-act="avanti" ${disabilitato ? 'aria-disabled="true"' : ''}>${avantiLabel}</button>
+    <button type="button" class="btn btn-primary" data-act="avanti">${avantiLabel}</button>
   </div>`;
 }
-
 function stepSede() {
   return `${progress()}
   <fieldset class="choices"><legend id="step-h" tabindex="-1">${TITOLI[0]}</legend>
@@ -581,28 +695,12 @@ function stepPrest() {
 }
 function stepGiorno() {
   const sede = sedeById(S.sede);
-  const giorni = giorniDisponibili(sede);
-  const visibili = S.mostraTutti ? giorni : giorni.slice(0, 6);
-  if (S.giornoAperto == null && giorni.length) S.giornoAperto = dayKey(giorni[0].d);
   return `${progress()}
   <div class="stack">
     <h2 id="step-h" tabindex="-1">${TITOLI[2]}</h2>
     <p class="muted small">${esc(sede.nome)}. Ogni visita dura 30 minuti. Vede solo gli orari liberi.</p>
   </div>
-  <div class="days">
-    ${visibili.map(g => {
-      const k = dayKey(g.d), open = S.giornoAperto === k;
-      return `<div class="day ${open ? 'open' : ''}">
-        <button type="button" data-giorno="${k}" aria-expanded="${open}">
-          <span>${giorno(g.d)}</span><span class="n">${g.liberi.length} ${g.liberi.length === 1 ? 'orario' : 'orari'}</span>
-        </button>
-        ${open ? `<div class="slots" role="group" aria-label="Orari di ${giorno(g.d)}">
-          ${g.liberi.map(t => `<button type="button" class="slot" data-slot="${t.getTime()}" aria-pressed="${S.slot === t.getTime()}">${ora(t)}</button>`).join('')}
-        </div>` : ''}
-      </div>`;
-    }).join('')}
-  </div>
-  ${!S.mostraTutti && giorni.length > 6 ? '<button type="button" class="btn btn-ghost btn-block" data-act="altri">Mostra altri giorni</button>' : ''}
+  ${sceltaOrario(sede, S)}
   ${S.errori ? `<p class="err" role="alert">${esc(S.errori)}</p>` : ''}
   ${nav()}`;
 }
@@ -617,7 +715,7 @@ function campo(id, label, tipo, extra = '', hint = '') {
   </div>`;
 }
 function stepDati() {
-  const d = S.dati, E = S.errori || {};
+  const d = S.dati, E = (S.errori && typeof S.errori === 'object') ? S.errori : {};
   const elencoErr = Object.entries(E);
   return `${progress()}
   <h2 id="step-h" tabindex="-1">${TITOLI[3]}</h2>
@@ -626,7 +724,7 @@ function stepDati() {
     ${campo('nome', 'Nome', 'text', 'autocomplete="given-name"')}
     ${campo('cognome', 'Cognome', 'text', 'autocomplete="family-name"')}
     ${campo('tel', 'Telefono', 'tel', 'autocomplete="tel" inputmode="tel"', 'Lo usiamo solo se dobbiamo avvisarla di un cambiamento.')}
-    ${campo('email', 'Email', 'email', 'autocomplete="email" inputmode="email"', 'Qui riceverà la conferma e il promemoria.')}
+    ${campo('email', 'Email', 'email', 'autocomplete="email" inputmode="email"', 'Qui riceverà la conferma, il promemoria e il link per cambiare o disdire.')}
 
     <fieldset class="choices" ${E.inviante ? 'aria-describedby="e-inviante"' : ''}>
       <legend style="font-size:1.25rem" id="f-inviante" tabindex="-1">Chi le ha indicato la dottoressa?</legend>
@@ -661,18 +759,15 @@ function stepDati() {
   </form>
   ${nav('Vai al riepilogo')}`;
 }
-function riga(dt, dd, step) {
-  return `<div><dt>${dt}</dt><dd>${dd}</dd>${step ? `<button type="button" class="link-btn" data-goto="${step}">Modifica<span class="sr"> ${dt}</span></button>` : ''}</div>`;
-}
 function stepRiepilogo() {
-  const sede = sedeById(S.sede), p = prestById(S.prest), d = S.dati, t = new Date(S.slot);
-  const f = fondoSpese({ prest: S.prest }, d);
+  const sede = sedeById(S.sede), p = prestById(S.prest), d = S.dati;
+  const f = fondoSpese({ prest: S.prest, dati: d });
   return `${progress()}
   <h2 id="step-h" tabindex="-1">${TITOLI[4]}</h2>
   <dl class="summary" style="margin:0">
     ${riga('Sede', `${esc(sede.nome)}<br><span class="muted small">${esc(sede.indirizzo)}</span>`, 1)}
     ${riga('Visita', esc(p.nome), 2)}
-    ${riga('Giorno e ora', `${giorno(t)}, ore ${ora(t)}`, 3)}
+    ${riga('Giorno e ora', lungo(S.slot), 3)}
     ${riga('Nome', esc(d.nome + ' ' + d.cognome), 4)}
     ${riga('Telefono ed email', `${esc(d.tel)}<br>${esc(d.email)}`, 4)}
     ${riga('Indicata da', esc(invianteTesto(d)), 4)}
@@ -689,30 +784,29 @@ function stepRiepilogo() {
     <h3>Da portare alla visita</h3>
     <ul class="list">${documenti(S.prest).map(x => `<li>${esc(x)}</li>`).join('')}</ul>
   </div>
-  ${nav(S.confermaManuale ? 'Invia la richiesta' : 'Prenota')}`;
+  ${nav(DB.confermaManuale ? 'Invia la richiesta' : 'Prenota')}`;
 }
 function stepFatto() {
-  const P = S.inviata, t = new Date(P.slot), sede = sedeById(P.sede);
-  const manuale = P.stato === 'in_attesa';
+  const p = trova(S.ultima); if (!p) { S.step = 1; return stepSede(); }
+  const sede = sedeById(p.sede), manuale = p.stato === 'in_attesa';
   return `<div class="notice ${manuale ? 'wait' : 'ok'}" role="status">
       <h2 id="step-h" tabindex="-1">${manuale ? 'Richiesta inviata' : 'Prenotazione confermata'}</h2>
       <p>${manuale
-        ? `L'orario di <b>${giorno(t)} alle ${ora(t)}</b> è riservato per lei. La dottoressa conferma a breve: riceverà una mail a <b>${esc(P.dati.email)}</b>.`
-        : `La aspettiamo <b>${giorno(t)} alle ${ora(t)}</b> a ${esc(sede.nome)}. Le abbiamo mandato una mail a <b>${esc(P.dati.email)}</b> con tutti i dettagli.`}</p>
+        ? `L'orario di <b>${lungo(p.slot)}</b> è riservato per lei. La dottoressa conferma a breve: riceverà una mail a <b>${esc(p.dati.email)}</b>.`
+        : `La aspettiamo <b>${lungo(p.slot)}</b> a ${esc(sede.nome)}. Le abbiamo mandato una mail a <b>${esc(p.dati.email)}</b> con tutti i dettagli.`}</p>
     </div>
-    <p class="muted">${manuale ? 'Nella mail di conferma troverà indirizzo, documenti da portare, fondo spese e il link per disdire.' : 'Il giorno prima riceverà un promemoria. Se non può venire, nella mail trova il link per disdire.'}</p>
+    <p class="muted">Nella mail trova anche il link per <b>cambiare giorno o disdire</b>, fino alle ${CONFIG.limiteGiornoPrima} del giorno prima.</p>
     <div class="btn-row">
-      <a class="btn btn-primary" href="#dottoressa">Guarda cosa riceve la dottoressa</a>
-      <button type="button" class="btn btn-ghost" data-act="ricomincia">Prova un'altra prenotazione</button>
-    </div>`;
+      <a class="btn btn-primary" href="#gestisci" data-apri="${p.id}">Cambia data o disdici</a>
+      <a class="btn btn-ghost" href="#dottoressa" data-apri="${p.id}">Guarda cosa riceve la dottoressa</a>
+    </div>
+    <button type="button" class="btn btn-ghost btn-block" data-act="ricomincia">Prenota un'altra visita</button>`;
 }
-
 function renderWizard(focus = true) {
   const w = $('#wizard');
-  w.innerHTML = S.inviata && S.step === 6 ? stepFatto() : [stepSede, stepPrest, stepGiorno, stepDati, stepRiepilogo][S.step - 1]();
+  w.innerHTML = S.step === 6 ? stepFatto() : [stepSede, stepPrest, stepGiorno, stepDati, stepRiepilogo][S.step - 1]();
   if (focus) { const h = $('#step-h'); if (h) { h.focus({ preventScroll: true }); window.scrollTo({ top: 0 }); } }
 }
-
 function valida() {
   const d = S.dati, E = {};
   if (!d.nome.trim()) E.nome = 'Scriva il nome.';
@@ -725,42 +819,45 @@ function valida() {
   if (!d.privacy) E.privacy = "Per prenotare serve il consenso all'informativa privacy.";
   return E;
 }
-
-function avanti() {
-  if (S.step === 1 && !S.sede) return segnala('Scelga una sede per continuare.');
-  if (S.step === 2 && !S.prest) return segnala('Scelga il tipo di visita per continuare.');
-  if (S.step === 3 && !S.slot) { S.errori = 'Scelga un orario per continuare.'; renderWizard(false); $('.err')?.scrollIntoView({ block: 'center' }); return; }
-  if (S.step === 4) {
-    const E = valida();
-    if (Object.keys(E).length) { S.errori = E; renderWizard(false); $('.err-box')?.focus?.(); $('.err-box')?.scrollIntoView({ block: 'start' }); return; }
-  }
-  if (S.step === 5) return invia();
-  S.errori = null; S.step++; renderWizard();
-}
 function segnala(msg) {
   let el = $('#wizard .err');
   if (!el) { el = document.createElement('p'); el.className = 'err'; el.setAttribute('role', 'alert'); $('#wizard .btn-row').before(el); }
   el.textContent = msg;
 }
-function invia() {
-  const id = Math.random().toString(36).slice(2, 10).toUpperCase();
-  S.inviata = { id, sede: S.sede, prest: S.prest, slot: S.slot, dati: { ...S.dati, files: S.dati.files.map(f => ({ name: f.name, size: f.size })) },
-    stato: S.confermaManuale ? 'in_attesa' : 'confermata', creata: new Date(), consenso: new Date(), esempio: false };
-  prenotatiInDemo.add(S.slot);
-  S.step = 6; renderWizard(); renderDott();
+function avanti() {
+  if (S.step === 1 && !S.sede) return segnala('Scelga una sede per continuare.');
+  if (S.step === 2 && !S.prest) return segnala('Scelga il tipo di visita per continuare.');
+  if (S.step === 3 && !S.slot) { S.errori = 'Scelga un orario per continuare.'; renderWizard(false); $('#wizard .err')?.scrollIntoView({ block: 'center' }); return; }
+  if (S.step === 4) {
+    const E = valida();
+    if (Object.keys(E).length) { S.errori = E; renderWizard(false); const b = $('.err-box'); b?.focus({ preventScroll: true }); b?.scrollIntoView({ block: 'start' }); return; }
+  }
+  if (S.step === 5) return invia();
+  S.errori = null; S.step++; renderWizard();
 }
+function invia() {
+  if (!giorniDisponibili(sedeById(S.sede)).some(g => g.liberi.some(t => t.getTime() === S.slot))) {
+    S.step = 3; S.slot = null; S.errori = "Nel frattempo quest'orario è stato preso. Ne scelga un altro."; return renderWizard();
+  }
+  const manuale = DB.confermaManuale;
+  const p = { id: nuovoId(), sede: S.sede, prest: S.prest, slot: S.slot,
+    dati: { ...S.dati, files: S.dati.files.map(f => ({ name: f.name, size: f.size })) },
+    stato: manuale ? 'in_attesa' : 'confermata', consenso: Date.now(), storico: [], esempio: false };
+  DB.prenotazioni.push(p);
+  registra(p, manuale ? 'richiesta' : 'prenotata', { a: p.slot });
+  S.ultima = p.id; G.selId = p.id; D.selId = p.id;
+  S.step = 6; renderWizard();
+}
+function ricominciaWizard() { Object.assign(S, { step: 1, sede: null, prest: null, slot: null, giornoAperto: null, mostraTutti: false, dati: vuoti(), errori: null }); }
 
-/* eventi del percorso */
 $('#wizard').addEventListener('click', e => {
   const b = e.target.closest('button, a'); if (!b) return;
   const act = b.dataset.act;
   if (act === 'avanti') return avanti();
   if (act === 'indietro') { S.errori = null; S.step--; return renderWizard(); }
-  if (act === 'altri') { S.mostraTutti = true; return renderWizard(false); }
-  if (act === 'ricomincia') { Object.assign(S, { step: 1, sede: null, prest: null, slot: null, giornoAperto: null, dati: vuoti(), errori: null, mostraTutti: false }); return renderWizard(); }
+  if (act === 'ricomincia') { ricominciaWizard(); return renderWizard(); }
   if (act === 'privacy') { e.preventDefault(); const p = $('#privacy-txt'); p.hidden = !p.hidden; return; }
-  if (b.dataset.giorno) { S.giornoAperto = S.giornoAperto === b.dataset.giorno ? null : b.dataset.giorno; renderWizard(false); $(`[data-giorno="${b.dataset.giorno}"]`).focus(); return; }
-  if (b.dataset.slot) { S.slot = Number(b.dataset.slot); S.errori = null; renderWizard(false); $(`[data-slot="${b.dataset.slot}"]`).focus(); return; }
+  if (S.step === 3 && toccoOrario(b, S, () => { S.errori = null; renderWizard(false); }, $('#wizard'))) return;
   if (b.dataset.goto) { S.step = Number(b.dataset.goto); return renderWizard(); }
   if (b.dataset.rm) { S.dati.files.splice(Number(b.dataset.rm), 1); return renderWizard(false); }
 });
@@ -778,8 +875,9 @@ $('#wizard').addEventListener('change', e => {
       if (f.size > CONFIG.allegati.maxMB * 1048576) { err.push(`"${f.name}" supera ${CONFIG.allegati.maxMB} MB.`); continue; }
       S.dati.files.push(f);
     }
-    S.errori = Object.assign({}, S.errori || {}); delete S.errori.files; if (err.length) S.errori.files = err.join(' ');
-    if (!Object.keys(S.errori).length) S.errori = null;
+    const E = (S.errori && typeof S.errori === 'object') ? { ...S.errori } : {};
+    delete E.files; if (err.length) E.files = err.join(' ');
+    S.errori = Object.keys(E).length ? E : null;
     renderWizard(false);
   }
 });
@@ -788,146 +886,310 @@ $('#wizard').addEventListener('input', e => {
 });
 
 /* =====================================================================
+   CAMBIA O DISDICI (PAZIENTE)
+   Nel sistema vero si apre dal link firmato nella mail del paziente,
+   che vede solo la sua visita. Nella demo si sceglie dall'elenco.
+   ===================================================================== */
+const G = { selId: null, modo: null, st: { giornoAperto: null, slot: null, mostraTutti: false }, msg: null };
+function elencoPrenotazioni(selId, attr) {
+  const list = [...DB.prenotazioni].sort((a, b) => a.slot - b.slot);
+  return `<div class="bks">${list.map(p => `<button type="button" class="bk" ${attr}="${p.id}" aria-current="${p.id === selId}">
+      <span class="q">${breve(p.slot)} · ${esc(sedeById(p.sede).breve)}</span>
+      <span class="w">${esc(p.dati.cognome)} ${esc(p.dati.nome)} – ${esc(prestById(p.prest).nome)}</span>
+      ${PILL[p.stato]}
+    </button>`).join('')}</div>`;
+}
+function renderGestisci() {
+  const root = $('#gestisci');
+  if (!trova(G.selId)) G.selId = [...DB.prenotazioni].sort((a, b) => b.storico[0].t - a.storico[0].t)[0]?.id;
+  const p = trova(G.selId);
+  if (!p) { root.innerHTML = `<p>Non ci sono prenotazioni. <a href="#prenota">Prenoti una visita</a>.</p>`; return; }
+  const sede = sedeById(p.sede), pr = prestById(p.prest), f = fondoSpese(p);
+  const limite = limiteModifica(p);
+  let azioni = '';
+  if (G.modo === 'cambia') {
+    const nuovo = G.st.slot;
+    azioni = `<div class="panel">
+      <h2 id="g-h" tabindex="-1">Scelga il nuovo giorno e orario</h2>
+      <p class="muted small">${esc(sede.nome)}. Vede solo gli orari liberi.</p>
+      ${sceltaOrario(sede, G.st)}
+      ${nuovo ? `<div class="cambio" aria-live="polite"><span>Prima: <s>${lungo(p.slot)}</s></span><span>Dopo: <b>${lungo(nuovo)}</b></span></div>` : ''}
+      <div class="btn-row">
+        <button type="button" class="btn btn-ghost" data-g="chiudi">Lascio com'è</button>
+        <button type="button" class="btn btn-primary" data-g="conferma-cambio" ${nuovo ? '' : 'aria-disabled="true"'}>Conferma il nuovo orario</button>
+      </div>
+    </div>`;
+  } else if (G.modo === 'disdici') {
+    azioni = `<div class="panel">
+      <h2 id="g-h" tabindex="-1">Vuole disdire la visita?</h2>
+      <p>${lungo(p.slot)}, ${esc(sede.nome)}.</p>
+      <div class="btn-row">
+        <button type="button" class="btn btn-ghost" data-g="chiudi">No, la tengo</button>
+        <button type="button" class="btn btn-no" data-g="conferma-disdetta">Sì, disdico</button>
+      </div>
+    </div>`;
+  } else if (pazientePuoModificare(p)) {
+    azioni = `<div class="btn-row">
+        <button type="button" class="btn btn-primary" data-g="cambia">Cambia giorno o orario</button>
+        <button type="button" class="btn btn-no" data-g="disdici">Disdici la visita</button>
+      </div>
+      <p class="muted small">Può cambiare o disdire fino alle ${CONFIG.limiteGiornoPrima} di ${fmtGiorno.format(addDays(limite, 0))}.</p>`;
+  } else if (attiva(p)) {
+    azioni = `<p class="notice wait">Il termine per cambiare o disdire online è passato. Se non può venire, ${contattoSede(sede)}.</p>`;
+  } else {
+    azioni = `<p class="notice wait">Questa visita non è più in programma. <a href="#prenota">Prenoti un'altra visita</a>.</p>`;
+  }
+  root.innerHTML = `
+    <div class="stack">
+      <p class="eyebrow">Paziente · dal link nella mail</p>
+      <h1 style="font-size:2rem">La sua visita</h1>
+      ${DB.prenotazioni.length > 1 ? `<p class="muted small">Nel sistema vero il paziente vede solo la sua visita. Nella demo scelga quale aprire:</p>${elencoPrenotazioni(p.id, 'data-bk')}` : ''}
+    </div>
+    ${G.msg ? `<div class="notice ${G.msg.tipo}" role="status"><b>${G.msg.titolo}</b><span>${G.msg.testo}</span></div>` : ''}
+    <dl class="summary" style="margin:0">
+      ${riga('Stato', PILL[p.stato])}
+      ${riga('Nome', esc(p.dati.nome + ' ' + p.dati.cognome))}
+      ${riga('Visita', esc(pr.nome))}
+      ${riga('Quando', lungo(p.slot))}
+      ${riga('Dove', `${esc(sede.nome)}<br><span class="muted small">${esc(sede.indirizzo)}. ${esc(sede.indicazioni)}</span>`)}
+      ${riga('Fondo spese', f.cifra ? f.cifra + ' €' : 'Nessuno')}
+    </dl>
+    ${azioni}`;
+}
+$('#gestisci').addEventListener('click', e => {
+  const b = e.target.closest('button, a'); if (!b) return;
+  const p = trova(G.selId);
+  if (b.dataset.bk) { G.selId = b.dataset.bk; G.modo = null; G.msg = null; return renderGestisci(); }
+  if (G.modo === 'cambia' && toccoOrario(b, G.st, renderGestisci, $('#gestisci'))) return;
+  const a = b.dataset.g; if (!a || !p) return;
+  if (a === 'cambia' || a === 'disdici') {
+    G.modo = a; G.msg = null; G.st = { giornoAperto: dayKey(new Date(p.slot)), slot: null, mostraTutti: false };
+    renderGestisci(); $('#g-h')?.focus(); $('#g-h')?.scrollIntoView({ block: 'start' }); return;
+  }
+  if (a === 'chiudi') { G.modo = null; return renderGestisci(); }
+  if (a === 'conferma-cambio') {
+    if (!G.st.slot) return;
+    const da = p.slot; p.slot = G.st.slot;
+    registra(p, 'spostata_paziente', { da, a: p.slot });
+    G.modo = null;
+    G.msg = { tipo: 'ok', titolo: 'Visita spostata', testo: `La aspettiamo ${lungo(p.slot)}. Le abbiamo mandato una mail con i nuovi dettagli. L'orario precedente è di nuovo libero.` };
+  }
+  if (a === 'conferma-disdetta') {
+    p.stato = 'disdetta'; registra(p, 'disdetta_paziente');
+    G.modo = null;
+    G.msg = { tipo: 'wait', titolo: 'Visita disdetta', testo: 'Le abbiamo mandato una mail di conferma della disdetta. Se vuole, può prenotare un altro giorno.' };
+  }
+  renderGestisci(); window.scrollTo({ top: 0 });
+});
+
+/* =====================================================================
    LATO DOTTORESSA
    ===================================================================== */
+const D = { selId: null, modo: null, st: { giornoAperto: null, slot: null, mostraTutti: false }, msg: null };
+
 function esempio() {
   const sede = sedeById('fiano');
   const g = giorniDisponibili(sede)[0];
-  return { id: 'ESEMPIO1', sede: 'fiano', prest: 'invalidita', slot: g.liberi[1 % g.liberi.length].getTime(),
+  const slot = g.liberi[1 % g.liberi.length].getTime();
+  const manuale = DB.confermaManuale;
+  return { id: 'ESEMPIO1', sede: 'fiano', prest: 'invalidita', slot,
     dati: { nome: 'Mario', cognome: 'Rossi', tel: '333 000 1234', email: 'mario.rossi@esempio.it', inviante: 'caf', invNome: '', invPaga: '', invAltro: '',
       files: [{ name: 'verbale-commissione-2025.pdf', size: 820000 }, { name: 'referto-cardiologico.pdf', size: 1450000 }], privacy: true },
-    stato: S.confermaManuale ? 'in_attesa' : 'confermata', creata: new Date(), consenso: new Date(), esempio: true };
+    stato: manuale ? 'in_attesa' : 'confermata', consenso: Date.now() - 50 * 6e4,
+    storico: [{ t: Date.now() - 50 * 6e4, tipo: manuale ? 'richiesta' : 'prenotata', a: slot }], esempio: true };
 }
-let E_DOTT = null;
-const P = () => S.inviata || E_DOTT || (E_DOTT = esempio());
 
 function mail(da, a, oggetto, corpo) {
   return `<div class="mail"><div class="hd"><span>Da</span><b>${esc(da)}</b><span>A</span><b>${esc(a)}</b><span>Oggetto</span><b>${esc(oggetto)}</b></div><div class="bd">${corpo}</div></div>`;
 }
-function dettagliVisita(p, conDisdetta) {
-  const sede = sedeById(p.sede), pr = prestById(p.prest), t = new Date(p.slot), f = fondoSpese(p, p.dati);
-  const limite = atTime(addDays(t, -1), CONFIG.limiteGiornoPrima);
+function dettagliVisita(p, conGestione) {
+  const sede = sedeById(p.sede), pr = prestById(p.prest), f = fondoSpese(p);
   return `<div><h4>Visita</h4><p>${esc(pr.nome)}</p></div>
-    <div><h4>Quando</h4><p>${giorno(t)}, ore ${ora(t)}</p></div>
+    <div><h4>Quando</h4><p>${lungo(p.slot)}</p></div>
     <div><h4>Dove</h4><p>${esc(sede.nome)}<br>${esc(sede.indirizzo)}<br><span class="muted">${esc(sede.indicazioni)}</span>${sede.telefono ? `<br>Telefono dello studio: ${esc(sede.telefono)}` : ''}</p></div>
     <div><h4>Da portare</h4><ul class="list">${documenti(p.prest).map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>
     <div><h4>Fondo spese</h4><p>${f.cifra ? `<b>${f.cifra} €</b>. ` : ''}${esc(f.testo)} ${f.cifra ? esc(CONFIG.testi.fondoScalato) : ''} ${esc(CONFIG.testi.pagamento)}</p></div>
-    ${conDisdetta ? `<div class="btn-row"><button type="button" class="btn btn-ghost" data-d="disdetta">Non posso venire: disdico</button></div>
-      <p class="muted small">Si può disdire fino alle ${CONFIG.limiteGiornoPrima} di ${fmtGiorno.format(limite)}.</p>` : ''}
+    ${conGestione ? `<div class="btn-row"><a class="btn btn-ghost" href="#gestisci" data-apri="${p.id}">Cambia data o disdici</a></div>
+      <p class="muted small">Può cambiare o disdire fino alle ${CONFIG.limiteGiornoPrima} di ${fmtGiorno.format(limiteModifica(p))}.</p>` : ''}
     <p>Dott.ssa Federica Spadazzi<br><span class="muted small">Specialista in Medicina Legale e delle Assicurazioni</span></p>`;
 }
+/* Mail che il paziente riceve per ogni evento. */
+function mailPaziente(p, e) {
+  const nome = esc(p.dati.nome + ' ' + p.dati.cognome);
+  switch (e.tipo) {
+    case 'richiesta': return { oggetto: 'Richiesta di visita ricevuta', corpo: `<p>Gentile ${nome},<br>abbiamo ricevuto la sua richiesta per <b>${lungo(e.a)}</b>. L'orario è riservato per lei: riceverà una mail appena la dottoressa conferma.</p><p>Dott.ssa Federica Spadazzi</p>` };
+    case 'prenotata':
+    case 'confermata': return { oggetto: `Visita confermata: ${breve(p.slot)}`, corpo: `<p>Gentile ${nome},<br>la sua visita è confermata.</p>${dettagliVisita(p, attiva(p))}` };
+    case 'spostata_paziente': return { oggetto: `Nuovo orario della visita: ${breve(e.a)}`, corpo: `<p>Gentile ${nome},<br>abbiamo spostato la sua visita come richiesto.</p><div class="cambio"><span>Prima: <s>${lungo(e.da)}</s></span><span>Ora: <b>${lungo(e.a)}</b></span></div>${dettagliVisita(p, attiva(p))}` };
+    case 'spostata_dottoressa': return { oggetto: `La sua visita è stata spostata: ${breve(e.a)}`, corpo: `<p>Gentile ${nome},<br>la dottoressa ha dovuto spostare la sua visita. Ci scusiamo per il cambiamento.</p><div class="cambio"><span>Prima: <s>${lungo(e.da)}</s></span><span>Ora: <b>${lungo(e.a)}</b></span></div><p>Se il nuovo orario non le va bene, può sceglierne un altro dal pulsante qui sotto.</p>${dettagliVisita(p, attiva(p))}` };
+    case 'rifiutata': return { oggetto: 'La sua richiesta di visita', corpo: `<p>Gentile ${nome},<br>purtroppo l'orario richiesto non è più disponibile. Può sceglierne un altro dalla pagina di prenotazione.</p><p><a href="#prenota">Scegli un altro orario</a></p><p>Dott.ssa Federica Spadazzi</p>` };
+    case 'disdetta_paziente': return { oggetto: 'Visita disdetta', corpo: `<p>Gentile ${nome},<br>la sua visita di ${lungo(p.slot)} è stata disdetta. Se vuole, può prenotarne un'altra quando preferisce.</p><p><a href="#prenota">Prenota un'altra visita</a></p><p>Dott.ssa Federica Spadazzi</p>` };
+    case 'annullata_dottoressa': return { oggetto: 'La sua visita è stata annullata', corpo: `<p>Gentile ${nome},<br>la dottoressa ha dovuto annullare la visita di ${lungo(p.slot)}. Ci scusiamo per il disagio. Può prenotare un altro orario quando preferisce.</p><p><a href="#prenota">Prenota un altro orario</a></p><p>Dott.ssa Federica Spadazzi</p>` };
+  }
+}
 
-let DISDETTA_APERTA = false;
 function renderDott() {
-  const p = P(), sede = sedeById(p.sede), pr = prestById(p.prest), t = new Date(p.slot), d = p.dati, f = fondoSpese(p, d);
+  document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.mode === 'manuale') === DB.confermaManuale)));
+  const root = $('#dott');
+  if (!trova(D.selId)) D.selId = [...DB.prenotazioni].sort((a, b) => a.slot - b.slot)[0]?.id;
+  const p = trova(D.selId);
+  if (!p) { root.innerHTML = `<p>Nessuna prenotazione. <a href="#prenota">Prova a prenotare</a>.</p>`; return; }
+  const sede = sedeById(p.sede), pr = prestById(p.prest), d = p.dati, f = fondoSpese(p);
   const nomeCompleto = d.nome + ' ' + d.cognome;
-  const stato = p.stato;
-  const pill = { in_attesa: '<span class="pill wait">DA CONFERMARE</span>', confermata: '<span class="pill ok">CONFERMATA</span>', rifiutata: '<span class="pill no">RIFIUTATA</span>', disdetta: '<span class="pill no">DISDETTA DAL PAZIENTE</span>' }[stato];
-  $('#dott-intro').innerHTML = p.esempio
-    ? `Qui sotto c'è un esempio con un paziente inventato. Se prima <a href="#prenota">fai una prenotazione come paziente</a>, qui compare la tua.`
-    : `Questa è la prenotazione che hai appena fatto come paziente.`;
-  document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.mode === 'manuale') === S.confermaManuale)));
+  const t = new Date(p.slot), d0 = inizioGiorno(p.slot);
 
-  const fineSlot = new Date(t.getTime() + 30 * 6e4);
-  const titoloEv = `${stato === 'in_attesa' ? '⏳ DA CONFERMARE – ' : ''}${d.cognome} – ${pr.nome}`;
-  const calSede = p.sede === 'fiano' ? 'Studio Fiano' : 'Studio Roma';
-  const colSede = p.sede === 'fiano' ? 'var(--cal-fiano)' : 'var(--cal-roma)';
+  /* --- azioni della dottoressa --- */
+  let azioni = '';
+  if (D.modo === 'sposta') {
+    azioni = `<div class="panel">
+      <h3 id="d-h" tabindex="-1">Sposta ${esc(d.cognome)} a un altro orario</h3>
+      ${sceltaOrario(sede, D.st)}
+      ${D.st.slot ? `<div class="cambio" aria-live="polite"><span>Prima: <s>${lungo(p.slot)}</s></span><span>Dopo: <b>${lungo(D.st.slot)}</b></span></div>` : ''}
+      <div class="btn-row">
+        <button type="button" class="btn btn-ghost" data-d="chiudi">Lascia com'è</button>
+        <button type="button" class="btn btn-primary" data-d="conferma-sposta" ${D.st.slot ? '' : 'aria-disabled="true"'}>Sposta e avvisa il paziente</button>
+      </div>
+      <p class="muted small">Nel sistema vero basta trascinare l'evento in Google Calendar: la mail al paziente parte da sola.</p>
+    </div>`;
+  } else if (D.modo === 'annulla') {
+    azioni = `<div class="panel">
+      <h3 id="d-h" tabindex="-1">Annullare la visita di ${esc(nomeCompleto)}?</h3>
+      <p>${lungo(p.slot)}. Il paziente riceve una mail di scuse con l'invito a prenotare un altro orario.</p>
+      <div class="btn-row">
+        <button type="button" class="btn btn-ghost" data-d="chiudi">No, la tengo</button>
+        <button type="button" class="btn btn-no" data-d="conferma-annulla">Sì, annulla</button>
+      </div>
+      <p class="muted small">Nel sistema vero basta eliminare l'evento in Google Calendar.</p>
+    </div>`;
+  } else if (p.stato === 'in_attesa') {
+    azioni = `<div class="btn-row"><button type="button" class="btn btn-ok" data-d="conferma">Conferma</button><button type="button" class="btn btn-no" data-d="rifiuta">Rifiuta</button></div>
+      <div class="btn-row"><button type="button" class="btn btn-ghost" data-d="sposta">Proponi un altro orario</button></div>`;
+  } else if (attiva(p)) {
+    azioni = `<div class="btn-row"><button type="button" class="btn btn-ghost" data-d="sposta">Sposta</button><button type="button" class="btn btn-no" data-d="annulla">Annulla la visita</button></div>`;
+  } else {
+    azioni = `<p class="muted small">Questa visita non è più in programma: l'orario è di nuovo prenotabile.</p>`;
+  }
 
-  /* agenda del giorno: impegni finti + la nuova visita */
-  const d0 = new Date(t); d0.setHours(0, 0, 0, 0);
+  /* --- notifiche: solo per le azioni del paziente --- */
+  const notifiche = p.storico.filter(e => EVENTI[e.tipo].chi === 'paziente').slice().reverse().slice(0, 4);
+  const ultimaPaz = notifiche[0];
+
+  /* --- mail alla dottoressa per l'ultima azione del paziente --- */
+  const oggettoDott = {
+    richiesta: `Da confermare: ${d.cognome} – ${pr.nome}, ${breve(ultimaPaz?.a ?? p.slot)}`,
+    prenotata: `Nuova visita: ${d.cognome} – ${pr.nome}, ${breve(ultimaPaz?.a ?? p.slot)}`,
+    spostata_paziente: `Visita spostata dal paziente: ${d.cognome}, ora ${breve(ultimaPaz?.a ?? p.slot)}`,
+    disdetta_paziente: `Visita disdetta: ${d.cognome}, ${breve(p.slot)}`,
+  }[ultimaPaz?.tipo] || '';
+  const introDott = !ultimaPaz ? '' : ({
+    richiesta: () => `<b>${esc(nomeCompleto)}</b> chiede una visita.`,
+    prenotata: () => `<b>${esc(nomeCompleto)}</b> ha prenotato una visita.`,
+    spostata_paziente: () => `<b>${esc(nomeCompleto)}</b> ha spostato la visita da ${lungo(ultimaPaz.da)} a <b>${lungo(ultimaPaz.a)}</b>. L'orario precedente è di nuovo libero.`,
+    disdetta_paziente: () => `<b>${esc(nomeCompleto)}</b> ha disdetto la visita di ${lungo(p.slot)}. L'orario è di nuovo prenotabile.`,
+  }[ultimaPaz.tipo] || (() => ''))();
+
+  /* --- agenda del giorno: impegni finti + prenotazioni della demo --- */
   const evs = slotDelGiorno(sede, d0).filter(s => s.occupato).map(s => ({ inizio: s.inizio, fine: new Date(s.inizio.getTime() + 18e5), titolo: s.occupato,
     cal: p.sede === 'fiano' ? 'Studio Fiano' : /univ/.test(s.occupato) ? 'Università' : /personale/.test(s.occupato) ? 'Personale' : 'Principale',
     col: p.sede === 'fiano' ? 'var(--cal-fiano)' : /univ/.test(s.occupato) ? 'var(--cal-uni)' : /personale/.test(s.occupato) ? 'var(--cal-pers)' : 'var(--cal-roma)' }));
   if (p.sede === 'fiano') evs.push({ inizio: atTime(d0, '15:00'), fine: atTime(d0, '18:00'), titolo: 'Visite CAF UCI (le prenota il CAF)', cal: 'Studio Fiano', col: 'var(--cal-fiano)' });
   else finestre(sede, d0).forEach(([a, b]) => evs.push({ inizio: a, fine: b, titolo: 'Disponibile', cal: 'Disponibile Roma', col: 'var(--cal-disp)' }));
-  if (stato === 'in_attesa' || stato === 'confermata') evs.push({ inizio: t, fine: fineSlot, titolo: titoloEv, cal: calSede, col: colSede, nuovo: true, pend: stato === 'in_attesa' });
-  evs.sort((a, b) => a.inizio - b.inizio || (a.nuovo ? 1 : -1));
+  DB.prenotazioni.filter(q => attiva(q) && q.sede === p.sede && dayKey(new Date(q.slot)) === dayKey(d0)).forEach(q => {
+    evs.push({ inizio: new Date(q.slot), fine: new Date(q.slot + 18e5), cal: q.sede === 'fiano' ? 'Studio Fiano' : 'Studio Roma', col: q.sede === 'fiano' ? 'var(--cal-fiano)' : 'var(--cal-roma)',
+      titolo: `${q.stato === 'in_attesa' ? '⏳ DA CONFERMARE – ' : ''}${q.dati.cognome} – ${prestById(q.prest).nome}`,
+      nuovo: q.id === p.id, pend: q.stato === 'in_attesa', q });
+  });
+  evs.sort((a, b) => a.inizio - b.inizio);
 
-  const notifTesto = stato === 'in_attesa' ? 'Nuova richiesta da confermare' : stato === 'confermata' ? 'Nuova visita prenotata' : stato === 'disdetta' ? 'Visita disdetta dal paziente' : 'Richiesta rifiutata';
-  const ultimoGiornoPrima = addDays(d0, -1);
+  /* --- mail al paziente --- */
+  const mailP = p.storico.map(e => ({ e, m: mailPaziente(p, e) })).filter(x => x.m);
+  const ultimaMail = mailP[mailP.length - 1];
+  const daMittente = 'Dott.ssa Federica Spadazzi <' + CONFIG.mittente + '>';
 
-  $('#dott').innerHTML = `
-  <div class="scene">
-    <div class="scene-h"><h2>1. La notifica sul telefono</h2>${pill}</div>
-    <p class="muted small">Arriva appena il paziente prenota. Può essere la notifica dell'app Gmail, che hai già, oppure una notifica dedicata.</p>
-    <div class="phone" aria-label="Telefono di esempio">
-      <div class="bar"><span>${ora(new Date())}</span><span>Android</span></div>
-      <div class="notif">
-        <div class="app"><i></i> Prenotazioni · ora</div>
-        <b>${notifTesto}</b>
-        <span>${esc(d.cognome)} – ${esc(pr.nome)}</span>
-        <span>${esc(cap(fmtGiornoBreve.format(t)))}, ${ora(t)} · ${p.sede === 'fiano' ? 'Fiano' : 'Roma'}</span>
-        ${stato === 'in_attesa' ? `<div class="acts"><button type="button" data-d="conferma">CONFERMA</button><button type="button" data-d="rifiuta">RIFIUTA</button></div>` : ''}
-      </div>
-    </div>
+  root.innerHTML = `
+  <div class="stack">
+    <h2 class="sr">Elenco delle prenotazioni</h2>
+    ${elencoPrenotazioni(p.id, 'data-sel')}
   </div>
 
   <div class="scene">
+    <div class="scene-h"><h2>${esc(d.cognome)} ${esc(d.nome)}</h2>${PILL[p.stato]}</div>
+    <p class="muted small">${esc(pr.nome)} · ${lungo(p.slot)} · ${esc(sede.nome)}</p>
+    ${D.msg ? `<div class="notice ${D.msg.tipo}" role="status"><b>${D.msg.titolo}</b><span>${D.msg.testo}</span></div>` : ''}
+    ${azioni}
+    <h3>Cosa è successo</h3>
+    <ol class="storico">${p.storico.slice().reverse().map(e => `<li><span class="h">${ora(new Date(e.t))}</span><span>${esc(EVENTI[e.tipo].testo(e))}</span></li>`).join('')}</ol>
+  </div>
+
+  <hr class="sep">
+
+  <div class="scene">
+    <h2>1. Le notifiche sul telefono</h2>
+    <p class="muted small">Arrivano quando il paziente prenota, cambia data o disdice. Possono essere le notifiche dell'app Gmail, che hai già, o notifiche dedicate.</p>
+    <div class="phone" aria-label="Telefono di esempio">
+      <div class="bar"><span>${ora(new Date())}</span><span>Android</span></div>
+      ${notifiche.length ? notifiche.map((e, i) => `<div class="notif">
+        <div class="app"><i></i> Prenotazioni · ${ora(new Date(e.t))}</div>
+        <b>${EVENTI[e.tipo].notifica}</b>
+        <span>${esc(d.cognome)} – ${esc(pr.nome)}</span>
+        <span>${e.tipo === 'spostata_paziente' ? `Da ${breve(e.da)} a ${breve(e.a)}` : breve(e.a ?? p.slot)} · ${esc(sede.breve)}</span>
+        ${i === 0 && p.stato === 'in_attesa' && !D.modo ? `<div class="acts"><button type="button" data-d="conferma">CONFERMA</button><button type="button" data-d="rifiuta">RIFIUTA</button></div>` : ''}
+      </div>`).join('') : '<p class="small muted" style="padding:0 8px">Nessuna notifica.</p>'}
+    </div>
+  </div>
+
+  ${ultimaPaz ? `<div class="scene">
     <h2>2. La mail per te</h2>
-    ${mail('Prenotazioni <' + CONFIG.mittente + '>', CONFIG.mittente,
-      `${stato === 'in_attesa' ? 'Da confermare' : 'Nuova visita'}: ${d.cognome} – ${pr.nome}, ${fmtGiornoBreve.format(t)} ${ora(t)}`,
-      `<p><b>${esc(nomeCompleto)}</b> ${stato === 'in_attesa' ? 'chiede' : 'ha prenotato'} una visita.</p>
+    ${mail('Prenotazioni <' + CONFIG.mittente + '>', CONFIG.mittente, oggettoDott,
+      `<p>${introDott}</p>
        <dl class="summary" style="margin:0">
          ${riga('Visita', esc(pr.nome))}
-         ${riga('Quando', `${giorno(t)}, ore ${ora(t)}`)}
+         ${riga('Quando', lungo(p.slot))}
          ${riga('Sede', esc(sede.nome))}
          ${riga('Telefono ed email', `${esc(d.tel)}<br>${esc(d.email)}`)}
          ${riga('Indicata da', esc(invianteTesto(d)))}
          ${riga('Fondo spese', f.cifra ? f.cifra + ' €' : 'Nessuno' + (f.esente ? ' (paga ' + esc(d.invNome || "l'avvocato") + ')' : ''))}
          ${riga('Documenti caricati', d.files.length ? d.files.length + ' PDF nella cartella Drive' : 'Nessuno')}
        </dl>
-       ${stato === 'in_attesa' ? `<div class="btn-row"><button type="button" class="btn btn-ok" data-d="conferma">Conferma</button><button type="button" class="btn btn-no" data-d="rifiuta">Rifiuta</button></div>
-         <p class="muted small">Se non rispondi entro le ${CONFIG.limiteGiornoPrima} del giorno prima, la richiesta scade e l'orario torna libero. Il paziente viene avvisato.</p>`
-       : stato === 'confermata' ? `<p class="notice ok">Confermata. Al paziente è partita la mail di conferma.</p>`
-       : stato === 'rifiutata' ? `<p class="notice wait">Rifiutata. Il paziente riceve una mail cortese con l'invito a scegliere un altro orario, e l'orario torna libero.</p>`
-       : `<p class="notice wait">Il paziente ha disdetto. L'orario è di nuovo prenotabile.</p>`}
-       <p class="small muted">I pulsanti aprono una pagina con un secondo tocco di conferma, così un antivirus che "apre" i link non può confermare al posto tuo.</p>`)}
-    <div class="btn-row"><button type="button" class="btn btn-ghost" data-d="reset">Rimetti la richiesta in attesa (demo)</button></div>
-  </div>
+       ${p.stato === 'in_attesa' && !D.modo ? `<div class="btn-row"><button type="button" class="btn btn-ok" data-d="conferma">Conferma</button><button type="button" class="btn btn-no" data-d="rifiuta">Rifiuta</button></div>
+         <p class="muted small">Se non rispondi entro le ${CONFIG.limiteGiornoPrima} del giorno prima, la richiesta scade e l'orario torna libero. Il paziente viene avvisato.</p>` : ''}
+       <p class="small muted">I pulsanti nelle mail aprono una pagina con un secondo tocco di conferma, così un antivirus che "apre" i link non può agire al posto tuo.</p>`)}
+  </div>` : ''}
 
   <div class="scene">
     <h2>3. Il tuo calendario</h2>
-    <p class="muted small">L'evento è già compilato: titolo con cognome e tipo di visita; nella descrizione contatti, chi l'ha indicato, fondo spese e link alla cartella Drive. ${stato === 'in_attesa' ? "Finché non confermi è segnato \"DA CONFERMARE\", ma l'orario è già bloccato." : ''}</p>
+    <p class="muted small">L'evento è già compilato: titolo con cognome e tipo di visita; nella descrizione contatti, chi l'ha indicato, fondo spese e link alla cartella Drive. Se la visita viene spostata, l'evento si sposta; se viene disdetta, sparisce e l'orario torna libero.</p>
     <div class="agenda">
       <div class="dayh">${giorno(d0)}</div>
       ${evs.map(e => `<div class="ev ${e.nuovo ? 'nuovo' : ''} ${e.pend ? 'pend' : ''}" style="--c:${e.col}">
         <span class="h">${ora(e.inizio)}–${ora(e.fine)}</span>
-        <span class="b"><b>${esc(e.titolo)}</b><small>${esc(e.cal)}${e.nuovo ? ' · ' + esc(d.tel) + ' · indicata da: ' + esc(invianteTesto(d)) + ' · fondo spese: ' + euro(f.cifra) : ''}</small></span>
+        <span class="b"><b>${esc(e.titolo)}</b><small>${esc(e.cal)}${e.q ? ' · ' + esc(e.q.dati.tel) + ' · fondo spese: ' + euro(fondoSpese(e.q).cifra) : ''}</small></span>
       </div>`).join('')}
     </div>
+    ${!attiva(p) ? `<p class="notice wait small">La visita di ${esc(d.cognome)} non è più in calendario: l'orario ${ora(t)} è di nuovo prenotabile.</p>` : ''}
     <div class="legend">
       ${p.sede === 'fiano'
         ? `<span style="--c:var(--cal-fiano)"><i></i>Studio Fiano (lo vede anche la segretaria)</span>`
         : `<span style="--c:var(--cal-roma)"><i></i>Studio Roma / Principale</span><span style="--c:var(--cal-pers)"><i></i>Personale</span><span style="--c:var(--cal-uni)"><i></i>Università</span><span style="--c:var(--cal-disp)"><i></i>Disponibile Roma</span>`}
     </div>
-    <p class="muted small">Gli altri orari della giornata erano già occupati, quindi la pagina non li ha mai offerti.</p>
   </div>
 
   <div class="scene">
-    <div class="scene-h"><h2>4. La mail che riceve il paziente</h2>${stato === 'confermata' ? '<span class="pill ok">INVIATA</span>' : stato === 'in_attesa' ? '<span class="pill wait">PARTE ALLA CONFERMA</span>' : ''}</div>
-    ${stato === 'rifiutata'
-      ? mail('Dott.ssa Federica Spadazzi <' + CONFIG.mittente + '>', d.email, 'La sua richiesta di visita', `<p>Gentile ${esc(nomeCompleto)},</p><p>purtroppo l'orario richiesto per ${giorno(t)} alle ${ora(t)} non è più disponibile. Può sceglierne un altro dalla pagina di prenotazione.</p><p><a href="#prenota">Scegli un altro orario</a></p><p>Dott.ssa Federica Spadazzi</p>`)
-      : stato === 'disdetta'
-      ? mail('Dott.ssa Federica Spadazzi <' + CONFIG.mittente + '>', d.email, 'Visita disdetta', `<p>Gentile ${esc(nomeCompleto)},</p><p>la sua visita di ${giorno(t)} alle ${ora(t)} è stata disdetta. Se vuole, può prenotarne un'altra quando preferisce.</p><p>Dott.ssa Federica Spadazzi</p>`)
-      : mail('Dott.ssa Federica Spadazzi <' + CONFIG.mittente + '>', d.email, `Visita confermata: ${fmtGiornoBreve.format(t)} ore ${ora(t)}`,
-        `<p>Gentile ${esc(nomeCompleto)},<br>la sua visita è confermata.</p>${dettagliVisita(p, true)}`)}
-    ${DISDETTA_APERTA && (stato === 'confermata' || stato === 'in_attesa') ? `<div class="notice wait" role="region" aria-label="Pagina di disdetta">
-        <h3>Pagina di disdetta (si apre dal link nella mail)</h3>
-        <p>Vuole disdire la visita di <b>${giorno(t)} alle ${ora(t)}</b>?</p>
-        <div class="btn-row"><button type="button" class="btn btn-no" data-d="disdici">Sì, disdico</button><button type="button" class="btn btn-ghost" data-d="tieni">No, la tengo</button></div>
-      </div>` : ''}
+    <div class="scene-h"><h2>4. La mail al paziente</h2>${p.stato === 'in_attesa' ? '<span class="pill wait">LA CONFERMA PARTE QUANDO CONFERMI</span>' : ''}</div>
+    ${ultimaMail ? mail(daMittente, d.email, ultimaMail.m.oggetto, ultimaMail.m.corpo) : ''}
+    ${mailP.length > 1 ? `<p class="small"><b>Mail già inviate a ${esc(d.nome)}:</b></p><ul class="oldmails">${mailP.slice(0, -1).reverse().map(x => `<li>${ora(new Date(x.e.t))} · ${esc(x.m.oggetto)}</li>`).join('')}</ul>` : ''}
   </div>
 
-  <div class="scene">
+  ${attiva(p) ? `<div class="scene">
     <h2>5. Il promemoria del giorno prima</h2>
-    <p class="muted small">Parte da solo ${fmtGiorno.format(ultimoGiornoPrima)} alle 10:00, con gli stessi contenuti della conferma.</p>
-    ${mail('Dott.ssa Federica Spadazzi <' + CONFIG.mittente + '>', d.email, `Promemoria: visita domani alle ${ora(t)}`,
-      `<p>Gentile ${esc(nomeCompleto)},<br>le ricordiamo la visita di domani.</p>${dettagliVisita(p, false)}`)}
-  </div>
+    <p class="muted small">Parte da solo ${fmtGiorno.format(addDays(d0, -1))} alle 10:00, con gli stessi contenuti della conferma. Se la visita viene spostata, parte il giorno prima della nuova data.</p>
+    ${mail(daMittente, d.email, `Promemoria: visita domani alle ${ora(t)}`,
+      `<p>Gentile ${esc(nomeCompleto)},<br>le ricordiamo la visita di domani.</p>${dettagliVisita(p, true)}`)}
+  </div>` : ''}
 
   <div class="scene">
-    <h2>6. La cartella su Drive</h2>
-    <p class="muted small">Il nome della cartella seguirà la stessa regola che usano già le tue skill (da definire).</p>
+    <h2>${attiva(p) ? '6' : '5'}. La cartella su Drive</h2>
+    <p class="muted small">Il nome della cartella seguirà la stessa regola che usano già le tue skill (da definire). Se la visita viene disdetta, la cartella resta.</p>
     <div class="drive" aria-label="Esempio di cartella Drive">
       <div>📁 Pazienti</div>
       <div>&nbsp;&nbsp;└ 📁 ${esc(d.cognome.toUpperCase())} ${esc(d.nome)}</div>
@@ -951,32 +1213,65 @@ function renderDott() {
       ${['15:00', '15:30', '16:00', '16:30', '17:00', '17:30'].map((h, i) => `<span class="chip ${i === 2 ? 'off' : ''}">${h}</span>`).join('')}
     </div>
     <p class="muted small">Nell'esempio le 16:00 non vengono offerte perché hai una lezione all'università. Per chiudere un giovedì a Fiano basta un evento qualsiasi quella mattina, per esempio "Chiuso".</p>
+  </div>
+
+  <hr class="sep">
+  <div class="stack">
+    <p class="muted small">Vuoi rifare le prove da zero? Cancella le prenotazioni fatte in questa demo e rimette l'esempio iniziale.</p>
+    <button type="button" class="btn btn-ghost btn-block" data-d="reset-demo">Ricomincia la demo da capo</button>
   </div>`;
 }
 
 $('#dott').addEventListener('click', e => {
-  const b = e.target.closest('[data-d]'); if (!b) return;
-  const p = P(), a = b.dataset.d;
-  if (a === 'conferma') p.stato = 'confermata';
-  if (a === 'rifiuta') { p.stato = 'rifiutata'; prenotatiInDemo.delete(p.slot); }
-  if (a === 'reset') { p.stato = 'in_attesa'; prenotatiInDemo.add(p.slot); DISDETTA_APERTA = false; }
-  if (a === 'disdetta') DISDETTA_APERTA = true;
-  if (a === 'tieni') DISDETTA_APERTA = false;
-  if (a === 'disdici') { p.stato = 'disdetta'; DISDETTA_APERTA = false; prenotatiInDemo.delete(p.slot); }
+  const b = e.target.closest('button, a'); if (!b) return;
+  if (b.dataset.sel) { D.selId = b.dataset.sel; D.modo = null; D.msg = null; return renderDott(); }
+  const p = trova(D.selId);
+  if (D.modo === 'sposta' && toccoOrario(b, D.st, renderDott, $('#dott'))) return;
+  const a = b.dataset.d; if (!a) return;
+  if (a === 'reset-demo') {
+    DB.prenotazioni = []; DB.prenotazioni.push(esempio()); salva();
+    Object.assign(D, { selId: null, modo: null, msg: null }); Object.assign(G, { selId: null, modo: null, msg: null });
+    ricominciaWizard(); renderWizard(false); renderDott(); window.scrollTo({ top: 0 }); return;
+  }
+  if (!p) return;
+  if (a === 'sposta' || a === 'annulla') {
+    D.modo = a; D.msg = null; D.st = { giornoAperto: dayKey(new Date(p.slot)), slot: null, mostraTutti: false };
+    renderDott(); $('#d-h')?.focus(); $('#d-h')?.scrollIntoView({ block: 'start' }); return;
+  }
+  if (a === 'chiudi') { D.modo = null; return renderDott(); }
+  if (a === 'conferma') { p.stato = 'confermata'; registra(p, 'confermata'); D.msg = { tipo: 'ok', titolo: 'Confermata', testo: 'Al paziente è partita la mail di conferma.' }; }
+  if (a === 'rifiuta') { p.stato = 'rifiutata'; registra(p, 'rifiutata'); D.msg = { tipo: 'wait', titolo: 'Rifiutata', testo: "Il paziente riceve una mail con l'invito a scegliere un altro orario. L'orario torna libero." }; }
+  if (a === 'conferma-sposta') {
+    if (!D.st.slot) return;
+    const da = p.slot; p.slot = D.st.slot;
+    if (p.stato === 'in_attesa') p.stato = 'confermata';
+    registra(p, 'spostata_dottoressa', { da, a: p.slot }); D.modo = null;
+    D.msg = { tipo: 'ok', titolo: 'Visita spostata', testo: `Ora è ${lungo(p.slot)}. Al paziente è partita la mail con il nuovo orario.` };
+  }
+  if (a === 'conferma-annulla') {
+    p.stato = 'annullata'; registra(p, 'annullata_dottoressa'); D.modo = null;
+    D.msg = { tipo: 'wait', titolo: 'Visita annullata', testo: "Il paziente è stato avvisato per mail. L'orario è di nuovo prenotabile." };
+  }
   renderDott();
+  const sc = $('#dott .scene'); sc?.scrollIntoView({ block: 'start' });
 });
 document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => {
-  S.confermaManuale = b.dataset.mode === 'manuale';
-  const p = P(); if (p.stato === 'in_attesa' || p.stato === 'confermata') p.stato = S.confermaManuale ? 'in_attesa' : 'confermata';
-  renderDott();
+  DB.confermaManuale = b.dataset.mode === 'manuale'; salva(); renderDott();
 }));
+
+/* Link che aprono una prenotazione precisa (dalla conferma o dalle mail). */
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-apri]'); if (!a) return;
+  G.selId = D.selId = a.dataset.apri; G.modo = D.modo = null; G.msg = D.msg = null;
+  if (location.hash === a.getAttribute('href')) route();
+});
 
 /* =====================================================================
    DOMANDE PER FEDERICA (bozza salvata solo su questo dispositivo)
    ===================================================================== */
 const FB_KEY = 'spadazzi-demo-feedback';
 const fb = $('#feedback');
-try { const s = JSON.parse(localStorage.getItem(FB_KEY) || '{}'); for (const [k, v] of Object.entries(s)) { const el = fb.elements[k]; if (!el) continue; if (el instanceof RadioNodeList) el.value = v; else el.value = v; } } catch (_) {}
+try { const s = JSON.parse(localStorage.getItem(FB_KEY) || '{}'); for (const [k, v] of Object.entries(s)) { const el = fb.elements[k]; if (el) el.value = v; } } catch (_) {}
 fb.addEventListener('input', () => {
   const o = {}; for (const el of fb.elements) { if (!el.name) continue; if (el.type === 'radio') { if (el.checked) o[el.name] = el.value; } else o[el.name] = el.value; }
   try { localStorage.setItem(FB_KEY, JSON.stringify(o)); } catch (_) {}
@@ -998,17 +1293,19 @@ $('#fb-copy').addEventListener('click', () => {
 /* =====================================================================
    NAVIGAZIONE
    ===================================================================== */
-const VIEWS = ['presentazione', 'prenota', 'dottoressa'];
+const VIEWS = ['presentazione', 'prenota', 'gestisci', 'dottoressa'];
 function route() {
   const v = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'presentazione';
   VIEWS.forEach(x => { $('#v-' + x).hidden = x !== v; });
   document.querySelectorAll('.tabs a').forEach(a => { if (a.getAttribute('href') === '#' + v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
   if (v === 'prenota') renderWizard(false);
+  if (v === 'gestisci') renderGestisci();
   if (v === 'dottoressa') renderDott();
   window.scrollTo({ top: 0 });
 }
 document.documentElement.lang = 'it';
 window.addEventListener('hashchange', route);
-renderWizard(false); renderDott(); route();
+carica();
+renderWizard(false); route();
 </script>
 <script data-pwa>if ('serviceWorker' in navigator && window.top === window.self) navigator.serviceWorker.register('sw.js').catch(() => {});</script>
