@@ -82,11 +82,12 @@ a { color: var(--accent); text-underline-offset: 3px; }
 
 /* Testata */
 .testata { background: var(--band); color: var(--band-ink); }
+.testata { position: relative; overflow: hidden; }
 .testata .wrap { padding-block: 22px 20px; display: flex; gap: 16px; align-items: center; }
-.testata svg { flex: none; width: 58px; height: 74px; color: var(--lavanda); }
+.testata .caduceo { flex: none; height: 96px; width: auto; color: var(--lavanda); margin-left: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); }
 .testata .nome { font-family: var(--font-name); font-size: 2.4rem; line-height: 1.1; font-weight: 400; }
 .testata .qualifica { color: var(--band-sub); font-size: 1.02rem; margin-top: 4px; }
-@media (max-width: 380px) { .testata .nome { font-size: 2rem; } .testata svg { width: 46px; height: 60px; } }
+@media (max-width: 380px) { .testata .nome { font-size: 2rem; } .testata .caduceo { height: 80px; } }
 
 main { padding-block: 28px 64px; }
 .view { display: grid; gap: 28px; }
@@ -176,6 +177,7 @@ main { padding-block: 28px 64px; }
 ul.list { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
 
 .notice { border-radius: var(--r); padding: 16px 18px; display: grid; gap: 6px; }
+.notice.aiuto { border: 1px solid var(--line); background: var(--surface); }
 .notice.ok { background: var(--ok-bg); color: var(--fg); border: 2px solid var(--ok); }
 .notice.wait { background: var(--wait-bg); color: var(--fg); border: 2px solid var(--wait); }
 .pill { font-family: var(--font-ui); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.04em; padding: 3px 10px; border-radius: 999px; display: inline-block; white-space: nowrap; }
@@ -276,17 +278,8 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
 
 <header class="testata">
   <div class="wrap">
-    <!-- Caduceo provvisorio: da sostituire con il logo vero -->
-    <svg viewBox="0 0 58 74" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-      <line x1="29" y1="6" x2="29" y2="72"/>
-      <circle cx="29" cy="5" r="3.2" fill="currentColor" stroke="none"/>
-      <path d="M27 12 C18 6 8 8 2 14 C10 13 16 15 21 18 C14 18 9 20 6 24 C14 22 21 21 27 20"/>
-      <path d="M31 12 C40 6 50 8 56 14 C48 13 42 15 37 18 C44 18 49 20 52 24 C44 22 37 21 31 20"/>
-      <path d="M22 26 C34 30 36 36 29 40 C22 44 22 50 29 54 C36 58 34 64 26 66"/>
-      <path d="M36 26 C24 30 22 36 29 40 C36 44 36 50 29 54 C22 58 24 64 32 66"/>
-      <circle cx="22" cy="26" r="1.8" fill="currentColor" stroke="none"/>
-      <circle cx="36" cy="26" r="1.8" fill="currentColor" stroke="none"/>
-    </svg>
+    <!-- Caduceo estratto dal biglietto da visita (Canva, vettoriale) -->
+    <svg class="caduceo" aria-hidden="true" viewBox="0 0.7 65.3 122.9"><path fill="currentColor" d="M 11.17 122.91 C 10.83 122.50 10.68 121.30 10.68 119.01 L 10.68 115.69 L 9.27 115.05 C 6.14 113.63 4.86 111.51 4.86 107.71 C 4.86 105.71 5.01 105.08 5.77 103.97 C 6.74 102.54 6.74 102.55 5.10 100.74 C 2.82 98.24 2.27 92.16 4.15 90.16 C 4.54 89.74 4.86 89.24 4.86 89.05 C 4.86 88.85 4.13 87.75 3.24 86.60 C 0.46 83.03 0.13 82.14 0.11 78.33 C 0.10 75.27 0.19 74.83 1.12 73.22 C 1.67 72.25 2.60 70.96 3.16 70.36 L 4.19 69.27 L 2.90 67.72 C 2.19 66.87 1.20 65.30 0.70 64.23 C -0.10 62.51 -0.20 61.82 -0.22 58.23 C -0.24 54.71 -0.14 53.93 0.57 52.36 C 1.02 51.36 1.85 50.10 2.42 49.56 C 3.42 48.60 3.78 47.64 3.14 47.64 C 2.96 47.64 1.95 46.78 0.88 45.73 C -2.08 42.81 -3.61 37.76 -2.40 34.90 L -1.86 33.62 L -3.17 32.57 C -4.45 31.52 -5.16 30.41 -6.19 27.82 L -6.71 26.52 L -8.50 27.10 C -10.21 27.64 -10.37 27.64 -12.15 26.92 C -13.31 26.46 -14.75 26.19 -15.99 26.20 C -17.39 26.22 -18.49 25.98 -19.68 25.40 C -20.62 24.95 -22.09 24.53 -22.95 24.48 C -24.00 24.42 -25.17 23.99 -26.49 23.18 C -27.90 22.32 -28.89 21.96 -29.96 21.95 C -31.66 21.93 -34.41 20.59 -35.86 19.08 L -36.78 18.13 L -34.82 17.69 C -32.42 17.15 -26.07 13.97 -21.76 11.16 C -20.01 10.01 -16.37 7.62 -13.65 5.83 C -7.59 1.84 -7.13 1.60 -4.37 1.06 C 2.01 -0.19 7.04 2.74 7.86 8.20 C 8.18 10.30 7.59 12.14 6.05 13.87 C 5.39 14.59 4.86 15.33 4.86 15.51 C 4.86 15.69 5.37 16.26 5.99 16.78 C 6.90 17.55 7.35 17.69 8.35 17.53 C 10.21 17.23 10.50 16.73 10.53 13.76 C 10.55 11.77 10.38 10.77 9.83 9.65 C 8.31 6.58 9.18 3.30 11.89 1.89 C 15.55 -0.01 19.50 1.89 19.94 5.78 C 20.06 6.87 19.86 7.77 19.17 9.28 C 18.35 11.07 18.25 11.69 18.34 14.40 L 18.44 17.48 L 20.10 17.59 C 21.62 17.69 23.91 16.95 23.91 16.36 C 23.91 16.24 23.54 15.64 23.08 15.05 C 21.05 12.37 20.87 8.02 22.69 5.32 C 24.95 1.96 27.99 0.86 32.48 1.79 C 36.60 2.64 38.32 3.67 48.31 11.25 C 50.71 13.07 54.73 15.73 57.25 17.18 C 61.61 19.69 61.92 19.81 63.69 19.67 C 65.39 19.55 65.54 19.60 65.54 20.30 C 65.54 21.33 63.30 23.88 61.64 24.73 C 60.89 25.10 59.65 25.42 58.89 25.42 C 58.13 25.42 56.61 25.83 55.50 26.33 C 53.87 27.08 53.20 27.21 51.91 27.02 C 50.78 26.85 50.10 26.92 49.55 27.29 C 48.66 27.87 46.51 28.29 43.67 28.45 C 37.82 28.76 35.86 28.93 35.54 29.13 C 35.35 29.25 34.97 29.88 34.69 30.53 C 34.15 31.84 32.71 33.44 31.23 34.40 C 30.34 34.97 30.26 35.21 30.26 37.26 C 30.26 40.42 29.11 42.84 26.17 45.89 L 23.82 48.32 L 25.28 50.06 C 27.44 52.64 28.13 54.42 28.14 57.45 C 28.15 62.19 26.98 64.86 23.66 67.71 L 21.98 69.14 L 23.07 70.30 C 25.63 73.04 25.85 73.61 25.83 77.45 C 25.80 81.79 25.23 83.09 22.16 85.76 C 20.19 87.48 19.51 88.57 20.40 88.57 C 20.61 88.57 21.18 89.48 21.67 90.59 C 23.24 94.11 22.53 97.77 19.64 101.05 C 18.89 101.91 18.26 102.69 18.26 102.80 C 18.26 102.91 18.66 103.58 19.15 104.30 C 19.86 105.35 20.03 106.03 20.03 107.86 C 20.03 111.83 17.55 115.02 14.46 115.02 L 13.43 115.02 L 13.19 118.98 C 12.97 122.61 12.72 123.46 11.87 123.48 C 11.75 123.49 11.43 123.23 11.17 122.91 Z M 12.27 113.76 C 12.27 108.62 12.14 105.85 11.91 105.85 C 11.67 105.85 11.57 108.64 11.60 113.96 C 11.62 118.57 11.78 121.99 11.96 121.88 C 12.13 121.77 12.27 118.12 12.27 113.76 Z M 10.70 109.58 C 10.66 106.46 10.19 105.83 9.26 107.64 C 8.59 108.93 8.79 111.30 9.72 113.08 L 10.27 114.14 L 10.50 113.26 C 10.63 112.77 10.72 111.12 10.70 109.58 Z M 14.73 112.93 C 15.23 111.99 15.19 108.56 14.67 108.04 C 13.88 107.25 13.73 107.61 13.62 110.61 C 13.54 112.79 13.62 113.61 13.93 113.61 C 14.17 113.61 14.53 113.30 14.73 112.93 Z M 17.60 111.26 C 19.87 107.59 19.00 104.78 14.53 101.26 L 12.42 99.61 C 11.63 98.99 10.54 97.84 10 97.06 C 9.12 95.80 9.03 95.39 9.16 93.56 L 9.31 91.48 L 7.84 90.55 C 7.04 90.04 6.12 89.62 5.80 89.62 C 4.30 89.62 3.54 94.16 4.61 96.73 C 5.64 99.19 8.88 102.01 12.27 103.39 C 14.04 104.11 16.07 106.30 16.35 107.81 C 16.59 109.05 16.43 110.84 15.93 112.55 C 15.70 113.34 15.74 113.39 16.26 112.95 C 16.58 112.69 17.19 111.92 17.60 111.26 Z M 7.45 110.82 C 7.17 108.45 7.51 106.91 8.60 105.74 C 9.66 104.59 9.51 103.85 8.17 103.51 C 7.38 103.32 7.06 103.46 6.37 104.30 C 5.62 105.20 5.54 105.59 5.67 107.67 C 5.77 109.28 6.07 110.42 6.60 111.28 C 7.04 111.98 7.45 112.55 7.52 112.55 C 7.59 112.55 7.56 111.77 7.45 110.82 Z M 17.97 99.59 C 19.80 97.94 20.72 95.96 20.72 93.68 C 20.72 90.30 18.64 87.42 14.20 84.68 C 11.64 83.10 9.18 80.93 8.54 79.69 C 7.75 78.16 7.90 75.81 8.89 74.35 C 9.87 72.91 9.90 72.94 6.71 70.95 C 4.56 69.60 4.41 69.66 2.94 72.35 C 1.54 74.94 1.37 77.62 2.40 80.83 C 3.08 82.93 3.56 83.71 5.37 85.56 C 6.68 86.90 8.41 88.21 9.75 88.89 C 14.10 91.09 16.20 93.88 14.95 95.80 C 14.63 96.28 14.39 97.39 14.39 98.36 C 14.39 101.26 15.64 101.69 17.97 99.59 Z M 13.01 97.30 C 13.09 94.39 12.75 93.15 11.87 93.15 C 11.40 93.15 11.50 97.88 11.99 98.37 C 12.72 99.10 12.98 98.84 13.01 97.30 Z M 10.76 93.94 C 10.62 93.35 10.60 93.35 10.35 93.94 C 10.20 94.28 10.20 94.84 10.35 95.18 C 10.60 95.76 10.62 95.76 10.76 95.18 C 10.85 94.84 10.85 94.28 10.76 93.94 Z M 19.97 85.48 C 22.45 83.97 23.97 81.18 24.19 77.71 C 24.34 75.39 24.26 74.95 23.27 72.94 C 22.67 71.72 21.82 70.40 21.37 70 C 20.21 68.94 15.14 65.5 13.68 64.76 C 13.00 64.42 11.45 63.49 10.24 62.69 C 8.34 61.43 7.93 60.96 7.33 59.36 C 6.18 56.31 6.42 54.21 8.13 52.33 C 9.10 51.26 8.76 50.71 6.44 49.53 L 4.44 48.52 L 3.20 49.94 C 1.28 52.13 0.63 53.96 0.63 57.23 C 0.63 59.66 0.78 60.39 1.71 62.32 C 2.96 64.95 5.35 67.42 8.27 69.13 C 12.69 71.71 16.26 74.27 16.90 75.31 C 17.26 75.91 17.56 77 17.56 77.73 C 17.56 79.14 16.58 81.41 15.65 82.19 C 14.71 82.97 15.02 83.88 16.59 84.98 C 18.38 86.24 18.66 86.28 19.97 85.48 Z M 13.69 80.10 C 13.79 75.33 13.77 75.23 12.62 74.63 L 11.57 74.08 L 11.57 77.78 C 11.57 81.14 11.64 81.55 12.34 82.20 C 12.76 82.60 13.23 82.80 13.37 82.66 C 13.51 82.51 13.66 81.36 13.69 80.10 Z M 15.93 78.98 C 16.00 77.05 15.28 77.27 15.16 79.21 C 15.08 80.58 15.15 80.89 15.47 80.56 C 15.70 80.33 15.91 79.62 15.93 78.98 Z M 10.58 76.86 C 10.07 76.35 9.67 77.79 10.00 78.98 C 10.25 79.91 10.26 79.90 10.60 78.57 C 10.83 77.67 10.82 77.10 10.58 76.86 Z M 21.78 65.46 C 24.73 63.30 26.13 60.44 26.18 56.46 C 26.20 54.85 26.00 53.76 25.51 52.78 C 24.85 51.44 21.85 48 21.35 48 C 21.21 48 20.08 47.37 18.84 46.61 C 17.57 45.83 14.74 44.64 12.39 43.90 C 7.67 42.40 4.54 40.68 2.98 38.73 C 2.12 37.67 1.88 36.98 1.76 35.29 C 1.59 33.07 1.87 32.72 2.88 33.84 C 4.30 35.41 7.85 34.96 9.37 33.02 C 10.17 32.00 10.10 31.26 9.16 30.87 C 6.58 29.80 3.51 30.15 1.16 31.76 C -1.80 33.81 -2.65 37.25 -0.98 40.51 C 0.58 43.58 2.82 45.25 10.44 49.03 C 16.85 52.21 18.01 52.96 19 54.56 C 20.35 56.76 19.50 60.16 17.03 62.42 C 15.65 63.67 15.52 64.22 16.42 65.01 C 17.24 65.73 19.03 66.66 19.63 66.68 C 19.90 66.69 20.87 66.14 21.78 65.46 Z M 4.41 31.91 C 3.98 31.47 4.54 31.06 5.59 31.06 C 6.16 31.06 6.63 31.22 6.63 31.41 C 6.63 31.61 6.40 31.77 6.13 31.77 C 5.85 31.77 5.41 31.85 5.14 31.96 C 4.87 32.06 4.54 32.03 4.41 31.91 Z M 14.55 58.87 C 14.81 54.27 14.80 54.22 13.98 53.58 C 12.91 52.76 11.91 52.43 11.59 52.81 C 11.45 52.98 11.42 55.22 11.54 57.80 C 11.73 62.34 11.77 62.50 12.62 62.97 C 14.24 63.85 14.28 63.75 14.55 58.87 Z M 17.37 60.59 C 18.30 59.18 18.36 57.80 17.57 56.53 C 17.17 55.89 16.69 55.46 16.50 55.58 C 16.05 55.86 16.04 61.40 16.5 61.40 C 16.69 61.40 17.08 61.03 17.37 60.59 Z M 10.51 57.69 C 10.51 54.99 10.41 54.35 9.99 54.35 C 9.39 54.35 8.92 55.12 8.58 56.71 C 8.41 57.50 8.55 58.32 9.05 59.44 C 10.14 61.91 10.51 61.48 10.51 57.69 Z M 22.61 46.18 C 25.96 44.45 28.83 40.34 29.11 36.88 C 29.27 34.91 29.20 34.67 28.16 33.35 C 26.43 31.18 24.58 30.23 22.01 30.21 C 19.67 30.20 17.82 30.89 17.64 31.83 C 17.57 32.15 17.98 32.93 18.55 33.57 C 19.44 34.57 19.84 34.73 21.67 34.87 C 23.54 35.00 23.89 34.91 24.86 34.10 C 25.46 33.59 26.05 33.18 26.17 33.18 C 26.47 33.18 26.01 36.01 25.58 36.88 C 24.31 39.40 21.07 42.09 18.16 43.04 C 16.36 43.63 16.57 44.29 18.97 45.56 C 21.13 46.70 21.50 46.76 22.61 46.18 Z M 21.71 31.88 C 20.71 31.62 21.00 31.06 22.13 31.06 C 23.30 31.06 23.84 31.58 23.00 31.91 C 22.69 32.02 22.42 32.10 22.39 32.08 C 22.35 32.06 22.05 31.96 21.71 31.88 Z M 15.14 42.97 C 15.29 41.68 15.42 39.23 15.79 30.89 C 16.01 25.84 16.25 21.52 16.33 21.29 C 16.41 21.06 16.5 19.00 16.53 16.71 L 16.59 12.54 L 14.17 12.30 C 12.85 12.16 11.71 12.10 11.65 12.16 C 11.59 12.23 11.46 18.95 11.37 27.11 C 11.25 38.76 11.31 42.01 11.65 42.24 C 12.23 42.62 14.09 43.31 14.65 43.37 C 14.89 43.39 15.12 43.21 15.14 42.97 Z M 19.08 41.67 C 20.69 40.93 23.21 38.79 23.21 38.16 C 23.21 37.94 22.97 37.76 22.68 37.76 C 22.39 37.76 22.19 37.58 22.24 37.36 C 22.28 37.14 21.78 36.81 21.10 36.62 C 20.43 36.44 19.32 35.80 18.63 35.20 L 17.39 34.10 L 17.28 36.33 C 17.22 37.55 17.25 38.63 17.35 38.73 C 17.44 38.82 18.25 38.66 19.13 38.35 C 21.32 37.61 21.16 38.15 18.89 39.20 C 17.09 40.03 16.57 40.75 16.99 41.84 C 17.24 42.49 17.31 42.48 19.08 41.67 Z M 10.42 40.87 C 10.17 40.24 5.92 37.76 5.07 37.76 C 4.46 37.76 4.5 37.89 5.41 38.84 C 7.57 41.09 11.05 42.51 10.42 40.87 Z M 10.23 38.56 C 10.49 37.5 10.57 34.24 10.33 34.24 C 10.21 34.24 9.60 34.62 8.98 35.08 C 8.37 35.55 7.32 36.16 6.66 36.42 L 5.45 36.91 L 7.53 37.99 C 10.11 39.32 10.04 39.31 10.23 38.56 Z M 31.55 31.25 C 32.38 30.38 33.32 29.26 33.64 28.77 C 34.22 27.89 34.21 27.85 32.52 26.03 C 31.58 25.01 30.68 24.13 30.53 24.07 C 30.38 24.00 29.54 24.58 28.67 25.35 C 26.29 27.44 24.83 28.03 21.97 28.05 C 20.61 28.06 19.10 27.98 18.62 27.89 C 17.82 27.73 17.74 27.82 17.74 28.94 C 17.74 30.31 17.69 30.30 20.53 29.63 C 22.76 29.10 25.80 29.95 27.71 31.64 C 28.44 32.27 29.25 32.80 29.53 32.81 C 29.80 32.82 30.71 32.12 31.55 31.25 Z M 0.25 31.28 C 0.47 31.01 1.48 30.43 2.48 30.00 C 3.99 29.35 4.71 29.25 6.53 29.42 C 7.75 29.53 9.04 29.78 9.40 29.98 C 10.23 30.42 10.51 30.15 10.51 28.92 L 10.51 27.96 L 7.60 27.97 C 5.37 27.98 4.31 27.80 3.06 27.23 C 1.55 26.54 -0.78 24.33 -1.69 22.75 C -2.05 22.12 -2.20 22.20 -3.72 23.83 C -4.62 24.80 -5.36 25.80 -5.36 26.05 C -5.36 27.03 -3.90 29.28 -2.48 30.5 C -0.87 31.88 -0.37 32.02 0.25 31.28 Z M 39.58 27.32 C 40.43 27 40.26 26.61 38.92 25.78 C 38.25 25.36 36.96 23.92 36.07 22.57 C 34.62 20.39 34.32 20.12 33.30 20.12 C 30.83 20.12 30.71 21.62 32.99 24.05 C 34.72 25.90 36.05 26.76 37.85 27.21 C 38.43 27.35 38.93 27.48 38.96 27.50 C 39.00 27.52 39.28 27.44 39.58 27.32 Z M 9.32 25.93 C 10.28 25.74 10.5 24.87 10.50 21.28 L 10.51 18.37 L 8.39 18.59 L 6.28 18.82 L 4.69 17.22 C 2.71 15.25 2.62 14.23 4.29 12.83 C 5.89 11.49 6.63 9.92 6.63 7.84 C 6.63 6.33 6.46 5.91 5.30 4.64 C 3.55 2.69 1.26 1.85 -2.04 1.93 C -4.21 1.99 -4.95 2.20 -7.51 3.47 C -9.14 4.28 -11.37 5.54 -12.46 6.27 L -17.40 9.58 C -23.83 13.89 -27.17 15.75 -33.40 18.51 L -34.81 19.14 L -33.81 19.66 C -31.98 20.62 -29.25 20.66 -26.79 19.78 C -22.65 18.28 -11.58 11.32 -10.54 9.56 C -9.69 8.12 -9.24 8.49 -9.24 10.64 C -9.24 14.75 -5.49 18.35 -1.21 18.36 C -0.58 18.36 -0.07 18.52 -0.07 18.71 C -0.07 18.91 -0.25 19.07 -0.46 19.07 C -1.10 19.07 -0.59 21.71 0.28 22.95 C 1.30 24.38 3.49 25.75 5.33 26.10 C 6.69 26.36 7.29 26.33 9.32 25.93 Z M 47.90 26.13 C 47.90 25.94 47.46 25.52 46.93 25.20 C 44.41 23.67 42.67 22.37 41.34 21.04 C 38.45 18.14 38.57 18.21 37.34 18.93 C 36.75 19.28 36.26 19.83 36.26 20.15 C 36.26 21.05 40.28 24.66 42.33 25.59 C 44.24 26.45 47.90 26.81 47.90 26.13 Z M -7.80 25.05 C -7.11 24.70 -5.79 23.74 -4.87 22.91 C -2.15 20.48 -2.04 19.67 -4.39 19.24 C -5.67 19 -5.78 19.06 -8.09 21.44 C -9.40 22.78 -10.91 24.17 -11.44 24.52 C -12.56 25.25 -12.67 25.65 -11.80 25.88 C -10.90 26.12 -9.25 25.78 -7.80 25.05 Z M 24.09 25.73 C 26.16 25.21 28.30 23.32 29.05 21.36 C 29.54 20.08 29.57 19.68 29.21 19.25 C 28.97 18.96 28.83 18.71 28.90 18.70 C 28.97 18.69 30.25 18.66 31.73 18.62 C 34.14 18.55 34.60 18.42 35.96 17.43 C 38.33 15.71 39.60 12.75 39.03 10.25 C 38.75 9.04 39.92 9.83 40.45 11.21 C 41.03 12.73 43.81 15.19 49.59 19.32 C 54.28 22.68 60 24.07 62.46 22.44 C 63.78 21.57 63.67 21.02 62.07 20.54 C 58.64 19.51 52.06 15.5 44.80 10.00 C 35.45 2.93 32.20 1.60 26.83 2.69 C 25.70 2.92 23.54 4.92 22.98 6.26 C 21.96 8.71 22.62 11.58 24.71 13.73 L 26.03 15.09 L 25.24 16.25 C 23.62 18.63 21.57 19.37 18.89 18.57 L 17.92 18.28 L 17.92 25.40 L 19.07 25.73 C 20.66 26.19 22.28 26.19 24.09 25.73 Z M 53.69 25.20 C 54.29 24.98 54.48 24.01 53.92 24.01 C 53.24 24.01 46.22 19.06 43.71 16.81 C 41.02 14.40 40.37 14.09 40.00 15.04 C 39.46 16.46 39.83 17.39 41.64 19.20 C 45.88 23.42 51.30 26.12 53.69 25.20 Z M -13.82 23.84 C -12.94 23.39 -10.99 22.11 -9.49 20.98 L -6.75 18.94 L -7.89 17.77 C -8.51 17.12 -9.15 16.60 -9.30 16.60 C -9.46 16.60 -10.42 17.35 -11.44 18.27 C -13.80 20.41 -16.41 22.30 -18.32 23.26 C -20.12 24.17 -20.22 24.62 -18.67 24.81 C -16.98 25.03 -15.60 24.75 -13.82 23.84 Z M -19.64 21.94 C -17.75 21.03 -9.94 16.08 -9.94 15.78 C -9.94 15.26 -11.12 12.37 -11.34 12.37 C -11.49 12.37 -13.66 13.90 -16.16 15.77 C -20.11 18.73 -24.97 21.54 -26.14 21.54 C -26.98 21.54 -26.44 22.25 -25.37 22.55 C -23.35 23.14 -21.82 22.98 -19.64 21.94 Z M 17.60 9.55 C 20.12 6.53 18.23 2.49 14.31 2.49 C 12.78 2.49 12.40 2.64 11.35 3.69 C 10.33 4.71 10.16 5.12 10.16 6.56 C 10.16 8.07 10.30 8.38 11.62 9.64 C 13.01 10.96 13.18 11.02 14.87 10.86 C 16.34 10.72 16.82 10.49 17.60 9.55 Z M 14.25 9.25 C 14.12 9.05 14.35 8.78 14.76 8.66 C 15.84 8.31 16.78 6.17 16.23 5.30 C 15.35 3.89 16.21 3.30 17.33 4.54 C 18.16 5.46 18.07 7.22 17.12 8.28 C 16.25 9.25 14.59 9.81 14.25 9.25 Z M 14.25 9.25"/></svg>
     <div>
       <div class="nome">Dott.ssa Federica Spadazzi</div>
       <div class="qualifica">Specialista in Medicina Legale e delle Assicurazioni</div>
@@ -300,7 +293,7 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
     <div class="hero">
       <p class="eyebrow">Per Federica</p>
       <h1 id="t-pres">I pazienti prenotano da soli, solo quando sei libera</h1>
-      <p class="muted">Mandi un link. Il paziente sceglie sede, tipo di visita e orario tra quelli davvero liberi. Tu confermi con un tocco dal telefono. Mail di conferma, promemoria, evento in calendario e cartella su Drive partono da soli. Se il paziente deve cambiare data o disdire, lo fa da solo dal link nella mail.</p>
+      <p class="muted">Mandi un link. Il paziente sceglie sede, tipo di visita e orario tra quelli davvero liberi. Tu confermi con un tocco dal telefono. Mail di conferma, promemoria, evento in calendario e cartella su Drive partono da soli. Se il paziente deve cambiare data o disdire, lo chiede dal link nella mail fino a 48 ore prima.</p>
       <div class="btn-row">
         <a class="btn btn-primary" href="#prenota">Prova a prenotare</a>
         <a class="btn btn-ghost" href="#dottoressa">Guarda cosa ricevi tu</a>
@@ -311,7 +304,7 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
       <b>Come provarla</b>
       <ol class="list">
         <li><a href="#prenota">Prenota</a> una o più visite, come farebbe un paziente.</li>
-        <li>In <a href="#gestisci">Cambia o disdici</a> sposta una visita a un altro giorno, o disdicila.</li>
+        <li>In <a href="#gestisci">Cambia o disdici</a> chiedi di spostare una visita a un altro giorno, o disdicila.</li>
         <li>In <a href="#dottoressa">Lato dottoressa</a> confermi, sposti o annulli tu, e vedi notifiche, mail e calendario cambiare a ogni passo.</li>
       </ol>
       <p class="small">Le prove restano solo su questo telefono o computer. In fondo al lato dottoressa puoi ricominciare da capo.</p>
@@ -322,10 +315,10 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
     <div class="stack">
       <h2>Come funziona</h2>
       <ol class="steps3">
-        <li><b>Tu apri gli orari, dal Calendar che usi già</b><span class="muted small">Fiano è automatico: ogni giovedì 9–14, tolti gli appuntamenti già in agenda (anche quelli della segretaria). Per Roma crei un evento "Disponibile" nel calendario "Disponibile Roma", per esempio martedì 15–18.</span></li>
-        <li><b>Il paziente prenota in 6 passaggi</b><span class="muted small">Sede, tipo di visita, giorno e ora, dati, documenti (foto col telefono o PDF), riepilogo con la presa visione del fondo spese. Vede solo orari liberi in <em>tutti</em> i tuoi calendari: studio, personale, università.</span></li>
+        <li><b>Tu apri gli orari, dal Calendar che usi già</b><span class="muted small">Fiano è automatico: ogni giovedì 9–14, tolti gli appuntamenti già in agenda (anche quelli della segretaria). Per Roma crei un evento "Disponibile" nel calendario "Disponibile Roma", per esempio martedì 15–18. Per le visite fuori studio fai lo stesso nel calendario "Disponibile fuori studio": si prenotano con almeno 7 giorni di anticipo.</span></li>
+        <li><b>Il paziente prenota in 6 passaggi</b><span class="muted small">Sede (Fiano, Roma o fuori studio), tipo di visita, giorno e ora, dati, documenti (facoltativi, anche foto col telefono), riepilogo con la presa visione del fondo spese. Vede solo orari liberi in <em>tutti</em> i tuoi calendari: studio, personale, università.</span></li>
         <li><b>Tu ricevi una notifica e confermi</b><span class="muted small">Nel frattempo l'orario è già bloccato. Alla conferma il paziente riceve la mail con tutto quello che deve sapere. Il giorno prima gli arriva il promemoria.</span></li>
-        <li><b>Cambi e disdette si gestiscono da soli</b><span class="muted small">Fino alle 18:00 del giorno prima il paziente può spostare la visita su un altro orario libero o disdirla. L'orario lasciato torna prenotabile e tu ricevi una notifica. Anche tu puoi spostare o annullare una visita: il paziente viene avvisato per mail.</span></li>
+        <li><b>Cambi e disdette dal link nella mail</b><span class="muted small">Fino a 48 ore prima il paziente può disdire, o chiedere un altro orario libero: il cambio lo confermi tu, e fino ad allora vale l'appuntamento di prima. Anche tu puoi spostare o annullare una visita: il paziente viene avvisato per mail.</span></li>
       </ol>
     </div>
 
@@ -336,7 +329,7 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
         <div><b>Nessun doppio impegno</b><p>Un orario occupato in qualsiasi tuo calendario non viene mai offerto.</p></div>
         <div><b>Nessun pannello nuovo</b><p>Gestisci tutto da Google Calendar e dalla mail, sul telefono o sul PC.</p></div>
         <div><b>Pazienti che arrivano preparati</b><p>Mail di conferma e promemoria con documenti, indicazioni e modalità di pagamento.</p></div>
-        <div><b>Documenti già al loro posto</b><p>Il paziente allega documento d'identità, tessera sanitaria e documentazione clinica. Arrivano nella sua cartella su Drive, già divisi per tipo, pronti per preparare la relazione.</p></div>
+        <div><b>Documenti già al loro posto</b><p>Il paziente può allegare documento d'identità, tessera sanitaria e documentazione clinica. Arrivano nella sua cartella su Drive, già divisi per tipo, pronti per preparare la relazione.</p></div>
         <div><b>Dati che restano tuoi</b><p>Tutto resta nel tuo account Google: niente database esterni. Costo: zero euro al mese.</p></div>
       </div>
     </div>
@@ -347,7 +340,7 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
         <li>Le visite CAF UCI del giovedì pomeriggio: le prenota il CAF.</li>
         <li>CTU e visite INPS: le concordi tu con il medico della controparte.</li>
         <li>Il numero di telefono per Roma: per Roma si scrive alla mail dello studio.</li>
-        <li>Visite in giornata: si prenota, si cambia o si disdice entro le 18:00 del giorno prima.</li>
+        <li>Visite in giornata: si prenota entro le 18:00 del giorno prima; si cambia o si disdice fino a 48 ore prima.</li>
       </ul>
     </div>
 
@@ -355,57 +348,59 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
 
     <form class="fb" id="feedback" aria-labelledby="t-fb">
       <div class="stack">
-        <h2 id="t-fb">Alcune domande per te</h2>
-        <p class="muted small">Le risposte restano su questo dispositivo finché non premi "Copia le risposte" e le mandi ad Agostino.</p>
+        <h2 id="t-fb">Da decidere al prossimo incontro</h2>
+        <p class="muted small">Grazie per le risposte: le modifiche sono già nella demo. Restano questi punti. Le risposte restano su questo dispositivo finché non premi "Copia le risposte".</p>
       </div>
       <fieldset>
-        <legend>Come vuoi confermare le prenotazioni?</legend>
-        <label class="opt"><input type="radio" name="conferma" value="Le confermo io, una per una"> Le confermo io, una per una</label>
-        <label class="opt"><input type="radio" name="conferma" value="Automatica: se l'orario è libero è confermata"> Automatica: se l'orario è libero è confermata</label>
-        <label class="opt"><input type="radio" name="conferma" value="Non so ancora"> Non so ancora</label>
+        <legend>Invalidità con richiesta di accompagnamento: come va gestita?</legend>
+        <label class="sr" for="fb-accomp">Invalidità con richiesta di accompagnamento: come va gestita?</label>
+        <textarea id="fb-accomp" name="accomp" placeholder="Per esempio: voce a parte, domanda in più dentro invalidità, altro fondo spese…"></textarea>
       </fieldset>
       <fieldset>
-        <legend>Se il paziente cambia data da solo?</legend>
-        <label class="opt"><input type="radio" name="cambio" value="Resta confermata, mi basta la notifica"> Resta confermata, mi basta la notifica</label>
-        <label class="opt"><input type="radio" name="cambio" value="Devo riconfermarla io"> Devo riconfermarla io</label>
-        <label class="opt"><input type="radio" name="cambio" value="Il paziente non deve poter cambiare data, solo disdire"> Il paziente non deve poter cambiare data, solo disdire</label>
+        <legend>Fondo spese per invalidità civile e Legge 104: quale importo?</legend>
+        <label class="sr" for="fb-fondoinv">Fondo spese per invalidità civile e Legge 104: quale importo?</label>
+        <textarea id="fb-fondoinv" name="fondoinv" placeholder="Oggi nella demo: 50 €"></textarea>
       </fieldset>
       <fieldset>
-        <legend>Fino a quando si può prenotare, cambiare o disdire?</legend>
-        <label class="opt"><input type="radio" name="limite" value="Entro le 18:00 del giorno prima"> Entro le 18:00 del giorno prima</label>
-        <label class="opt"><input type="radio" name="limite" value="Entro mezzanotte del giorno prima"> Entro mezzanotte del giorno prima</label>
-        <label class="opt"><input type="radio" name="limite" value="Altro (vedi note)"> Altro (scrivilo nelle note)</label>
+        <legend>Responsabilità medica (500 €): la teniamo nell'elenco?</legend>
+        <label class="opt"><input type="radio" name="respmed" value="Sì, così"> Sì, così</label>
+        <label class="opt"><input type="radio" name="respmed" value="Sì, ma da cambiare (vedi note)"> Sì, ma da cambiare (vedi note)</label>
+        <label class="opt"><input type="radio" name="respmed" value="No"> No</label>
       </fieldset>
       <fieldset>
-        <legend>Dove vuoi le notifiche?</legend>
-        <label class="opt"><input type="radio" name="notifiche" value="Basta la mail (app Gmail)"> Basta la mail (app Gmail)</label>
-        <label class="opt"><input type="radio" name="notifiche" value="Notifica dedicata sul telefono"> Notifica dedicata sul telefono</label>
-        <label class="opt"><input type="radio" name="notifiche" value="Entrambe"> Entrambe</label>
+        <legend>Quali altre voci mancano nell'elenco delle visite?</legend>
+        <label class="sr" for="fb-altrevoci">Quali altre voci mancano nell'elenco delle visite?</label>
+        <textarea id="fb-altrevoci" name="altrevoci" placeholder="Una per riga, con il fondo spese"></textarea>
       </fieldset>
       <fieldset>
-        <legend>Visite fuori studio prenotabili dal link?</legend>
-        <label class="opt"><input type="radio" name="fuori" value="No"> No</label>
-        <label class="opt"><input type="radio" name="fuori" value="Sì, con almeno 7 giorni di anticipo"> Sì, con almeno 7 giorni di anticipo</label>
+        <legend>Se un paziente non riesce a prenotare dal link, cosa gli offriamo?</legend>
+        <label class="sr" for="fb-alternativa">Se un paziente non riesce a prenotare dal link, cosa gli offriamo?</label>
+        <textarea id="fb-alternativa" name="alternativa" placeholder="Nella demo, al primo passo: telefono di Fiano e mail per Roma"></textarea>
       </fieldset>
       <fieldset>
-        <legend>Per Roma, un numero WhatsApp solo messaggi?</legend>
-        <label class="opt"><input type="radio" name="whatsapp" value="Sì"> Sì</label>
-        <label class="opt"><input type="radio" name="whatsapp" value="No, basta la mail"> No, basta la mail</label>
+        <legend>WhatsApp solo messaggi per Roma: quale numero, e lo mostriamo già?</legend>
+        <label class="sr" for="fb-whatsapp">WhatsApp solo messaggi per Roma: quale numero, e lo mostriamo già?</label>
+        <textarea id="fb-whatsapp" name="whatsapp" placeholder=""></textarea>
       </fieldset>
       <fieldset>
-        <legend>Medici dello studio di Fiano da mostrare</legend>
-        <label class="sr" for="fb-medici">Nomi dei medici dello studio di Fiano</label>
-        <textarea id="fb-medici" name="medici" placeholder="Un nome per riga, oppure lascia vuoto"></textarea>
+        <legend>Visite fuori studio: in quali zone, in quali giorni, e con quale fondo spese?</legend>
+        <label class="sr" for="fb-fuoristudio">Visite fuori studio: in quali zone, in quali giorni, e con quale fondo spese?</label>
+        <textarea id="fb-fuoristudio" name="fuoristudio" placeholder="Per esempio: solo Roma e provincia; costo dello spostamento…"></textarea>
       </fieldset>
       <fieldset>
-        <legend>Come si chiamano le cartelle dei pazienti su Drive?</legend>
-        <label class="sr" for="fb-drive">Formato del nome delle cartelle dei pazienti</label>
-        <textarea id="fb-drive" name="drive" placeholder="Per esempio: ROSSI Mario, oppure 2026-11 Rossi Mario – Invalidità"></textarea>
+        <legend>Se rifiuti un cambio data chiesto dal paziente:</legend>
+        <label class="opt"><input type="radio" name="rifiutocambio" value="Resta valido l'appuntamento di prima (come nella demo)"> Resta valido l'appuntamento di prima (come nella demo)</label>
+        <label class="opt"><input type="radio" name="rifiutocambio" value="La visita viene annullata"> La visita viene annullata</label>
       </fieldset>
       <fieldset>
-        <legend>Cosa cambieresti?</legend>
-        <label class="sr" for="fb-note">Note libere</label>
-        <textarea id="fb-note" name="note" placeholder="Qualsiasi cosa: testi, passaggi, cose che mancano"></textarea>
+        <legend>Nome delle cartelle su Drive: va bene "COGNOME Nome - tipo di visita"?</legend>
+        <label class="sr" for="fb-cartelle">Nome delle cartelle su Drive: va bene "COGNOME Nome - tipo di visita"?</label>
+        <textarea id="fb-cartelle" name="cartelle" placeholder="Suggerimento: aggiungere anno e mese in fondo, per distinguere più pratiche della stessa persona"></textarea>
+      </fieldset>
+      <fieldset>
+        <legend>Altro</legend>
+        <label class="sr" for="fb-note">Altro</label>
+        <textarea id="fb-note" name="note" placeholder=""></textarea>
       </fieldset>
       <div class="btn-row">
         <button type="button" class="btn btn-primary" id="fb-copy">Copia le risposte</button>
@@ -432,20 +427,13 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
       <h1 id="t-dott" style="font-size:2rem">Le tue prenotazioni</h1>
       <p class="muted">Tocca una prenotazione per vedere cosa è successo e cosa puoi fare. Nel sistema vero questo lo fai dalla mail e da Google Calendar.</p>
     </div>
-    <div class="toggle">
-      <span><b>Conferma delle nuove richieste</b><br><span class="muted small">Da decidere. Vale per le prossime prenotazioni della demo.</span></span>
-      <div class="seg" role="group" aria-label="Modalità di conferma">
-        <button type="button" data-mode="manuale">Manuale</button>
-        <button type="button" data-mode="automatica">Automatica</button>
-      </div>
-    </div>
     <div id="dott" class="view"></div>
   </section>
 </main>
 
 <footer>
   <div class="wrap">
-    <span>Demo per valutazione. Logo provvisorio. Nomi, numeri e appuntamenti sono inventati.</span>
+    <span>Demo per valutazione. Nomi, numeri e appuntamenti sono inventati.</span>
     <span>Il sistema vero non usa database esterni: i dati restano nell'account Google dello studio.</span>
   </div>
 </footer>
@@ -459,7 +447,9 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
 const CONFIG = {
   durataMin: 30,
   orizzonteGiorni: 60,
-  limiteGiornoPrima: '18:00',          // prenotare, cambiare e disdire
+  limiteGiornoPrima: '18:00',          // prenotare: entro le 18 del giorno prima
+  oreMinimePerModifica: 48,            // cambiare o disdire: fino a 48 ore prima
+  confermaManuale: true,               // ogni richiesta (e ogni cambio data) la conferma Federica
   mittente: 'studiofedericaspadazzi@gmail.com',
   sedi: [
     { id: 'fiano', nome: 'Studio di Fiano Romano', breve: 'Fiano', indirizzo: 'Via Tiberina 31/b, 00065 Fiano Romano (RM)',
@@ -468,28 +458,32 @@ const CONFIG = {
       disponibilita: { tipo: 'settimanale', regole: [{ giorno: 4, dalle: '09:00', alle: '14:00' }] } },
     { id: 'roma', nome: 'Studio di Roma', breve: 'Roma', indirizzo: 'Via Lombardia 30, 00187 Roma',
       indicazioni: 'Traversa di Via Veneto.', telefono: null, contatto: 'studiofedericaspadazzi@gmail.com',
+      whatsapp: null,                   // numero solo messaggi: da definire
       quando: 'Giorni e orari variabili',
       disponibilita: { tipo: 'calendario', calendario: 'Disponibile Roma' } },
+    { id: 'fuori', nome: 'Visita fuori studio', breve: 'Fuori studio', indirizzo: "All'indirizzo che indica lei",
+      indicazioni: '', telefono: null, contatto: 'studiofedericaspadazzi@gmail.com',
+      quando: 'Con almeno 7 giorni di anticipo', anticipoGiorni: 7, chiediIndirizzo: true,
+      disponibilita: { tipo: 'calendario', calendario: 'Disponibile fuori studio' } },
   ],
   prestazioni: [
     { id: 'rc_lievi', nome: 'Incidente stradale, lesioni lievi', esempi: 'Colpo di frusta, contusioni', fondo: 100, verbale: true },
     { id: 'rc_gravi', nome: 'Incidente stradale, lesioni gravi', esempi: 'Fratture, ricoveri, interventi', fondo: 300, verbale: true },
-    { id: 'invalidita', nome: 'Invalidità civile o Legge 104', esempi: 'Prima domanda o aggravamento', fondo: 50 },
-    { id: 'accomp', nome: 'Invalidità civile con richiesta di accompagnamento', esempi: '', fondo: 100 },
-    { id: 'inail', nome: 'Infortunio sul lavoro (INAIL)', esempi: '', fondo: 100 },
+    { id: 'invalidita', nome: 'Invalidità civile e Legge 104', esempi: 'Prima domanda o aggravamento', fondo: 50, daRivedere: true },
+    { id: 'inail', nome: 'Infortunio sul lavoro o malattia professionale (INAIL)', esempi: '', fondo: 100 },
     { id: 'polizza', nome: 'Polizza infortuni privata', esempi: '', fondo: 0, notaFondo: 'Nessun fondo spese: si paga alla consegna della relazione.' },
     { id: 'resp_med', nome: 'Responsabilità medica', esempi: 'Presunto errore sanitario', fondo: 500, notaFondo: 'Per la valutazione preliminare del caso.' },
   ],
   invianti: [
     { id: 'caf', etichetta: 'Un CAF' },
-    { id: 'medico_fiano', etichetta: 'Un medico dello studio di Fiano' },
-    { id: 'avvocato', etichetta: "Un avvocato o un'agenzia" },
+    { id: 'medico', etichetta: 'Un medico' },
+    { id: 'avvocato', etichetta: 'Un avvocato' },
     { id: 'altro', etichetta: 'Altro' },
   ],
   testi: {
     fondoScalato: "Il fondo spese viene scalato dall'onorario finale.",
     pagamento: 'Alla visita si può pagare in contanti, con POS o con bonifico.',
-    esenzione: 'Nessun fondo spese: la visita è pagata direttamente da {inviante}.',
+    esenzione: "Nessun fondo spese: la visita è pagata direttamente dall'avvocato ({inviante}).",
     documentiBase: ["Documento d'identità", 'Tessera sanitaria', 'Tutta la documentazione clinica relativa alla pratica'],
     verbale: "L'eventuale verbale dei vigili intervenuti",
     altreInfo: 'Ogni altra informazione utile per la pratica',
@@ -498,11 +492,11 @@ const CONFIG = {
   /* Documenti da allegare in fase di prenotazione. soloPer = solo per quelle prestazioni.
      Vanno su Drive con il nome del documento davanti, per la lavorazione automatica. */
   documenti: [
-    { id: 'identita', nome: "Documento d'identità", hint: 'Fronte e retro. Va bene una foto fatta con il telefono.', obbligatorio: true },
-    { id: 'tessera', nome: 'Tessera sanitaria', hint: 'Fronte e retro.', obbligatorio: true },
-    { id: 'clinica', nome: 'Documentazione clinica', hint: 'Referti, cartelle cliniche, certificati, esami relativi alla pratica. Può allegare più file.', obbligatorio: true },
-    { id: 'verbale', nome: 'Verbale dei vigili', hint: 'Se sono intervenuti dopo l\'incidente.', obbligatorio: false, soloPer: ['rc_lievi', 'rc_gravi'] },
-    { id: 'altro', nome: 'Altri documenti utili', hint: 'Qualsiasi altra cosa utile per la pratica.', obbligatorio: false },
+    { id: 'identita', nome: "Documento d'identità", hint: 'Fronte e retro. Va bene una foto fatta con il telefono.', consigliato: true },
+    { id: 'tessera', nome: 'Tessera sanitaria', hint: 'Fronte e retro.', consigliato: true },
+    { id: 'clinica', nome: 'Documentazione clinica', hint: 'Referti, cartelle cliniche, certificati, esami relativi alla pratica. Può allegare più file.', consigliato: true },
+    { id: 'verbale', nome: 'Verbale dei vigili', hint: 'Se sono intervenuti dopo l\'incidente.', soloPer: ['rc_lievi', 'rc_gravi'] },
+    { id: 'altro', nome: 'Altri documenti utili', hint: 'Qualsiasi altra cosa utile per la pratica.' },
   ],
   allegati: { maxFilePerDocumento: 5, maxMB: 10, tipi: 'PDF, JPG o PNG' },
 };
@@ -513,7 +507,13 @@ const BLOCCHI_ROMA = [
   { giorno: 5, dalle: '09:30', alle: '12:30', settimane: 'pari' },
   { giorno: 3, dalle: '16:00', alle: '19:00', settimane: 'dispari' },
 ];
+/* Disponibilità per le visite fuori studio simulate (calendario "Disponibile fuori studio"). */
+const BLOCCHI_FUORI = [
+  { giorno: 1, dalle: '09:30', alle: '12:30', settimane: 'tutte' },
+  { giorno: 3, dalle: '09:30', alle: '12:00', settimane: 'tutte' },
+];
 const IMPEGNI_FINTI = {
+  fuori: ['Visita INPS (fissata da te)', 'CTU (fissata da te)', 'Impegno personale'],
   fiano: ['Visita (inserita dalla segretaria)', 'Visita già fissata', 'Visita (inserita dalla segretaria)'],
   roma: ['Impegno personale', "Lezione all'università", 'CTU (fissata da te)'],
 };
@@ -535,6 +535,7 @@ function atTime(d, hhmm) { const [h, m] = hhmm.split(':').map(Number); const x =
 function inizioGiorno(ms) { const x = new Date(ms); x.setHours(0, 0, 0, 0); return x; }
 function dayKey(d) { return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
 function rng(str) { let h = 2166136261; for (const c of str) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return () => { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return ((h >>> 0) % 1000) / 1000; }; }
+const calNome = id => ({ fiano: 'Studio Fiano', roma: 'Studio Roma', fuori: 'Visite fuori studio' }[id]);
 const sedeById = id => CONFIG.sedi.find(s => s.id === id);
 const prestById = id => CONFIG.prestazioni.find(p => p.id === id);
 const invById = id => CONFIG.invianti.find(i => i.id === id);
@@ -545,8 +546,8 @@ const invById = id => CONFIG.invianti.find(i => i.id === id);
    (dati nei tag privati) più una riga nel Foglio "Registro".
    Qui sta nel localStorage del browser, solo per le prove.
    ===================================================================== */
-const STORE = 'spadazzi-demo-v3';
-let DB = { prenotazioni: [], confermaManuale: true };
+const STORE = 'spadazzi-demo-v4';
+let DB = { prenotazioni: [] };
 const attiva = p => p.stato === 'in_attesa' || p.stato === 'confermata';
 const trova = id => DB.prenotazioni.find(p => p.id === id);
 function salva() { try { localStorage.setItem(STORE, JSON.stringify(DB)); } catch (_) {} }
@@ -563,15 +564,19 @@ const EVENTI = {
   prenotata:            { chi: 'paziente',   notifica: 'Nuova visita prenotata',        testo: e => `Prenotata dal paziente per ${breve(e.a)}` },
   confermata:           { chi: 'dottoressa', testo: () => 'Confermata da te' },
   rifiutata:            { chi: 'dottoressa', testo: () => 'Rifiutata da te' },
-  spostata_paziente:    { chi: 'paziente',   notifica: 'Il paziente ha cambiato data',  testo: e => `Spostata dal paziente: da ${breve(e.da)} a ${breve(e.a)}` },
+  spostata_paziente:    { chi: 'paziente',   notifica: 'Cambio data da confermare',     testo: e => `Il paziente chiede di spostare da ${breve(e.da)} a ${breve(e.a)}` },
+  cambio_confermato:    { chi: 'dottoressa', testo: e => `Cambio confermato da te: ora ${breve(e.a)}` },
+  cambio_rifiutato:     { chi: 'dottoressa', testo: e => `Cambio rifiutato da te: resta ${breve(e.a)}` },
   spostata_dottoressa:  { chi: 'dottoressa', testo: e => `Spostata da te: da ${breve(e.da)} a ${breve(e.a)}` },
   disdetta_paziente:    { chi: 'paziente',   notifica: 'Visita disdetta dal paziente',  testo: () => 'Disdetta dal paziente' },
   annullata_dottoressa: { chi: 'dottoressa', testo: () => 'Annullata da te' },
 };
 function registra(p, tipo, extra = {}) { p.storico.push({ t: Date.now(), tipo, ...extra }); salva(); }
-function limiteModifica(p) { return atTime(addDays(inizioGiorno(p.slot), -1), CONFIG.limiteGiornoPrima); }
+function limiteModifica(p) { return new Date(p.slot - CONFIG.oreMinimePerModifica * 36e5); }
 const pazientePuoModificare = p => attiva(p) && Date.now() < limiteModifica(p).getTime();
 
+const cambioInAttesa = p => p.stato === 'in_attesa' && p.slotPrecedente != null;
+const pill = p => cambioInAttesa(p) ? '<span class="pill wait">CAMBIO DA CONFERMARE</span>' : PILL[p.stato];
 const PILL = {
   in_attesa: '<span class="pill wait">DA CONFERMARE</span>', confermata: '<span class="pill ok">CONFERMATA</span>',
   rifiutata: '<span class="pill no">RIFIUTATA</span>', disdetta: '<span class="pill no">DISDETTA</span>', annullata: '<span class="pill no">ANNULLATA</span>',
@@ -587,7 +592,7 @@ function finestre(sede, d) {
   if (sede.disponibilita.tipo === 'settimanale')
     return sede.disponibilita.regole.filter(r => r.giorno === d.getDay()).map(r => [atTime(d, r.dalle), atTime(d, r.alle)]);
   const settimana = Math.floor((d - new Date(2024, 0, 1)) / (7 * 864e5));
-  return BLOCCHI_ROMA.filter(b => b.giorno === d.getDay() && (b.settimane === 'tutte' || (b.settimane === 'pari') === (settimana % 2 === 0)))
+  return (sede.id === 'fuori' ? BLOCCHI_FUORI : BLOCCHI_ROMA).filter(b => b.giorno === d.getDay() && (b.settimane === 'tutte' || (b.settimane === 'pari') === (settimana % 2 === 0)))
     .map(b => [atTime(d, b.dalle), atTime(d, b.alle)]);
 }
 function slotDelGiorno(sede, d) {
@@ -604,11 +609,12 @@ function slotDelGiorno(sede, d) {
 function giorniDisponibili(sede) {
   const oggi = new Date(); oggi.setHours(0, 0, 0, 0);
   const adesso = new Date();
-  const presi = new Set(DB.prenotazioni.filter(attiva).map(p => p.slot));
+  const presi = new Set(DB.prenotazioni.filter(attiva).flatMap(p => p.slotPrecedente != null ? [p.slot, p.slotPrecedente] : [p.slot]));
   const res = [];
   for (let i = 1; i <= CONFIG.orizzonteGiorni; i++) {
     const d = addDays(oggi, i);
     if (adesso >= atTime(addDays(d, -1), CONFIG.limiteGiornoPrima)) continue;
+    if (sede.anticipoGiorni && i < sede.anticipoGiorni) continue;
     const liberi = slotDelGiorno(sede, d).filter(s => !s.occupato && !presi.has(s.inizio.getTime())).map(s => s.inizio);
     if (liberi.length) res.push({ d, liberi });
   }
@@ -648,7 +654,7 @@ function toccoOrario(b, st, ridisegna, root) {
 function fondoSpese(p) {
   const prest = prestById(p.prest), d = p.dati;
   if (d.inviante === 'avvocato' && d.invPaga === 'si')
-    return { cifra: 0, testo: CONFIG.testi.esenzione.replace('{inviante}', d.invNome || "l'avvocato o l'agenzia"), esente: true };
+    return { cifra: 0, testo: CONFIG.testi.esenzione.replace('{inviante}', d.invNome || 'avvocato'), esente: true };
   return { cifra: prest.fondo, testo: prest.notaFondo || '', esente: false };
 }
 function documenti(prestId) {
@@ -658,6 +664,7 @@ function documenti(prestId) {
 function invianteTesto(d) {
   const i = invById(d.inviante); if (!i) return '';
   if (d.inviante === 'avvocato') return i.etichetta + (d.invNome ? ': ' + d.invNome : '') + (d.invPaga === 'si' ? ' (paga direttamente)' : '');
+  if (d.inviante === 'medico' && d.invMedico) return i.etichetta + ': ' + d.invMedico;
   if (d.inviante === 'altro' && d.invAltro) return 'Altro: ' + d.invAltro;
   return i.etichetta;
 }
@@ -665,7 +672,8 @@ function riga(dt, dd, step) {
   return `<div><dt>${dt}</dt><dd>${dd}</dd>${step ? `<button type="button" class="link-btn" data-goto="${step}">Modifica<span class="sr"> ${dt}</span></button>` : ''}</div>`;
 }
 function contattoSede(sede) {
-  return sede.telefono ? `chiami lo studio al ${esc(sede.telefono)}` : `scriva a ${esc(sede.contatto)}`;
+  if (sede.telefono) return `chiami lo studio al ${esc(sede.telefono)}`;
+  return `scriva a ${esc(sede.contatto)}` + (sede.whatsapp ? ` o un messaggio WhatsApp al ${esc(sede.whatsapp)}` : '');
 }
 
 /* =====================================================================
@@ -673,7 +681,7 @@ function contattoSede(sede) {
    ===================================================================== */
 const TITOLI = ['Dove vuole fare la visita?', 'Che tipo di visita le serve?', 'Scelga giorno e orario', 'I suoi dati', 'I documenti per la pratica', 'Controlli e invii'];
 const PASSI = TITOLI.length, FATTO = PASSI + 1;
-const vuoti = () => ({ nome: '', cognome: '', tel: '', email: '', inviante: '', invNome: '', invPaga: '', invAltro: '', documenti: {}, privacy: false, fondoOk: false });
+const vuoti = () => ({ nome: '', cognome: '', tel: '', email: '', indirizzo: '', comune: '', inviante: '', invNome: '', invPaga: '', invMedico: '', invAltro: '', documenti: {}, privacy: false, fondoOk: false });
 const docsPer = prestId => CONFIG.documenti.filter(x => !x.soloPer || x.soloPer.includes(prestId));
 const nFile = docs => Object.values(docs || {}).reduce((n, l) => n + l.length, 0);
 const S = { step: 1, sede: null, prest: null, giornoAperto: null, slot: null, mostraTutti: false, dati: vuoti(), errori: null, ultima: null };
@@ -698,7 +706,12 @@ function stepSede() {
       <span class="d">${esc(s.indirizzo)}<br>${esc(s.quando)}</span>
     </label>`).join('')}
   </fieldset>
-  ${nav()}`;
+  ${nav()}
+  <div class="notice aiuto">
+    <b>Non riesce a prenotare da qui?</b>
+    <span>Per Fiano chiami lo studio al ${esc(sedeById('fiano').telefono)}. Per Roma e per le visite fuori studio scriva a ${esc(CONFIG.mittente)}.</span>
+    <span class="small muted">Proposta da decidere con la dottoressa.</span>
+  </div>`;
 }
 function stepPrest() {
   return `${progress()}
@@ -716,7 +729,7 @@ function stepGiorno() {
   return `${progress()}
   <div class="stack">
     <h2 id="step-h" tabindex="-1">${TITOLI[2]}</h2>
-    <p class="muted small">${esc(sede.nome)}. Ogni visita dura 30 minuti. Vede solo gli orari liberi.</p>
+    <p class="muted small">${esc(sede.nome)}. Ogni visita dura ${CONFIG.durataMin} minuti. Vede solo gli orari liberi.${sede.anticipoGiorni ? ` Le visite fuori studio si prenotano con almeno ${sede.anticipoGiorni} giorni di anticipo.` : ''}</p>
   </div>
   ${sceltaOrario(sede, S)}
   ${S.errori ? `<p class="err" role="alert">${esc(S.errori)}</p>` : ''}
@@ -743,6 +756,10 @@ function stepDati() {
     ${campo('cognome', 'Cognome', 'text', 'autocomplete="family-name"')}
     ${campo('tel', 'Telefono', 'tel', 'autocomplete="tel" inputmode="tel"', 'Lo usiamo solo se dobbiamo avvisarla di un cambiamento.')}
     ${campo('email', 'Email', 'email', 'autocomplete="email" inputmode="email"', 'Qui riceverà la conferma, il promemoria e il link per cambiare o disdire.')}
+    ${sedeById(S.sede)?.chiediIndirizzo ? `<div class="sub">
+      ${campo('indirizzo', 'Indirizzo della visita', 'text', 'autocomplete="street-address"', 'Via e numero civico, ed eventuali indicazioni (piano, citofono).')}
+      ${campo('comune', 'Comune', 'text', 'autocomplete="address-level2"')}
+    </div>` : ''}
 
     <fieldset class="choices" ${E.inviante ? 'aria-describedby="e-inviante"' : ''}>
       <legend style="font-size:1.25rem" id="f-inviante" tabindex="-1">Chi le ha indicato la dottoressa?</legend>
@@ -750,7 +767,7 @@ function stepDati() {
       ${CONFIG.invianti.map(i => `<label class="choice"><input type="radio" name="inviante" value="${i.id}" ${d.inviante === i.id ? 'checked' : ''}><span class="t">${esc(i.etichetta)}</span><span></span></label>`).join('')}
     </fieldset>
     ${d.inviante === 'avvocato' ? `<div class="sub">
-      ${campo('invNome', "Nome dell'avvocato o dell'agenzia", 'text')}
+      ${campo('invNome', "Nome dell'avvocato o dello studio legale", 'text')}
       <fieldset class="choices" ${E.invPaga ? 'aria-describedby="e-invPaga"' : ''}>
         <legend style="font-size:1.15rem" id="f-invPaga" tabindex="-1">Paga direttamente la dottoressa?</legend>
         ${E.invPaga ? `<span class="err" id="e-invPaga">${esc(E.invPaga)}</span>` : ''}
@@ -758,7 +775,8 @@ function stepDati() {
         <label class="choice"><input type="radio" name="invPaga" value="no" ${d.invPaga === 'no' ? 'checked' : ''}><span class="t">No, oppure non lo so</span><span></span></label>
       </fieldset>
     </div>` : ''}
-    ${d.inviante === 'altro' ? `<div class="sub">${campo('invAltro', 'Chi? (facoltativo)', 'text')}</div>` : ''}
+    ${d.inviante === 'medico' ? `<div class="sub">${campo('invMedico', 'Quale medico? (facoltativo)', 'text')}</div>` : ''}
+    ${d.inviante === 'altro' ? `<div class="sub">${campo('invAltro', 'Chi?', 'text')}</div>` : ''}
 
     <div class="field">
       <label class="check" for="f-privacy"><input type="checkbox" id="f-privacy" name="privacy" ${d.privacy ? 'checked' : ''} ${E.privacy ? 'aria-invalid="true" aria-describedby="e-privacy"' : ''}>
@@ -775,12 +793,13 @@ function stepDocumenti() {
   return `${progress()}
   <div class="stack">
     <h2 id="step-h" tabindex="-1">${TITOLI[4]}</h2>
-    <p class="muted small">Li alleghi adesso: la dottoressa li studia prima della visita e prepara la pratica più in fretta. Può fotografarli con il telefono oppure caricare file ${CONFIG.allegati.tipi}.</p>
+    <p class="muted small">Se li allega adesso, la dottoressa li studia prima della visita e prepara la pratica più in fretta. Può fotografarli con il telefono oppure caricare file ${CONFIG.allegati.tipi}.</p>
+    <p class="notice aiuto small">Non è obbligatorio. Se non riesce o non li ha, vada pure avanti: li porti il giorno della visita.</p>
   </div>
   ${mancanti.length ? `<div class="err-box" role="alert" tabindex="-1"><b>Mancano dei documenti:</b><ul>${mancanti.map(k => `<li><a href="#doc-${k}">${esc(E[k])}</a></li>`).join('')}</ul></div>` : ''}
   ${docs.map(doc => {
     const lista = S.dati.documenti[doc.id] || [];
-    const stato = lista.length ? '<span class="pill ok">ALLEGATO</span>' : doc.obbligatorio ? '<span class="pill wait">DA ALLEGARE</span>' : '<span class="pill neutro">FACOLTATIVO</span>';
+    const stato = lista.length ? '<span class="pill ok">ALLEGATO</span>' : doc.consigliato ? '<span class="pill neutro">CONSIGLIATO</span>' : '<span class="pill neutro">FACOLTATIVO</span>';
     return `<div class="doc ${lista.length ? 'ok' : E[doc.id] ? 'manca' : ''}" id="doc-${doc.id}" tabindex="-1">
       <div class="doc-h"><span class="lab" id="lab-${doc.id}">${esc(doc.nome)}</span>${stato}</div>
       <span class="hint muted small">${esc(doc.hint)}</span>
@@ -794,7 +813,7 @@ function stepDocumenti() {
 }
 function testoFondo(prestId, dati) {
   const pr = prestById(prestId), f = fondoSpese({ prest: prestId, dati });
-  if (f.esente) return `Sono a conoscenza che per questa visita <b>non devo portare il fondo spese</b>, perché è pagata direttamente da ${esc(dati.invNome || "l'avvocato o l'agenzia")}.`;
+  if (f.esente) return `Sono a conoscenza che per questa visita <b>non devo portare il fondo spese</b>, perché è pagata direttamente dall'avvocato (${esc(dati.invNome || 'indicato prima')}).`;
   if (!f.cifra) return `Sono a conoscenza che per questa pratica (${esc(pr.nome.toLowerCase())}) <b>non è previsto un fondo spese</b>: si paga alla consegna della relazione.`;
   return `Sono a conoscenza che il fondo spese da portare il giorno della visita per questa pratica (${esc(pr.nome.toLowerCase())}) è di <b>${f.cifra} €</b>${pr.notaFondo ? ', ' + esc(pr.notaFondo.charAt(0).toLowerCase() + pr.notaFondo.slice(1, -1)) : ''}.`;
 }
@@ -806,7 +825,8 @@ function stepRiepilogo() {
   <dl class="summary" style="margin:0">
     ${riga('Sede', `${esc(sede.nome)}<br><span class="muted small">${esc(sede.indirizzo)}</span>`, 1)}
     ${riga('Visita', esc(p.nome), 2)}
-    ${riga('Giorno e ora', lungo(S.slot), 3)}
+    ${riga('Giorno e ora', lungo(S.slot) + `<br><span class="muted small">Durata: ${CONFIG.durataMin} minuti</span>`, 3)}
+    ${d.indirizzo ? riga('Indirizzo della visita', esc(d.indirizzo + ', ' + d.comune), 4) : ''}
     ${riga('Nome', esc(d.nome + ' ' + d.cognome), 4)}
     ${riga('Telefono ed email', `${esc(d.tel)}<br>${esc(d.email)}`, 4)}
     ${riga('Indicata da', esc(invianteTesto(d)), 4)}
@@ -819,7 +839,7 @@ function stepRiepilogo() {
     ${f.cifra ? `<span class="small">${esc(CONFIG.testi.fondoScalato)} ${esc(CONFIG.testi.pagamento)}</span>` : ''}
     ${S.errori === 'fondo' ? `<span class="err" id="e-fondo">Per inviare la richiesta spunti la casella sul fondo spese.</span>` : ''}
   </div>
-  ${nav(DB.confermaManuale ? 'Invia la richiesta' : 'Prenota')}`;
+  ${nav(CONFIG.confermaManuale ? 'Invia la richiesta' : 'Prenota')}`;
 }
 function elencoDocumenti(docs, prestId) {
   const righe = docsPer(prestId).filter(x => (docs?.[x.id] || []).length).map(x => `${esc(x.nome)}: ${docs[x.id].length} file`);
@@ -834,7 +854,7 @@ function stepFatto() {
         ? `L'orario di <b>${lungo(p.slot)}</b> è riservato per lei. La dottoressa conferma a breve: riceverà una mail a <b>${esc(p.dati.email)}</b>.`
         : `La aspettiamo <b>${lungo(p.slot)}</b> a ${esc(sede.nome)}. Le abbiamo mandato una mail a <b>${esc(p.dati.email)}</b> con tutti i dettagli.`}</p>
     </div>
-    <p class="muted">Nella mail trova anche il link per <b>cambiare giorno o disdire</b>, fino alle ${CONFIG.limiteGiornoPrima} del giorno prima.</p>
+    <p class="muted">Nella mail trova anche il link per <b>cambiare giorno o disdire</b>, fino a ${CONFIG.oreMinimePerModifica} ore prima della visita.</p>
     <div class="btn-row">
       <a class="btn btn-primary" href="#gestisci" data-apri="${p.id}">Cambia data o disdici</a>
       <a class="btn btn-ghost" href="#dottoressa" data-apri="${p.id}">Guarda cosa riceve la dottoressa</a>
@@ -853,7 +873,10 @@ function valida() {
   if (d.tel.replace(/\D/g, '').length < 8) E.tel = 'Scriva un numero di telefono valido, per esempio 333 123 4567.';
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email.trim())) E.email = 'Scriva un indirizzo email valido, per esempio nome@esempio.it.';
   if (!d.inviante) E.inviante = 'Scelga chi le ha indicato la dottoressa.';
-  if (d.inviante === 'avvocato' && !d.invNome.trim()) E.invNome = "Scriva il nome dell'avvocato o dell'agenzia.";
+  if (d.inviante === 'avvocato' && !d.invNome.trim()) E.invNome = "Scriva il nome dell'avvocato.";
+  if (d.inviante === 'altro' && !d.invAltro.trim()) E.invAltro = 'Scriva chi le ha indicato la dottoressa.';
+  if (sedeById(S.sede)?.chiediIndirizzo && !d.indirizzo.trim()) E.indirizzo = "Scriva l'indirizzo della visita.";
+  if (sedeById(S.sede)?.chiediIndirizzo && !d.comune.trim()) E.comune = 'Scriva il comune.';
   if (d.inviante === 'avvocato' && !d.invPaga) E.invPaga = 'Indichi se paga direttamente la dottoressa.';
   if (!d.privacy) E.privacy = "Per prenotare serve il consenso all'informativa privacy.";
   return E;
@@ -871,11 +894,6 @@ function avanti() {
     const E = valida();
     if (Object.keys(E).length) { S.errori = E; renderWizard(false); const b = $('.err-box'); b?.focus({ preventScroll: true }); b?.scrollIntoView({ block: 'start' }); return; }
   }
-  if (S.step === 5) {
-    const E = {};
-    for (const doc of docsPer(S.prest)) if (doc.obbligatorio && !(S.dati.documenti[doc.id] || []).length) E[doc.id] = `Alleghi: ${doc.nome.toLowerCase()}.`;
-    if (Object.keys(E).length) { S.errori = E; renderWizard(false); const b = $('.err-box'); b?.focus({ preventScroll: true }); b?.scrollIntoView({ block: 'start' }); return; }
-  }
   if (S.step === 6) {
     if (!S.dati.fondoOk) { S.errori = 'fondo'; renderWizard(false); $('#f-fondo')?.focus(); $('#f-fondo')?.scrollIntoView({ block: 'center' }); return; }
     return invia();
@@ -886,7 +904,7 @@ function invia() {
   if (!giorniDisponibili(sedeById(S.sede)).some(g => g.liberi.some(t => t.getTime() === S.slot))) {
     S.step = 3; S.slot = null; S.errori = "Nel frattempo quest'orario è stato preso. Ne scelga un altro."; return renderWizard();
   }
-  const manuale = DB.confermaManuale;
+  const manuale = CONFIG.confermaManuale;
   const p = { id: nuovoId(), sede: S.sede, prest: S.prest, slot: S.slot,
     dati: { ...S.dati, documenti: Object.fromEntries(Object.entries(S.dati.documenti).map(([k, l]) => [k, l.map(f => ({ name: f.name, size: f.size }))])) },
     fondoPresaVisione: Date.now(),
@@ -948,7 +966,7 @@ function elencoPrenotazioni(selId, attr) {
   return `<div class="bks">${list.map(p => `<button type="button" class="bk" ${attr}="${p.id}" aria-current="${p.id === selId}">
       <span class="q">${breve(p.slot)} · ${esc(sedeById(p.sede).breve)}</span>
       <span class="w">${esc(p.dati.cognome)} ${esc(p.dati.nome)} – ${esc(prestById(p.prest).nome)}</span>
-      ${PILL[p.stato]}
+      ${pill(p)}
     </button>`).join('')}</div>`;
 }
 function renderGestisci() {
@@ -980,14 +998,17 @@ function renderGestisci() {
         <button type="button" class="btn btn-no" data-g="conferma-disdetta">Sì, disdico</button>
       </div>
     </div>`;
+  } else if (cambioInAttesa(p)) {
+    azioni = `<p class="notice wait">Ha chiesto di spostare la visita da ${lungo(p.slotPrecedente)} a <b>${lungo(p.slot)}</b>. La dottoressa deve confermare il cambio: riceverà una mail. Fino ad allora vale l'appuntamento di prima.</p>
+      ${pazientePuoModificare(p) ? '<div class="btn-row"><button type="button" class="btn btn-no" data-g="disdici">Disdici la visita</button></div>' : ''}`;
   } else if (pazientePuoModificare(p)) {
     azioni = `<div class="btn-row">
         <button type="button" class="btn btn-primary" data-g="cambia">Cambia giorno o orario</button>
         <button type="button" class="btn btn-no" data-g="disdici">Disdici la visita</button>
       </div>
-      <p class="muted small">Può cambiare o disdire fino alle ${CONFIG.limiteGiornoPrima} di ${fmtGiorno.format(addDays(limite, 0))}.</p>`;
+      <p class="muted small">Può cambiare o disdire fino a ${CONFIG.oreMinimePerModifica} ore prima della visita: entro ${fmtGiorno.format(limite)} alle ${ora(limite)}. Il nuovo orario va confermato dalla dottoressa.</p>`;
   } else if (attiva(p)) {
-    azioni = `<p class="notice wait">Il termine per cambiare o disdire online è passato. Se non può venire, ${contattoSede(sede)}.</p>`;
+    azioni = `<p class="notice wait">Mancano meno di ${CONFIG.oreMinimePerModifica} ore alla visita: non si può più cambiare o disdire online. Se non può venire, ${contattoSede(sede)}.</p>`;
   } else {
     azioni = `<p class="notice wait">Questa visita non è più in programma. <a href="#prenota">Prenoti un'altra visita</a>.</p>`;
   }
@@ -999,7 +1020,7 @@ function renderGestisci() {
     </div>
     ${G.msg ? `<div class="notice ${G.msg.tipo}" role="status"><b>${G.msg.titolo}</b><span>${G.msg.testo}</span></div>` : ''}
     <dl class="summary" style="margin:0">
-      ${riga('Stato', PILL[p.stato])}
+      ${riga('Stato', pill(p))}
       ${riga('Nome', esc(p.dati.nome + ' ' + p.dati.cognome))}
       ${riga('Visita', esc(pr.nome))}
       ${riga('Quando', lungo(p.slot))}
@@ -1021,13 +1042,15 @@ $('#gestisci').addEventListener('click', e => {
   if (a === 'chiudi') { G.modo = null; return renderGestisci(); }
   if (a === 'conferma-cambio') {
     if (!G.st.slot) return;
-    const da = p.slot; p.slot = G.st.slot;
+    const da = p.slot;
+    p.slotPrecedente = da; p.statoPrecedente = p.stato; p.slot = G.st.slot;
+    if (CONFIG.confermaManuale) p.stato = 'in_attesa';
     registra(p, 'spostata_paziente', { da, a: p.slot });
     G.modo = null;
-    G.msg = { tipo: 'ok', titolo: 'Visita spostata', testo: `La aspettiamo ${lungo(p.slot)}. Le abbiamo mandato una mail con i nuovi dettagli. L'orario precedente è di nuovo libero.` };
+    G.msg = { tipo: 'wait', titolo: 'Richiesta di cambio inviata', testo: `Ha chiesto di spostare la visita a ${lungo(p.slot)}. L'orario è riservato per lei; la dottoressa conferma il cambio e riceverà una mail.` };
   }
   if (a === 'conferma-disdetta') {
-    p.stato = 'disdetta'; registra(p, 'disdetta_paziente');
+    p.stato = 'disdetta'; p.slotPrecedente = null; registra(p, 'disdetta_paziente');
     G.modo = null;
     G.msg = { tipo: 'wait', titolo: 'Visita disdetta', testo: 'Le abbiamo mandato una mail di conferma della disdetta. Se vuole, può prenotare un altro giorno.' };
   }
@@ -1043,9 +1066,9 @@ function esempio() {
   const sede = sedeById('fiano');
   const g = giorniDisponibili(sede)[0];
   const slot = g.liberi[1 % g.liberi.length].getTime();
-  const manuale = DB.confermaManuale;
+  const manuale = CONFIG.confermaManuale;
   return { id: 'ESEMPIO1', sede: 'fiano', prest: 'invalidita', slot,
-    dati: { nome: 'Mario', cognome: 'Rossi', tel: '333 000 1234', email: 'mario.rossi@esempio.it', inviante: 'caf', invNome: '', invPaga: '', invAltro: '',
+    dati: { nome: 'Mario', cognome: 'Rossi', tel: '333 000 1234', email: 'mario.rossi@esempio.it', indirizzo: '', comune: '', inviante: 'caf', invNome: '', invPaga: '', invMedico: '', invAltro: '',
       documenti: { identita: [{ name: 'carta-identita.jpg', size: 910000 }], tessera: [{ name: 'tessera-sanitaria.jpg', size: 640000 }],
         clinica: [{ name: 'verbale-commissione-2025.pdf', size: 820000 }, { name: 'referto-cardiologico.pdf', size: 1450000 }] }, privacy: true, fondoOk: true },
     fondoPresaVisione: Date.now() - 50 * 6e4,
@@ -1059,13 +1082,21 @@ function mail(da, a, oggetto, corpo) {
 function dettagliVisita(p, conGestione) {
   const sede = sedeById(p.sede), pr = prestById(p.prest), f = fondoSpese(p);
   return `<div><h4>Visita</h4><p>${esc(pr.nome)}</p></div>
-    <div><h4>Quando</h4><p>${lungo(p.slot)}</p></div>
-    <div><h4>Dove</h4><p>${esc(sede.nome)}<br>${esc(sede.indirizzo)}<br><span class="muted">${esc(sede.indicazioni)}</span>${sede.telefono ? `<br>Telefono dello studio: ${esc(sede.telefono)}` : ''}</p></div>
-    <div><h4>Documenti</h4><p>Abbiamo ricevuto i documenti che ha allegato. Porti con sé gli originali del documento d'identità e della tessera sanitaria.</p></div>
+    <div><h4>Quando</h4><p>${lungo(p.slot)} (durata ${CONFIG.durataMin} minuti)</p></div>
+    <div><h4>Dove</h4><p>${esc(sede.nome)}<br>${p.dati.indirizzo ? esc(p.dati.indirizzo + ', ' + p.dati.comune) : esc(sede.indirizzo) + (sede.indicazioni ? `<br><span class="muted">${esc(sede.indicazioni)}</span>` : '')}${sede.telefono ? `<br>Telefono dello studio: ${esc(sede.telefono)}` : ''}</p></div>
+    <div><h4>Documenti</h4>${documentiMail(p)}</div>
     <div><h4>Fondo spese</h4><p>${f.cifra ? `<b>${f.cifra} €</b>. ` : ''}${esc(f.testo)} ${f.cifra ? esc(CONFIG.testi.fondoScalato) : ''} ${esc(CONFIG.testi.pagamento)}</p></div>
     ${conGestione ? `<div class="btn-row"><a class="btn btn-ghost" href="#gestisci" data-apri="${p.id}">Cambia data o disdici</a></div>
-      <p class="muted small">Può cambiare o disdire fino alle ${CONFIG.limiteGiornoPrima} di ${fmtGiorno.format(limiteModifica(p))}.</p>` : ''}
+      <p class="muted small">Può cambiare o disdire fino a ${CONFIG.oreMinimePerModifica} ore prima: entro ${fmtGiorno.format(limiteModifica(p))} alle ${ora(limiteModifica(p))}.</p>` : ''}
     <p>Dott.ssa Federica Spadazzi<br><span class="muted small">Specialista in Medicina Legale e delle Assicurazioni</span></p>`;
+}
+function documentiMail(p) {
+  const docs = p.dati.documenti || {};
+  const ricevuti = docsPer(p.prest).filter(x => (docs[x.id] || []).length).map(x => x.nome);
+  const mancanti = docsPer(p.prest).filter(x => !(docs[x.id] || []).length && (x.consigliato || x.id === 'verbale')).map(x => x.nome + (x.id === 'verbale' ? ' (se presente)' : ''));
+  return `${ricevuti.length ? `<p>Abbiamo ricevuto: ${esc(ricevuti.join(', ').toLowerCase())}.</p>` : ''}
+    ${mancanti.length ? `<p>Porti alla visita:</p><ul class="list">${mancanti.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+    <p>Porti comunque con sé gli originali del documento d'identità e della tessera sanitaria.</p>`;
 }
 /* Mail che il paziente riceve per ogni evento. */
 function mailPaziente(p, e) {
@@ -1074,7 +1105,9 @@ function mailPaziente(p, e) {
     case 'richiesta': return { oggetto: 'Richiesta di visita ricevuta', corpo: `<p>Gentile ${nome},<br>abbiamo ricevuto la sua richiesta per <b>${lungo(e.a)}</b>. L'orario è riservato per lei: riceverà una mail appena la dottoressa conferma.</p><p>Dott.ssa Federica Spadazzi</p>` };
     case 'prenotata':
     case 'confermata': return { oggetto: `Visita confermata: ${breve(p.slot)}`, corpo: `<p>Gentile ${nome},<br>la sua visita è confermata.</p>${dettagliVisita(p, attiva(p))}` };
-    case 'spostata_paziente': return { oggetto: `Nuovo orario della visita: ${breve(e.a)}`, corpo: `<p>Gentile ${nome},<br>abbiamo spostato la sua visita come richiesto.</p><div class="cambio"><span>Prima: <s>${lungo(e.da)}</s></span><span>Ora: <b>${lungo(e.a)}</b></span></div>${dettagliVisita(p, attiva(p))}` };
+    case 'spostata_paziente': return { oggetto: 'Richiesta di cambio data ricevuta', corpo: `<p>Gentile ${nome},<br>abbiamo ricevuto la sua richiesta di spostare la visita.</p><div class="cambio"><span>Appuntamento attuale: ${lungo(e.da)}</span><span>Nuovo orario richiesto: <b>${lungo(e.a)}</b></span></div><p>Il nuovo orario è riservato per lei. Riceverà una mail appena la dottoressa conferma il cambio.</p><p>Dott.ssa Federica Spadazzi</p>` };
+    case 'cambio_confermato': return { oggetto: `Nuovo orario confermato: ${breve(e.a)}`, corpo: `<p>Gentile ${nome},<br>la dottoressa ha confermato il cambio. La sua visita è ora:</p><div class="cambio"><span>Prima: <s>${lungo(e.da)}</s></span><span>Ora: <b>${lungo(e.a)}</b></span></div>${dettagliVisita(p, attiva(p))}` };
+    case 'cambio_rifiutato': return { oggetto: 'Cambio data non possibile', corpo: `<p>Gentile ${nome},<br>purtroppo il nuovo orario richiesto non è disponibile. Resta valido l'appuntamento di <b>${lungo(e.a)}</b>.</p>${dettagliVisita(p, attiva(p))}` };
     case 'spostata_dottoressa': return { oggetto: `La sua visita è stata spostata: ${breve(e.a)}`, corpo: `<p>Gentile ${nome},<br>la dottoressa ha dovuto spostare la sua visita. Ci scusiamo per il cambiamento.</p><div class="cambio"><span>Prima: <s>${lungo(e.da)}</s></span><span>Ora: <b>${lungo(e.a)}</b></span></div><p>Se il nuovo orario non le va bene, può sceglierne un altro dal pulsante qui sotto.</p>${dettagliVisita(p, attiva(p))}` };
     case 'rifiutata': return { oggetto: 'La sua richiesta di visita', corpo: `<p>Gentile ${nome},<br>purtroppo l'orario richiesto non è più disponibile. Può sceglierne un altro dalla pagina di prenotazione.</p><p><a href="#prenota">Scegli un altro orario</a></p><p>Dott.ssa Federica Spadazzi</p>` };
     case 'disdetta_paziente': return { oggetto: 'Visita disdetta', corpo: `<p>Gentile ${nome},<br>la sua visita di ${lungo(p.slot)} è stata disdetta. Se vuole, può prenotarne un'altra quando preferisce.</p><p><a href="#prenota">Prenota un'altra visita</a></p><p>Dott.ssa Federica Spadazzi</p>` };
@@ -1083,7 +1116,6 @@ function mailPaziente(p, e) {
 }
 
 function renderDott() {
-  document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.mode === 'manuale') === DB.confermaManuale)));
   const root = $('#dott');
   if (!trova(D.selId)) D.selId = [...DB.prenotazioni].sort((a, b) => a.slot - b.slot)[0]?.id;
   const p = trova(D.selId);
@@ -1115,6 +1147,10 @@ function renderDott() {
       </div>
       <p class="muted small">Nel sistema vero basta eliminare l'evento in Google Calendar.</p>
     </div>`;
+  } else if (cambioInAttesa(p)) {
+    azioni = `<div class="cambio"><span>Appuntamento attuale (ancora valido): ${lungo(p.slotPrecedente)}</span><span>Nuovo orario chiesto dal paziente: <b>${lungo(p.slot)}</b></span></div>
+      <div class="btn-row"><button type="button" class="btn btn-ok" data-d="conferma">Conferma il cambio</button><button type="button" class="btn btn-no" data-d="rifiuta">Rifiuta il cambio</button></div>
+      <p class="muted small">Se rifiuti, resta valido l'appuntamento di prima e il paziente viene avvisato.</p>`;
   } else if (p.stato === 'in_attesa') {
     azioni = `<div class="btn-row"><button type="button" class="btn btn-ok" data-d="conferma">Conferma</button><button type="button" class="btn btn-no" data-d="rifiuta">Rifiuta</button></div>
       <div class="btn-row"><button type="button" class="btn btn-ghost" data-d="sposta">Proponi un altro orario</button></div>`;
@@ -1132,13 +1168,13 @@ function renderDott() {
   const oggettoDott = {
     richiesta: `Da confermare: ${d.cognome} – ${pr.nome}, ${breve(ultimaPaz?.a ?? p.slot)}`,
     prenotata: `Nuova visita: ${d.cognome} – ${pr.nome}, ${breve(ultimaPaz?.a ?? p.slot)}`,
-    spostata_paziente: `Visita spostata dal paziente: ${d.cognome}, ora ${breve(ultimaPaz?.a ?? p.slot)}`,
+    spostata_paziente: `Cambio data da confermare: ${d.cognome}, da ${breve(ultimaPaz?.da ?? p.slot)} a ${breve(ultimaPaz?.a ?? p.slot)}`,
     disdetta_paziente: `Visita disdetta: ${d.cognome}, ${breve(p.slot)}`,
   }[ultimaPaz?.tipo] || '';
   const introDott = !ultimaPaz ? '' : ({
     richiesta: () => `<b>${esc(nomeCompleto)}</b> chiede una visita.`,
     prenotata: () => `<b>${esc(nomeCompleto)}</b> ha prenotato una visita.`,
-    spostata_paziente: () => `<b>${esc(nomeCompleto)}</b> ha spostato la visita da ${lungo(ultimaPaz.da)} a <b>${lungo(ultimaPaz.a)}</b>. L'orario precedente è di nuovo libero.`,
+    spostata_paziente: () => `<b>${esc(nomeCompleto)}</b> chiede di spostare la visita da ${lungo(ultimaPaz.da)} a <b>${lungo(ultimaPaz.a)}</b>. Entrambi gli orari restano bloccati finché non decidi.`,
     disdetta_paziente: () => `<b>${esc(nomeCompleto)}</b> ha disdetto la visita di ${lungo(p.slot)}. L'orario è di nuovo prenotabile.`,
   }[ultimaPaz.tipo] || (() => ''))();
 
@@ -1149,9 +1185,13 @@ function renderDott() {
   if (p.sede === 'fiano') evs.push({ inizio: atTime(d0, '15:00'), fine: atTime(d0, '18:00'), titolo: 'Visite CAF UCI (le prenota il CAF)', cal: 'Studio Fiano', col: 'var(--cal-fiano)' });
   else finestre(sede, d0).forEach(([a, b]) => evs.push({ inizio: a, fine: b, titolo: 'Disponibile', cal: 'Disponibile Roma', col: 'var(--cal-disp)' }));
   DB.prenotazioni.filter(q => attiva(q) && q.sede === p.sede && dayKey(new Date(q.slot)) === dayKey(d0)).forEach(q => {
-    evs.push({ inizio: new Date(q.slot), fine: new Date(q.slot + 18e5), cal: q.sede === 'fiano' ? 'Studio Fiano' : 'Studio Roma', col: q.sede === 'fiano' ? 'var(--cal-fiano)' : 'var(--cal-roma)',
+    evs.push({ inizio: new Date(q.slot), fine: new Date(q.slot + 18e5), cal: calNome(q.sede), col: q.sede === 'fiano' ? 'var(--cal-fiano)' : 'var(--cal-roma)',
       titolo: `${q.stato === 'in_attesa' ? '⏳ DA CONFERMARE – ' : ''}${q.dati.cognome} – ${prestById(q.prest).nome}`,
       nuovo: q.id === p.id, pend: q.stato === 'in_attesa', q });
+  });
+  DB.prenotazioni.filter(q => cambioInAttesa(q) && q.sede === p.sede && dayKey(new Date(q.slotPrecedente)) === dayKey(d0)).forEach(q => {
+    evs.push({ inizio: new Date(q.slotPrecedente), fine: new Date(q.slotPrecedente + 18e5), cal: calNome(q.sede), col: q.sede === 'fiano' ? 'var(--cal-fiano)' : 'var(--cal-roma)',
+      titolo: `${q.dati.cognome} – ${prestById(q.prest).nome} (orario attuale, cambio in attesa)`, nuovo: q.id === p.id, q });
   });
   evs.sort((a, b) => a.inizio - b.inizio);
 
@@ -1167,7 +1207,7 @@ function renderDott() {
   </div>
 
   <div class="scene">
-    <div class="scene-h"><h2>${esc(d.cognome)} ${esc(d.nome)}</h2>${PILL[p.stato]}</div>
+    <div class="scene-h"><h2>${esc(d.cognome)} ${esc(d.nome)}</h2>${pill(p)}</div>
     <p class="muted small">${esc(pr.nome)} · ${lungo(p.slot)} · ${esc(sede.nome)}</p>
     ${D.msg ? `<div class="notice ${D.msg.tipo}" role="status"><b>${D.msg.titolo}</b><span>${D.msg.testo}</span></div>` : ''}
     ${azioni}
@@ -1205,7 +1245,7 @@ function renderDott() {
          ${riga('Fondo spese', (f.cifra ? f.cifra + ' €' : 'Nessuno' + (f.esente ? ' (paga ' + esc(d.invNome || "l'avvocato") + ')' : '')) + '<br><span class="muted small">Il paziente ha confermato di esserne a conoscenza</span>')}
          ${riga('Documenti caricati (nella cartella Drive)', elencoDocumenti(d.documenti, p.prest))}
        </dl>
-       ${p.stato === 'in_attesa' && !D.modo ? `<div class="btn-row"><button type="button" class="btn btn-ok" data-d="conferma">Conferma</button><button type="button" class="btn btn-no" data-d="rifiuta">Rifiuta</button></div>
+       ${p.stato === 'in_attesa' && !D.modo ? `<div class="btn-row"><button type="button" class="btn btn-ok" data-d="conferma">${cambioInAttesa(p) ? 'Conferma il cambio' : 'Conferma'}</button><button type="button" class="btn btn-no" data-d="rifiuta">${cambioInAttesa(p) ? 'Rifiuta il cambio' : 'Rifiuta'}</button></div>
          <p class="muted small">Se non rispondi entro le ${CONFIG.limiteGiornoPrima} del giorno prima, la richiesta scade e l'orario torna libero. Il paziente viene avvisato.</p>` : ''}
        <p class="small muted">I pulsanti nelle mail aprono una pagina con un secondo tocco di conferma, così un antivirus che "apre" i link non può agire al posto tuo.</p>`)}
   </div>` : ''}
@@ -1243,10 +1283,10 @@ function renderDott() {
 
   <div class="scene">
     <h2>${attiva(p) ? '6' : '5'}. La cartella su Drive</h2>
-    <p class="muted small">Il nome della cartella seguirà la stessa regola che usano già le tue skill (da definire). Ogni file ha davanti il tipo di documento, così la lavorazione automatica sa cosa contiene. Se la visita viene disdetta, la cartella resta.</p>
+    <p class="muted small">Il nome segue la tua regola: COGNOME Nome - di cosa si tratta. Ogni file ha davanti il tipo di documento, così la lavorazione automatica sa cosa contiene. Se la visita viene disdetta, la cartella resta.</p>
     <div class="drive" aria-label="Esempio di cartella Drive">
       <div>📁 Pazienti</div>
-      <div>&nbsp;&nbsp;└ 📁 ${esc(d.cognome.toUpperCase())} ${esc(d.nome)}</div>
+      <div>&nbsp;&nbsp;└ 📁 ${esc(d.cognome.toUpperCase())} ${esc(d.nome)} - ${esc(pr.nome)}</div>
       <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└ 📁 Documenti caricati dal paziente</div>
       ${nFile(d.documenti) ? docsPer(p.prest).flatMap(x => (d.documenti[x.id] || []).map(f => `<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└ 📄 ${esc(x.nome)} – ${esc(f.name)}</div>`)).join('') : '<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(nessun documento caricato)</div>'}
     </div>
@@ -1293,26 +1333,34 @@ $('#dott').addEventListener('click', e => {
     renderDott(); $('#d-h')?.focus(); $('#d-h')?.scrollIntoView({ block: 'start' }); return;
   }
   if (a === 'chiudi') { D.modo = null; return renderDott(); }
+  if (a === 'conferma' && cambioInAttesa(p)) {
+    const da = p.slotPrecedente; p.slotPrecedente = null; p.stato = 'confermata';
+    registra(p, 'cambio_confermato', { da, a: p.slot });
+    D.msg = { tipo: 'ok', titolo: 'Cambio confermato', testo: `La visita ora è ${lungo(p.slot)}. L'orario di prima torna libero e al paziente è partita la mail.` };
+    renderDott(); $('#dott .scene')?.scrollIntoView({ block: 'start' }); return;
+  }
+  if (a === 'rifiuta' && cambioInAttesa(p)) {
+    p.slot = p.slotPrecedente; p.slotPrecedente = null; p.stato = p.statoPrecedente || 'confermata';
+    registra(p, 'cambio_rifiutato', { a: p.slot });
+    D.msg = { tipo: 'wait', titolo: 'Cambio rifiutato', testo: `Resta valido l'appuntamento di ${lungo(p.slot)}. Il paziente è stato avvisato.` };
+    renderDott(); $('#dott .scene')?.scrollIntoView({ block: 'start' }); return;
+  }
   if (a === 'conferma') { p.stato = 'confermata'; registra(p, 'confermata'); D.msg = { tipo: 'ok', titolo: 'Confermata', testo: 'Al paziente è partita la mail di conferma.' }; }
   if (a === 'rifiuta') { p.stato = 'rifiutata'; registra(p, 'rifiutata'); D.msg = { tipo: 'wait', titolo: 'Rifiutata', testo: "Il paziente riceve una mail con l'invito a scegliere un altro orario. L'orario torna libero." }; }
   if (a === 'conferma-sposta') {
     if (!D.st.slot) return;
-    const da = p.slot; p.slot = D.st.slot;
+    const da = p.slotPrecedente ?? p.slot; p.slot = D.st.slot; p.slotPrecedente = null;
     if (p.stato === 'in_attesa') p.stato = 'confermata';
     registra(p, 'spostata_dottoressa', { da, a: p.slot }); D.modo = null;
     D.msg = { tipo: 'ok', titolo: 'Visita spostata', testo: `Ora è ${lungo(p.slot)}. Al paziente è partita la mail con il nuovo orario.` };
   }
   if (a === 'conferma-annulla') {
-    p.stato = 'annullata'; registra(p, 'annullata_dottoressa'); D.modo = null;
+    p.stato = 'annullata'; p.slotPrecedente = null; registra(p, 'annullata_dottoressa'); D.modo = null;
     D.msg = { tipo: 'wait', titolo: 'Visita annullata', testo: "Il paziente è stato avvisato per mail. L'orario è di nuovo prenotabile." };
   }
   renderDott();
   const sc = $('#dott .scene'); sc?.scrollIntoView({ block: 'start' });
 });
-document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => {
-  DB.confermaManuale = b.dataset.mode === 'manuale'; salva(); renderDott();
-}));
-
 /* Link che aprono una prenotazione precisa (dalla conferma o dalle mail). */
 document.addEventListener('click', e => {
   const a = e.target.closest('[data-apri]'); if (!a) return;
@@ -1337,7 +1385,7 @@ $('#fb-copy').addEventListener('click', () => {
     const r = fs.querySelector('input:checked')?.value || fs.querySelector('textarea')?.value.trim() || '(nessuna risposta)';
     L.push('• ' + q + '\n  ' + r.replace(/\n/g, '\n  '));
   }
-  const txt = 'Risposte sulla demo prenotazioni\n\n' + L.join('\n\n');
+  const txt = 'Punti da decidere – demo prenotazioni\n\n' + L.join('\n\n');
   const pre = $('#fb-text'); pre.textContent = txt; pre.hidden = false;
   const ok = () => { $('#fb-status').textContent = 'Copiate. Ora incollale in un messaggio ad Agostino.'; };
   const ko = () => { $('#fb-status').textContent = 'Non riesco a copiare da qui: seleziona il testo qui sotto e copialo.'; const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };

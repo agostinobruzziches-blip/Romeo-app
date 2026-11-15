@@ -20,7 +20,7 @@ Quattro sezioni, raggiungibili dalla barra gialla in alto:
 
 - **Come funziona** (`#presentazione`): spiegazione, vantaggi, istruzioni per provarla e le domande aperte per Federica. Il pulsante "Copia le risposte" prepara un testo da mandare su WhatsApp o per mail.
 - **Prenota** (`#prenota`): il percorso vero in 6 passaggi (sede, tipo di visita, giorno e ora, dati, documenti, riepilogo).
-  - **Documenti:** documento d'identità, tessera sanitaria e documentazione clinica sono obbligatori; verbale dei vigili (solo incidenti) e altri documenti sono facoltativi. Si accettano PDF, JPG e PNG, anche foto fatte col telefono. Su Drive i file arrivano con il tipo di documento davanti al nome, pronti per la lavorazione automatica. Le voci stanno in `CONFIG.documenti`.
+  - **Documenti:** tutti facoltativi; documento d'identità, tessera sanitaria e documentazione clinica sono segnati come consigliati, il verbale dei vigili compare solo per gli incidenti. Si accettano PDF, JPG e PNG, anche foto fatte col telefono. Su Drive i file arrivano con il tipo di documento davanti al nome, pronti per la lavorazione automatica. Le voci stanno in `CONFIG.documenti`.
   - **Fondo spese:** non compare più nella scelta del tipo di visita. Nel riepilogo c'è una casella obbligatoria "Sono a conoscenza che il fondo spese… è di X €", con l'importo calcolato dalla pratica (o la frase di esenzione). Il momento della spunta viene registrato come il consenso privacy.
   Si possono fare più prenotazioni. Gli slot sono calcolati con la stessa logica prevista per il sistema reale: finestre di disponibilità, slot da 30 minuti, impegni sottratti (anche le altre prenotazioni della demo), limite delle 18:00 del giorno prima.
 - **Cambia o disdici** (`#gestisci`): la pagina che il paziente apre dal link nella mail. Permette di spostare la visita su un altro orario libero o di disdirla, fino alle 18:00 del giorno prima; dopo quell'ora indica come contattare lo studio.
@@ -31,7 +31,7 @@ Quattro sezioni, raggiungibili dalla barra gialla in alto:
 
   Si può passare da conferma manuale ad automatica, e un pulsante riporta la demo all'inizio.
 
-Le prenotazioni della demo restano nel `localStorage` del browser (chiave `spadazzi-demo-v3`), così Federica può interrompere e riprendere le prove. Nel sistema vero ogni prenotazione è un evento di Google Calendar con i dati nei tag privati, più una riga nel Foglio "Registro".
+Le prenotazioni della demo restano nel `localStorage` del browser (chiave `spadazzi-demo-v4`), così Federica può interrompere e riprendere le prove. Nel sistema vero ogni prenotazione è un evento di Google Calendar con i dati nei tag privati, più una riga nel Foglio "Registro".
 
 Nessun dato esce dal browser: i PDF scelti non vengono caricati, si legge solo il nome del file.
 
@@ -61,18 +61,28 @@ In alternativa, senza collegare la repo: `npx wrangler pages deploy prenotazioni
 - **Calendari**: "Studio Fiano" (condiviso con la segretaria), "Studio Roma", "Disponibile Roma", il principale non condiviso.
 - **Notifiche a Federica**: mail (app Gmail) e, se lo vuole, notifica push dedicata della PWA su Android.
 
-### Decisioni già prese
+### Decisioni già prese (risposte di Federica del 15/11)
 
-- Limite per prenotare, cambiare data e disdire: 18:00 del giorno prima. Si prenota fino a 60 giorni in avanti.
-- Prezzi e testi in un file di configurazione, gestito da Agostino.
-- Allegati: documenti obbligatori per tipo, al massimo 5 file da 10 MB per voce, in PDF, JPG o PNG.
-- Niente dominio per ora: si usa `pages.dev`.
+- **Conferma:** manuale, una per una. Anche ogni cambio data chiesto dal paziente va riconfermato. Se lei rifiuta il cambio, resta valido l'appuntamento di prima (da confermare con lei). Durante il cambio restano bloccati sia l'orario vecchio sia quello nuovo.
+- **Limiti:** prenotare entro le 18:00 del giorno prima; cambiare o disdire fino a 48 ore prima. Dopo, la pagina indica come contattare lo studio.
+- **Notifiche:** sia mail sia notifica sul telefono.
+- **Visite fuori studio:** prenotabili dal link con almeno 7 giorni di anticipo, nei blocchi del calendario "Disponibile fuori studio". Il paziente indica indirizzo e comune.
+- **Tipi di visita:** invalidità civile e Legge 104 unite in una sola voce. INAIL comprende anche la malattia professionale. Tolta la voce "accompagnamento", da rivedere.
+- **Chi ha indicato la dottoressa:** CAF, un medico (nome facoltativo), un avvocato (nome e se paga direttamente), altro (campo obbligatorio). Tolta "agenzia".
+- **Documenti:** tutti facoltativi; i tre principali sono segnati come consigliati. La mail al paziente elenca quelli da portare perché non allegati.
+- **Durata:** 30 minuti, ora indicata anche nel riepilogo e nelle mail.
+- **Cartelle Drive:** `COGNOME Nome - tipo di visita`.
+- **Logo:** caduceo vettoriale estratto dal biglietto da visita (Canva), usato nella testata e nell'icona.
+- Prezzi e testi in un file di configurazione, gestito da Agostino. Allegati: al massimo 5 file da 10 MB per voce, in PDF, JPG o PNG. Si prenota fino a 60 giorni in avanti. Niente dominio per ora: si usa `pages.dev`.
 
-### Da chiedere a Federica (sono anche nella demo)
+### Da decidere con Federica (sono anche nella demo, in "Come funziona")
 
-- Conferma manuale o automatica.
-- Se il paziente cambia data: resta confermata o va riconfermata (oppure niente cambio, solo disdetta).
-- Elenco dei medici dello studio di Fiano.
-- Convenzione dei nomi delle cartelle su Drive.
-- Visite fuori studio prenotabili dal link.
-- WhatsApp solo messaggi per Roma.
+- Invalidità con richiesta di accompagnamento: come gestirla.
+- Fondo spese per invalidità civile e Legge 104 (oggi 50 €, provvisorio).
+- Responsabilità medica (500 €): non citata nella sua risposta, da confermare.
+- Altre voci mancanti nell'elenco delle visite.
+- Alternativa per chi non riesce a prenotare dal link: nella demo c'è una proposta al primo passo.
+- Numero WhatsApp solo messaggi per Roma.
+- Visite fuori studio: zone servite, giorni, fondo spese o costo dello spostamento.
+- Cosa succede se rifiuta un cambio data.
+- Nome cartelle Drive: proposta di aggiungere anno e mese.
