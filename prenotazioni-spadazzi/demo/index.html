@@ -1,0 +1,1014 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest" data-pwa>
+<link rel="icon" href="icon.svg" type="image/svg+xml" data-pwa>
+<meta name="theme-color" content="#1a1c4f" data-pwa>
+<!--FINE-INTESTAZIONE-->
+<title>Prenotazioni Dott.ssa Spadazzi</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap">
+<style>
+/* Layout: colonna unica centrata (max 40rem), mobile-first; testata blu notte a tutta larghezza come il biglietto da visita. */
+:root {
+  --notte: #1a1c4f;          /* blu notte del biglietto */
+  --lavanda: #b9bac9;        /* grigio lavanda del biglietto */
+  --bg: #ffffff;
+  --fg: #17182f;
+  --muted: #474964;          /* contrasto > 8:1 su bianco */
+  --surface: #f3f3f8;
+  --line: #c9cad8;
+  --accent: #1a1c4f;
+  --accent-ink: #ffffff;
+  --band: #1a1c4f;
+  --band-ink: #ffffff;
+  --band-sub: #d9dae6;
+  --ok: #17643a;  --ok-bg: #e4f2ea;
+  --wait: #7a4f00; --wait-bg: #fbf0d9;
+  --err: #a1262b; --err-bg: #fbe7e7;
+  --demo-bg: #fff4c2; --demo-ink: #3d3200;
+  --cal-fiano: #2f6f4f; --cal-roma: #1a1c4f; --cal-pers: #8a5a9e; --cal-uni: #a1572b; --cal-disp: #7d7f9c;
+  --font-text: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-name: "Pinyon Script", "Snell Roundhand", "Apple Chancery", cursive;
+  --font-ui: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --r: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11122a; --fg: #ecedf5; --muted: #b8b9cf; --surface: #1b1d3c; --line: #3a3c63;
+    --accent: #c9cae0; --accent-ink: #11122a; --band: #0b0c22; --band-ink: #ffffff; --band-sub: #c9cae0;
+    --ok: #8fd6ad; --ok-bg: #173527; --wait: #f2c96b; --wait-bg: #3a2e12; --err: #f3a3a6; --err-bg: #3d1c1f;
+    --demo-bg: #3a3311; --demo-ink: #fbeeb0;
+    --cal-fiano: #7cc7a2; --cal-roma: #aeb1e6; --cal-pers: #d3a6e6; --cal-uni: #eba77f; --cal-disp: #a9abc6;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11122a; --fg: #ecedf5; --muted: #b8b9cf; --surface: #1b1d3c; --line: #3a3c63;
+  --accent: #c9cae0; --accent-ink: #11122a; --band: #0b0c22; --band-ink: #ffffff; --band-sub: #c9cae0;
+  --ok: #8fd6ad; --ok-bg: #173527; --wait: #f2c96b; --wait-bg: #3a2e12; --err: #f3a3a6; --err-bg: #3d1c1f;
+  --demo-bg: #3a3311; --demo-ink: #fbeeb0;
+  --cal-fiano: #7cc7a2; --cal-roma: #aeb1e6; --cal-pers: #d3a6e6; --cal-uni: #eba77f; --cal-disp: #a9abc6;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: var(--font-text); font-size: 1.25rem; line-height: 1.55;
+  -webkit-text-size-adjust: 100%;
+}
+.wrap { max-width: 40rem; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { text-wrap: balance; line-height: 1.25; margin: 0; }
+h2 { font-size: 1.6rem; }
+h3 { font-size: 1.25rem; }
+p { margin: 0; }
+a { color: var(--accent); text-underline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+
+/* Barra demo */
+.demo-bar { background: var(--demo-bg); color: var(--demo-ink); font-family: var(--font-ui); font-size: 0.95rem; }
+.demo-bar .wrap { padding-block: 8px; display: flex; gap: 6px 14px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+.demo-bar strong { letter-spacing: 0.06em; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tabs a { font-family: var(--font-ui); font-size: 0.95rem; color: var(--demo-ink); text-decoration: none; padding: 6px 12px; border-radius: 999px; border: 1px solid currentColor; min-height: 36px; display: inline-flex; align-items: center; }
+.tabs a[aria-current="page"] { background: var(--demo-ink); color: var(--demo-bg); }
+
+/* Testata */
+.testata { background: var(--band); color: var(--band-ink); }
+.testata .wrap { padding-block: 22px 20px; display: flex; gap: 16px; align-items: center; }
+.testata svg { flex: none; width: 58px; height: 74px; color: var(--lavanda); }
+.testata .nome { font-family: var(--font-name); font-size: 2.4rem; line-height: 1.1; font-weight: 400; }
+.testata .qualifica { color: var(--band-sub); font-size: 1.02rem; margin-top: 4px; }
+@media (max-width: 380px) { .testata .nome { font-size: 2rem; } .testata svg { width: 46px; height: 60px; } }
+
+main { padding-block: 28px 64px; }
+.view { display: grid; gap: 28px; }
+.stack { display: grid; gap: 14px; }
+.muted { color: var(--muted); }
+.small { font-size: 1.05rem; }
+.eyebrow { font-family: var(--font-ui); font-size: 0.9rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+/* Pulsanti */
+.btn { font: inherit; font-family: var(--font-ui); font-size: 1.15rem; font-weight: 600; min-height: 56px; padding: 12px 22px; border-radius: var(--r); border: 2px solid var(--accent); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; text-align: center; }
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-ghost { background: transparent; color: var(--accent); }
+.btn-ok { background: var(--ok); border-color: var(--ok); color: var(--bg); }
+.btn-no { background: transparent; border-color: var(--err); color: var(--err); }
+.btn-block { width: 100%; }
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-row .btn { flex: 1 1 12rem; }
+.link-btn { font: inherit; font-family: var(--font-ui); font-size: 1rem; background: none; border: 0; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 8px 0; min-height: 44px; }
+
+/* Avanzamento */
+.progress { display: grid; gap: 10px; }
+.progress ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.progress li { height: 8px; border-radius: 4px; background: var(--line); }
+.progress li.done { background: var(--accent); }
+.progress p { font-family: var(--font-ui); font-size: 1rem; color: var(--muted); }
+
+/* Scelte a scheda (radio grandi) */
+.choices { display: grid; gap: 12px; border: 0; margin: 0; padding: 0; min-width: 0; }
+.choices legend { padding: 0; margin-bottom: 12px; font-size: 1.6rem; font-weight: 700; line-height: 1.25; }
+.choice { position: relative; display: grid; grid-template-columns: auto 1fr auto; gap: 4px 14px; align-items: start; padding: 16px 18px; border: 2px solid var(--line); border-radius: var(--r); background: var(--bg); cursor: pointer; }
+.choice:hover { border-color: var(--accent); }
+.choice input { width: 26px; height: 26px; margin: 3px 0 0; accent-color: var(--accent); grid-row: span 2; }
+.choice .t { font-weight: 700; }
+.choice .d { grid-column: 2 / 4; color: var(--muted); font-size: 1.05rem; }
+.choice .prezzo { font-family: var(--font-ui); font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.choice:has(input:checked) { border-color: var(--accent); background: var(--surface); box-shadow: inset 0 0 0 1px var(--accent); }
+.choice:has(input:focus-visible) { outline: 3px solid var(--accent); outline-offset: 3px; }
+.choice input:focus-visible { outline: none; }
+
+/* Giorni e orari */
+.days { display: grid; gap: 10px; }
+.day { border: 2px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.day > button { font: inherit; width: 100%; text-align: left; background: var(--bg); color: var(--fg); border: 0; padding: 14px 18px; min-height: 64px; display: flex; justify-content: space-between; align-items: center; gap: 10px; cursor: pointer; }
+.day > button .n { font-family: var(--font-ui); font-size: 0.98rem; color: var(--muted); white-space: nowrap; }
+.day.open { border-color: var(--accent); }
+.day.open > button { background: var(--surface); font-weight: 700; }
+.slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(6.2rem, 1fr)); gap: 10px; padding: 14px 18px 18px; }
+.slot { font-family: var(--font-ui); font-size: 1.2rem; font-weight: 600; font-variant-numeric: tabular-nums; min-height: 56px; border-radius: 10px; border: 2px solid var(--accent); background: var(--bg); color: var(--accent); cursor: pointer; }
+.slot[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+
+/* Modulo */
+.field { display: grid; gap: 6px; }
+.field label, .field .lab { font-weight: 700; }
+.field .hint { color: var(--muted); font-size: 1.02rem; }
+.field input[type=text], .field input[type=tel], .field input[type=email] { font: inherit; font-family: var(--font-ui); font-size: 1.2rem; min-height: 56px; padding: 10px 14px; border: 2px solid var(--muted); border-radius: 10px; background: var(--bg); color: var(--fg); width: 100%; }
+.field input[aria-invalid="true"] { border-color: var(--err); }
+.err { color: var(--err); font-family: var(--font-ui); font-size: 1rem; font-weight: 600; }
+.err-box { border: 2px solid var(--err); background: var(--err-bg); border-radius: var(--r); padding: 14px 18px; }
+.err-box ul { margin: 6px 0 0; padding-left: 1.2em; }
+.sub { display: grid; gap: 14px; padding: 16px; border-left: 4px solid var(--lavanda); background: var(--surface); border-radius: 0 var(--r) var(--r) 0; }
+.check { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; cursor: pointer; }
+.check input { width: 28px; height: 28px; margin: 2px 0 0; accent-color: var(--accent); }
+.files { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.files li { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 14px; background: var(--surface); border-radius: 10px; font-family: var(--font-ui); font-size: 1rem; min-width: 0; }
+.files li span { overflow-wrap: anywhere; }
+.upload { position: relative; }
+.upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+.upload:has(input:focus-visible) .btn { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+/* Riepilogo */
+.summary { display: grid; gap: 0; border: 2px solid var(--line); border-radius: var(--r); }
+.summary > div { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 14px 18px; border-top: 1px solid var(--line); }
+.summary > div:first-child { border-top: 0; }
+.summary dt { font-family: var(--font-ui); font-size: 0.95rem; color: var(--muted); grid-column: 1; }
+.summary dd { margin: 0; font-weight: 600; grid-column: 1; min-width: 0; overflow-wrap: anywhere; }
+.summary .link-btn { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+.fondo { border-radius: var(--r); padding: 18px; background: var(--surface); border: 2px solid var(--lavanda); display: grid; gap: 8px; }
+.fondo .cifra { font-family: var(--font-ui); font-size: 1.9rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+ul.list { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
+
+.notice { border-radius: var(--r); padding: 16px 18px; display: grid; gap: 6px; }
+.notice.ok { background: var(--ok-bg); color: var(--fg); border: 2px solid var(--ok); }
+.notice.wait { background: var(--wait-bg); color: var(--fg); border: 2px solid var(--wait); }
+.pill { font-family: var(--font-ui); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.04em; padding: 3px 10px; border-radius: 999px; display: inline-block; white-space: nowrap; }
+.pill.wait { background: var(--wait-bg); color: var(--wait); border: 1px solid var(--wait); }
+.pill.ok { background: var(--ok-bg); color: var(--ok); border: 1px solid var(--ok); }
+.pill.no { background: var(--err-bg); color: var(--err); border: 1px solid var(--err); }
+
+/* Presentazione */
+.hero { display: grid; gap: 14px; }
+.hero h1 { font-size: 2rem; }
+.steps3 { display: grid; gap: 16px; counter-reset: s; list-style: none; margin: 0; padding: 0; }
+.steps3 li { display: grid; grid-template-columns: 2.6rem 1fr; gap: 4px 14px; }
+.steps3 li::before { counter-increment: s; content: counter(s); grid-row: span 2; width: 2.6rem; height: 2.6rem; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-family: var(--font-ui); font-weight: 700; display: grid; place-items: center; }
+.steps3 b { display: block; }
+.vantaggi { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
+.vantaggi > div { padding: 16px 18px; border: 1px solid var(--line); border-radius: var(--r); display: grid; gap: 4px; align-content: start; }
+.vantaggi b { font-size: 1.15rem; }
+.vantaggi p { color: var(--muted); font-size: 1.05rem; }
+hr.sep { border: 0; border-top: 1px solid var(--line); margin: 0; }
+
+/* Lato dottoressa */
+.scene { display: grid; gap: 12px; }
+.scene-h { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.phone { width: min(100%, 22rem); margin: 0 auto; border: 3px solid var(--fg); border-radius: 30px; padding: 18px 12px 22px; background: var(--surface); display: grid; gap: 10px; }
+.phone .bar { font-family: var(--font-ui); font-size: 0.85rem; display: flex; justify-content: space-between; padding: 0 8px; color: var(--muted); }
+.notif { background: var(--bg); border-radius: 18px; padding: 12px 14px; font-family: var(--font-ui); font-size: 0.98rem; display: grid; gap: 4px; box-shadow: 0 1px 4px rgb(0 0 0 / 0.15); }
+.notif .app { font-size: 0.82rem; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+.notif .app i { width: 16px; height: 16px; border-radius: 4px; background: var(--notte); display: inline-block; }
+.notif .acts { display: flex; gap: 18px; margin-top: 6px; }
+.notif .acts button { font: inherit; font-weight: 700; font-size: 0.92rem; letter-spacing: 0.04em; background: none; border: 0; color: var(--accent); padding: 8px 2px; min-height: 40px; cursor: pointer; }
+.mail { border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; background: var(--bg); }
+.mail .hd { background: var(--surface); padding: 12px 16px; font-family: var(--font-ui); font-size: 0.95rem; display: grid; gap: 2px; }
+.mail .hd span { color: var(--muted); }
+.mail .hd b { overflow-wrap: anywhere; }
+.mail .bd { padding: 18px 16px; display: grid; gap: 12px; font-size: 1.1rem; }
+.mail .bd h4 { margin: 0; font-size: 1.1rem; }
+.agenda { border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; font-family: var(--font-ui); font-size: 1rem; }
+.agenda .dayh { background: var(--surface); padding: 10px 14px; font-weight: 700; }
+.agenda .ev { display: grid; grid-template-columns: 4.8rem 1fr; gap: 10px; padding: 10px 14px; border-top: 1px solid var(--line); align-items: start; }
+.agenda .ev .h { font-variant-numeric: tabular-nums; color: var(--muted); }
+.agenda .ev .b { border-left: 5px solid var(--c); padding-left: 10px; min-width: 0; }
+.agenda .ev .b small { display: block; color: var(--muted); }
+.agenda .ev.pend .b { border-left-style: dashed; }
+.agenda .ev.nuovo { background: var(--surface); }
+.legend { display: flex; gap: 8px 16px; flex-wrap: wrap; font-family: var(--font-ui); font-size: 0.92rem; }
+.legend span { display: inline-flex; gap: 6px; align-items: center; }
+.legend i { width: 14px; height: 14px; border-radius: 3px; background: var(--c); display: inline-block; }
+.drive { font-family: var(--font-ui); font-size: 1rem; border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; display: grid; gap: 6px; overflow-x: auto; }
+.drive div { white-space: nowrap; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { font-family: var(--font-ui); font-variant-numeric: tabular-nums; padding: 6px 12px; border-radius: 8px; border: 2px solid var(--accent); font-weight: 600; }
+.chip.off { border-color: var(--line); color: var(--muted); text-decoration: line-through; }
+.toggle { display: flex; gap: 12px; align-items: center; justify-content: space-between; padding: 14px 18px; border: 2px solid var(--line); border-radius: var(--r); flex-wrap: wrap; }
+.seg { display: inline-flex; border: 2px solid var(--accent); border-radius: 999px; overflow: hidden; }
+.seg button { font: inherit; font-family: var(--font-ui); font-size: 1rem; padding: 8px 16px; min-height: 44px; border: 0; background: transparent; color: var(--accent); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+
+/* Domande per Federica */
+.fb { display: grid; gap: 20px; }
+.fb fieldset { border: 1px solid var(--line); border-radius: var(--r); padding: 14px 18px 18px; margin: 0; display: grid; gap: 10px; min-width: 0; }
+.fb legend { font-weight: 700; padding: 0 6px; }
+.fb label.opt { display: flex; gap: 10px; align-items: center; min-height: 44px; cursor: pointer; }
+.fb input[type=radio] { width: 24px; height: 24px; accent-color: var(--accent); flex: none; }
+.fb textarea { font: inherit; font-family: var(--font-ui); font-size: 1.05rem; width: 100%; min-height: 5.5rem; padding: 10px 12px; border: 2px solid var(--muted); border-radius: 10px; background: var(--bg); color: var(--fg); }
+.fb pre { white-space: pre-wrap; font-family: var(--font-ui); font-size: 0.95rem; background: var(--surface); padding: 14px; border-radius: var(--r); margin: 0; user-select: all; }
+footer { border-top: 1px solid var(--line); }
+footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size: 0.95rem; color: var(--muted); display: grid; gap: 4px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+
+<div class="demo-bar" role="region" aria-label="Avviso demo">
+  <div class="wrap">
+    <span><strong>DEMO</strong> · dati finti, nessuna prenotazione reale</span>
+    <nav class="tabs" aria-label="Sezioni della demo">
+      <a href="#presentazione">Come funziona</a>
+      <a href="#prenota">Prova come paziente</a>
+      <a href="#dottoressa">Lato dottoressa</a>
+    </nav>
+  </div>
+</div>
+
+<header class="testata">
+  <div class="wrap">
+    <!-- Caduceo provvisorio: da sostituire con il logo vero -->
+    <svg viewBox="0 0 58 74" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+      <line x1="29" y1="6" x2="29" y2="72"/>
+      <circle cx="29" cy="5" r="3.2" fill="currentColor" stroke="none"/>
+      <path d="M27 12 C18 6 8 8 2 14 C10 13 16 15 21 18 C14 18 9 20 6 24 C14 22 21 21 27 20"/>
+      <path d="M31 12 C40 6 50 8 56 14 C48 13 42 15 37 18 C44 18 49 20 52 24 C44 22 37 21 31 20"/>
+      <path d="M22 26 C34 30 36 36 29 40 C22 44 22 50 29 54 C36 58 34 64 26 66"/>
+      <path d="M36 26 C24 30 22 36 29 40 C36 44 36 50 29 54 C22 58 24 64 32 66"/>
+      <circle cx="22" cy="26" r="1.8" fill="currentColor" stroke="none"/>
+      <circle cx="36" cy="26" r="1.8" fill="currentColor" stroke="none"/>
+    </svg>
+    <div>
+      <div class="nome">Dott.ssa Federica Spadazzi</div>
+      <div class="qualifica">Specialista in Medicina Legale e delle Assicurazioni</div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- ============ PRESENTAZIONE ============ -->
+  <section id="v-presentazione" class="view" aria-labelledby="t-pres">
+    <div class="hero">
+      <p class="eyebrow">Per Federica</p>
+      <h1 id="t-pres">I pazienti prenotano da soli, solo quando sei libera</h1>
+      <p class="muted">Mandi un link. Il paziente sceglie sede, tipo di visita e orario tra quelli davvero liberi. Tu confermi con un tocco dal telefono. Mail di conferma, promemoria, evento in calendario e cartella su Drive partono da soli.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="#prenota">Prova come paziente</a>
+        <a class="btn btn-ghost" href="#dottoressa">Guarda cosa ricevi tu</a>
+      </div>
+    </div>
+
+    <hr class="sep">
+
+    <div class="stack">
+      <h2>Come funziona</h2>
+      <ol class="steps3">
+        <li><b>Tu apri gli orari, dal Calendar che usi già</b><span class="muted small">Fiano è automatico: ogni giovedì 9–14, tolti gli appuntamenti già in agenda (anche quelli della segretaria). Per Roma crei un evento "Disponibile" nel calendario "Disponibile Roma", per esempio martedì 15–18.</span></li>
+        <li><b>Il paziente prenota in 5 passaggi</b><span class="muted small">Sede, tipo di visita (con il fondo spese), giorno e ora, dati e documenti PDF, riepilogo. Vede solo orari liberi in <em>tutti</em> i tuoi calendari: studio, personale, università.</span></li>
+        <li><b>Tu ricevi una notifica e confermi</b><span class="muted small">Nel frattempo l'orario è già bloccato. Alla conferma il paziente riceve la mail con tutto quello che deve sapere. Il giorno prima gli arriva il promemoria.</span></li>
+      </ol>
+    </div>
+
+    <div class="stack">
+      <h2>Cosa ci guadagni</h2>
+      <div class="vantaggi">
+        <div><b>Meno telefonate e messaggi</b><p>Il paziente trova da solo orario, indirizzo, fondo spese e documenti da portare.</p></div>
+        <div><b>Nessun doppio impegno</b><p>Un orario occupato in qualsiasi tuo calendario non viene mai offerto.</p></div>
+        <div><b>Nessun pannello nuovo</b><p>Gestisci tutto da Google Calendar e dalla mail, sul telefono o sul PC.</p></div>
+        <div><b>Pazienti che arrivano preparati</b><p>Mail di conferma e promemoria con documenti, indicazioni e modalità di pagamento.</p></div>
+        <div><b>Documenti già al loro posto</b><p>I PDF caricati dal paziente finiscono nella sua cartella su Drive.</p></div>
+        <div><b>Dati che restano tuoi</b><p>Tutto resta nel tuo account Google: niente database esterni. Costo: zero euro al mese.</p></div>
+      </div>
+    </div>
+
+    <div class="stack">
+      <h2>Cosa la pagina non offre mai</h2>
+      <ul class="list">
+        <li>Le visite CAF UCI del giovedì pomeriggio: le prenota il CAF.</li>
+        <li>CTU e visite INPS: le concordi tu con il medico della controparte.</li>
+        <li>Il numero di telefono per Roma: per Roma si scrive alla mail dello studio.</li>
+        <li>Visite in giornata: si prenota entro le 18:00 del giorno prima.</li>
+      </ul>
+    </div>
+
+    <hr class="sep">
+
+    <form class="fb" id="feedback" aria-labelledby="t-fb">
+      <div class="stack">
+        <h2 id="t-fb">Alcune domande per te</h2>
+        <p class="muted small">Le risposte restano su questo dispositivo finché non premi "Copia le risposte" e le mandi ad Agostino.</p>
+      </div>
+      <fieldset>
+        <legend>Come vuoi confermare le prenotazioni?</legend>
+        <label class="opt"><input type="radio" name="conferma" value="Le confermo io, una per una"> Le confermo io, una per una</label>
+        <label class="opt"><input type="radio" name="conferma" value="Automatica: se l'orario è libero è confermata"> Automatica: se l'orario è libero è confermata</label>
+        <label class="opt"><input type="radio" name="conferma" value="Non so ancora"> Non so ancora</label>
+      </fieldset>
+      <fieldset>
+        <legend>Fino a quando si può prenotare o disdire?</legend>
+        <label class="opt"><input type="radio" name="limite" value="Entro le 18:00 del giorno prima"> Entro le 18:00 del giorno prima</label>
+        <label class="opt"><input type="radio" name="limite" value="Entro mezzanotte del giorno prima"> Entro mezzanotte del giorno prima</label>
+        <label class="opt"><input type="radio" name="limite" value="Altro (vedi note)"> Altro (scrivilo nelle note)</label>
+      </fieldset>
+      <fieldset>
+        <legend>Dove vuoi le notifiche delle nuove richieste?</legend>
+        <label class="opt"><input type="radio" name="notifiche" value="Basta la mail (app Gmail)"> Basta la mail (app Gmail)</label>
+        <label class="opt"><input type="radio" name="notifiche" value="Notifica dedicata sul telefono"> Notifica dedicata sul telefono</label>
+        <label class="opt"><input type="radio" name="notifiche" value="Entrambe"> Entrambe</label>
+      </fieldset>
+      <fieldset>
+        <legend>Visite fuori studio prenotabili dal link?</legend>
+        <label class="opt"><input type="radio" name="fuori" value="No"> No</label>
+        <label class="opt"><input type="radio" name="fuori" value="Sì, con almeno 7 giorni di anticipo"> Sì, con almeno 7 giorni di anticipo</label>
+      </fieldset>
+      <fieldset>
+        <legend>Per Roma, un numero WhatsApp solo messaggi?</legend>
+        <label class="opt"><input type="radio" name="whatsapp" value="Sì"> Sì</label>
+        <label class="opt"><input type="radio" name="whatsapp" value="No, basta la mail"> No, basta la mail</label>
+      </fieldset>
+      <fieldset>
+        <legend>Medici dello studio di Fiano da mostrare</legend>
+        <label class="sr" for="fb-medici">Nomi dei medici dello studio di Fiano</label>
+        <textarea id="fb-medici" name="medici" placeholder="Un nome per riga, oppure lascia vuoto"></textarea>
+      </fieldset>
+      <fieldset>
+        <legend>Come si chiamano le cartelle dei pazienti su Drive?</legend>
+        <label class="sr" for="fb-drive">Formato del nome delle cartelle dei pazienti</label>
+        <textarea id="fb-drive" name="drive" placeholder="Per esempio: ROSSI Mario, oppure 2026-11 Rossi Mario – Invalidità"></textarea>
+      </fieldset>
+      <fieldset>
+        <legend>Cosa cambieresti?</legend>
+        <label class="sr" for="fb-note">Note libere</label>
+        <textarea id="fb-note" name="note" placeholder="Qualsiasi cosa: testi, passaggi, cose che mancano"></textarea>
+      </fieldset>
+      <div class="btn-row">
+        <button type="button" class="btn btn-primary" id="fb-copy">Copia le risposte</button>
+      </div>
+      <p id="fb-status" class="small" role="status"></p>
+      <pre id="fb-text" hidden></pre>
+    </form>
+  </section>
+
+  <!-- ============ PRENOTAZIONE (PAZIENTE) ============ -->
+  <section id="v-prenota" class="view" hidden aria-label="Prenotazione">
+    <div id="wizard" class="view"></div>
+  </section>
+
+  <!-- ============ LATO DOTTORESSA ============ -->
+  <section id="v-dottoressa" class="view" hidden aria-labelledby="t-dott">
+    <div class="stack">
+      <p class="eyebrow">Lato dottoressa</p>
+      <h1 id="t-dott" style="font-size:2rem">Cosa succede dopo una prenotazione</h1>
+      <p class="muted" id="dott-intro"></p>
+    </div>
+    <div class="toggle">
+      <span><b>Conferma delle richieste</b><br><span class="muted small">Da decidere: in questa demo puoi provare entrambe.</span></span>
+      <div class="seg" role="group" aria-label="Modalità di conferma">
+        <button type="button" data-mode="manuale">Manuale</button>
+        <button type="button" data-mode="automatica">Automatica</button>
+      </div>
+    </div>
+    <div id="dott" class="view"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Demo per valutazione. Logo provvisorio. Nomi, numeri e appuntamenti sono inventati.</span>
+    <span>Il sistema vero non usa database esterni: i dati restano nell'account Google dello studio.</span>
+  </div>
+</footer>
+
+<script>
+/* =====================================================================
+   CONFIGURAZIONE
+   Nel sistema vero arriva dal backend (Apps Script) e si cambia senza
+   toccare il codice. Qui è copiata per far funzionare la demo da sola.
+   ===================================================================== */
+const CONFIG = {
+  durataMin: 30,
+  orizzonteGiorni: 60,
+  limiteGiornoPrima: '18:00',
+  mittente: 'studiofedericaspadazzi@gmail.com',
+  sedi: [
+    { id: 'fiano', nome: 'Studio di Fiano Romano', indirizzo: 'Via Tiberina 31/b, 00065 Fiano Romano (RM)',
+      indicazioni: 'Dietro la pasticceria Fieni, negli studi medici al secondo piano.', telefono: '333 1412965',
+      quando: 'Il giovedì mattina',
+      disponibilita: { tipo: 'settimanale', regole: [{ giorno: 4, dalle: '09:00', alle: '14:00' }] } },
+    { id: 'roma', nome: 'Studio di Roma', indirizzo: 'Via Lombardia 30, 00187 Roma',
+      indicazioni: 'Traversa di Via Veneto.', telefono: null, contatto: 'studiofedericaspadazzi@gmail.com',
+      quando: 'Giorni e orari variabili',
+      disponibilita: { tipo: 'calendario', calendario: 'Disponibile Roma' } },
+  ],
+  prestazioni: [
+    { id: 'rc_lievi', nome: 'Incidente stradale, lesioni lievi', esempi: 'Colpo di frusta, contusioni', fondo: 100, verbale: true },
+    { id: 'rc_gravi', nome: 'Incidente stradale, lesioni gravi', esempi: 'Fratture, ricoveri, interventi', fondo: 300, verbale: true },
+    { id: 'invalidita', nome: 'Invalidità civile o Legge 104', esempi: 'Prima domanda o aggravamento', fondo: 50 },
+    { id: 'accomp', nome: 'Invalidità civile con richiesta di accompagnamento', esempi: '', fondo: 100 },
+    { id: 'inail', nome: 'Infortunio sul lavoro (INAIL)', esempi: '', fondo: 100 },
+    { id: 'polizza', nome: 'Polizza infortuni privata', esempi: '', fondo: 0, notaFondo: 'Nessun fondo spese: si paga alla consegna della relazione.' },
+    { id: 'resp_med', nome: 'Responsabilità medica', esempi: 'Presunto errore sanitario', fondo: 500, notaFondo: 'Per la valutazione preliminare del caso.' },
+  ],
+  invianti: [
+    { id: 'caf', etichetta: 'Un CAF' },
+    { id: 'medico_fiano', etichetta: 'Un medico dello studio di Fiano' },
+    { id: 'avvocato', etichetta: "Un avvocato o un'agenzia" },
+    { id: 'altro', etichetta: 'Altro' },
+  ],
+  testi: {
+    fondoScalato: "Il fondo spese viene scalato dall'onorario finale.",
+    pagamento: 'Alla visita si può pagare in contanti, con POS o con bonifico.',
+    esenzione: 'Nessun fondo spese: la visita è pagata direttamente da {inviante}.',
+    documentiBase: ["Documento d'identità", 'Tessera sanitaria', 'Tutta la documentazione clinica relativa alla pratica'],
+    verbale: "L'eventuale verbale dei vigili intervenuti",
+    altreInfo: 'Ogni altra informazione utile per la pratica',
+    privacy: "Ho letto l'informativa sulla privacy e acconsento al trattamento dei miei dati, anche sanitari, per la gestione della visita.",
+  },
+  allegati: { maxFile: 5, maxMB: 10 },
+};
+
+/* Disponibilità di Roma simulate (nel sistema vero sono gli eventi del calendario "Disponibile Roma"). */
+const BLOCCHI_ROMA = [
+  { giorno: 2, dalle: '15:00', alle: '18:00', settimane: 'tutte' },
+  { giorno: 5, dalle: '09:30', alle: '12:30', settimane: 'pari' },
+  { giorno: 3, dalle: '16:00', alle: '19:00', settimane: 'dispari' },
+];
+const IMPEGNI_FINTI = {
+  fiano: ['Visita (inserita dalla segretaria)', 'Visita già fissata', 'Visita (inserita dalla segretaria)'],
+  roma: ['Impegno personale', "Lezione all'università", 'CTU (fissata da te)'],
+};
+
+/* ---------- utilità ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const fmtGiorno = new Intl.DateTimeFormat('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });
+const fmtGiornoBreve = new Intl.DateTimeFormat('it-IT', { weekday: 'short', day: 'numeric', month: 'short' });
+const fmtOra = new Intl.DateTimeFormat('it-IT', { hour: '2-digit', minute: '2-digit' });
+const giorno = d => cap(fmtGiorno.format(d));
+const ora = d => fmtOra.format(d);
+const euro = n => n === 0 ? 'Nessuno' : n + ' €';
+function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
+function atTime(d, hhmm) { const [h, m] = hhmm.split(':').map(Number); const x = new Date(d); x.setHours(h, m, 0, 0); return x; }
+function dayKey(d) { return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+function rng(str) { let h = 2166136261; for (const c of str) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return () => { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return ((h >>> 0) % 1000) / 1000; }; }
+const sedeById = id => CONFIG.sedi.find(s => s.id === id);
+const prestById = id => CONFIG.prestazioni.find(p => p.id === id);
+const invById = id => CONFIG.invianti.find(i => i.id === id);
+
+/* ---------- calcolo slot (stessa logica del sistema vero) ----------
+   1. finestre di disponibilità del giorno (regola fissa o blocchi "Disponibile Roma")
+   2. divise in slot da 30 minuti, senza pausa
+   3. tolti gli slot che si sovrappongono a impegni in QUALSIASI calendario
+   4. tolti gli slot oltre il limite "entro le 18:00 del giorno prima"          */
+function finestre(sede, d) {
+  if (sede.disponibilita.tipo === 'settimanale')
+    return sede.disponibilita.regole.filter(r => r.giorno === d.getDay()).map(r => [atTime(d, r.dalle), atTime(d, r.alle)]);
+  const settimana = Math.floor((d - new Date(2024, 0, 1)) / (7 * 864e5));
+  return BLOCCHI_ROMA.filter(b => b.giorno === d.getDay() && (b.settimane === 'tutte' || (b.settimane === 'pari') === (settimana % 2 === 0)))
+    .map(b => [atTime(d, b.dalle), atTime(d, b.alle)]);
+}
+function slotDelGiorno(sede, d) {
+  const r = rng(sede.id + dayKey(d));
+  const out = [];
+  for (const [a, b] of finestre(sede, d)) {
+    for (let t = new Date(a); t < b; t = new Date(t.getTime() + CONFIG.durataMin * 6e4)) {
+      const occ = r() < 0.32;
+      out.push({ inizio: t, occupato: occ ? IMPEGNI_FINTI[sede.id][Math.floor(r() * 3)] : null });
+    }
+  }
+  return out;
+}
+const prenotatiInDemo = new Set();
+function giorniDisponibili(sede) {
+  const oggi = new Date(); oggi.setHours(0, 0, 0, 0);
+  const adesso = new Date();
+  const res = [];
+  for (let i = 1; i <= CONFIG.orizzonteGiorni; i++) {
+    const d = addDays(oggi, i);
+    const limite = atTime(addDays(d, -1), CONFIG.limiteGiornoPrima);
+    if (adesso >= limite) continue;
+    const liberi = slotDelGiorno(sede, d).filter(s => !s.occupato && !prenotatiInDemo.has(s.inizio.getTime())).map(s => s.inizio);
+    if (liberi.length) res.push({ d, liberi });
+  }
+  return res;
+}
+
+function fondoSpese(p, dati) {
+  const prest = prestById(p.prest);
+  if (dati.inviante === 'avvocato' && dati.invPaga === 'si')
+    return { cifra: 0, testo: CONFIG.testi.esenzione.replace('{inviante}', dati.invNome || "l'avvocato o l'agenzia") , esente: true };
+  return { cifra: prest.fondo, testo: prest.notaFondo || '', esente: false };
+}
+function documenti(prestId) {
+  const p = prestById(prestId);
+  return [...CONFIG.testi.documentiBase, ...(p.verbale ? [CONFIG.testi.verbale] : []), CONFIG.testi.altreInfo];
+}
+function invianteTesto(d) {
+  const i = invById(d.inviante); if (!i) return '';
+  if (d.inviante === 'avvocato') return i.etichetta + (d.invNome ? ': ' + d.invNome : '') + (d.invPaga === 'si' ? ' (paga direttamente)' : '');
+  if (d.inviante === 'altro' && d.invAltro) return 'Altro: ' + d.invAltro;
+  return i.etichetta;
+}
+
+/* =====================================================================
+   PERCORSO PAZIENTE
+   ===================================================================== */
+const TITOLI = ['Dove vuole fare la visita?', 'Che tipo di visita le serve?', 'Scelga giorno e orario', 'I suoi dati', 'Controlli e invii'];
+const vuoti = () => ({ nome: '', cognome: '', tel: '', email: '', inviante: '', invNome: '', invPaga: '', invAltro: '', files: [], privacy: false });
+const S = { step: 1, sede: null, prest: null, giornoAperto: null, slot: null, dati: vuoti(), errori: null, mostraTutti: false,
+            inviata: null, confermaManuale: true };
+
+function progress() {
+  return `<div class="progress" aria-hidden="false">
+    <ol aria-hidden="true">${[1, 2, 3, 4, 5].map(i => `<li class="${i <= S.step ? 'done' : ''}"></li>`).join('')}</ol>
+    <p>Passo ${S.step} di 5</p></div>`;
+}
+function nav(avantiLabel = 'Avanti', disabilitato = false) {
+  return `<div class="btn-row">
+    ${S.step > 1 ? '<button type="button" class="btn btn-ghost" data-act="indietro">Indietro</button>' : ''}
+    <button type="button" class="btn btn-primary" data-act="avanti" ${disabilitato ? 'aria-disabled="true"' : ''}>${avantiLabel}</button>
+  </div>`;
+}
+
+function stepSede() {
+  return `${progress()}
+  <fieldset class="choices"><legend id="step-h" tabindex="-1">${TITOLI[0]}</legend>
+    ${CONFIG.sedi.map(s => `<label class="choice">
+      <input type="radio" name="sede" value="${s.id}" ${S.sede === s.id ? 'checked' : ''}>
+      <span class="t">${esc(s.nome)}</span><span></span>
+      <span class="d">${esc(s.indirizzo)}<br>${esc(s.quando)}</span>
+    </label>`).join('')}
+  </fieldset>
+  ${nav()}`;
+}
+function stepPrest() {
+  return `${progress()}
+  <fieldset class="choices"><legend id="step-h" tabindex="-1">${TITOLI[1]}</legend>
+    <p class="muted small" style="margin-bottom:4px">Accanto a ogni visita c'è il fondo spese da portare il giorno della visita.</p>
+    ${CONFIG.prestazioni.map(p => `<label class="choice">
+      <input type="radio" name="prest" value="${p.id}" ${S.prest === p.id ? 'checked' : ''}>
+      <span class="t">${esc(p.nome)}</span><span class="prezzo">${p.fondo ? p.fondo + ' €' : 'Nessuno'}</span>
+      ${p.esempi || p.notaFondo ? `<span class="d">${esc([p.esempi, p.notaFondo].filter(Boolean).join('. '))}</span>` : ''}
+    </label>`).join('')}
+  </fieldset>
+  <p class="muted small">${esc(CONFIG.testi.fondoScalato)} Se la manda un avvocato o un'agenzia che paga direttamente, il fondo spese non è dovuto.</p>
+  ${nav()}`;
+}
+function stepGiorno() {
+  const sede = sedeById(S.sede);
+  const giorni = giorniDisponibili(sede);
+  const visibili = S.mostraTutti ? giorni : giorni.slice(0, 6);
+  if (S.giornoAperto == null && giorni.length) S.giornoAperto = dayKey(giorni[0].d);
+  return `${progress()}
+  <div class="stack">
+    <h2 id="step-h" tabindex="-1">${TITOLI[2]}</h2>
+    <p class="muted small">${esc(sede.nome)}. Ogni visita dura 30 minuti. Vede solo gli orari liberi.</p>
+  </div>
+  <div class="days">
+    ${visibili.map(g => {
+      const k = dayKey(g.d), open = S.giornoAperto === k;
+      return `<div class="day ${open ? 'open' : ''}">
+        <button type="button" data-giorno="${k}" aria-expanded="${open}">
+          <span>${giorno(g.d)}</span><span class="n">${g.liberi.length} ${g.liberi.length === 1 ? 'orario' : 'orari'}</span>
+        </button>
+        ${open ? `<div class="slots" role="group" aria-label="Orari di ${giorno(g.d)}">
+          ${g.liberi.map(t => `<button type="button" class="slot" data-slot="${t.getTime()}" aria-pressed="${S.slot === t.getTime()}">${ora(t)}</button>`).join('')}
+        </div>` : ''}
+      </div>`;
+    }).join('')}
+  </div>
+  ${!S.mostraTutti && giorni.length > 6 ? '<button type="button" class="btn btn-ghost btn-block" data-act="altri">Mostra altri giorni</button>' : ''}
+  ${S.errori ? `<p class="err" role="alert">${esc(S.errori)}</p>` : ''}
+  ${nav()}`;
+}
+function campo(id, label, tipo, extra = '', hint = '') {
+  const e = S.errori && S.errori[id];
+  return `<div class="field">
+    <label for="f-${id}">${label}</label>
+    ${hint ? `<span class="hint" id="h-${id}">${hint}</span>` : ''}
+    <input id="f-${id}" name="${id}" type="${tipo}" value="${esc(S.dati[id])}" ${extra}
+      ${e ? `aria-invalid="true" aria-describedby="e-${id}"` : hint ? `aria-describedby="h-${id}"` : ''}>
+    ${e ? `<span class="err" id="e-${id}">${esc(e)}</span>` : ''}
+  </div>`;
+}
+function stepDati() {
+  const d = S.dati, E = S.errori || {};
+  const elencoErr = Object.entries(E);
+  return `${progress()}
+  <h2 id="step-h" tabindex="-1">${TITOLI[3]}</h2>
+  ${elencoErr.length ? `<div class="err-box" role="alert" tabindex="-1"><b>Controlli questi campi:</b><ul>${elencoErr.map(([k, v]) => `<li><a href="#f-${k}">${esc(v)}</a></li>`).join('')}</ul></div>` : ''}
+  <form id="form-dati" class="stack" novalidate>
+    ${campo('nome', 'Nome', 'text', 'autocomplete="given-name"')}
+    ${campo('cognome', 'Cognome', 'text', 'autocomplete="family-name"')}
+    ${campo('tel', 'Telefono', 'tel', 'autocomplete="tel" inputmode="tel"', 'Lo usiamo solo se dobbiamo avvisarla di un cambiamento.')}
+    ${campo('email', 'Email', 'email', 'autocomplete="email" inputmode="email"', 'Qui riceverà la conferma e il promemoria.')}
+
+    <fieldset class="choices" ${E.inviante ? 'aria-describedby="e-inviante"' : ''}>
+      <legend style="font-size:1.25rem" id="f-inviante" tabindex="-1">Chi le ha indicato la dottoressa?</legend>
+      ${E.inviante ? `<span class="err" id="e-inviante">${esc(E.inviante)}</span>` : ''}
+      ${CONFIG.invianti.map(i => `<label class="choice"><input type="radio" name="inviante" value="${i.id}" ${d.inviante === i.id ? 'checked' : ''}><span class="t">${esc(i.etichetta)}</span><span></span></label>`).join('')}
+    </fieldset>
+    ${d.inviante === 'avvocato' ? `<div class="sub">
+      ${campo('invNome', "Nome dell'avvocato o dell'agenzia", 'text')}
+      <fieldset class="choices" ${E.invPaga ? 'aria-describedby="e-invPaga"' : ''}>
+        <legend style="font-size:1.15rem" id="f-invPaga" tabindex="-1">Paga direttamente la dottoressa?</legend>
+        ${E.invPaga ? `<span class="err" id="e-invPaga">${esc(E.invPaga)}</span>` : ''}
+        <label class="choice"><input type="radio" name="invPaga" value="si" ${d.invPaga === 'si' ? 'checked' : ''}><span class="t">Sì</span><span></span><span class="d">Non deve portare il fondo spese.</span></label>
+        <label class="choice"><input type="radio" name="invPaga" value="no" ${d.invPaga === 'no' ? 'checked' : ''}><span class="t">No, oppure non lo so</span><span></span></label>
+      </fieldset>
+    </div>` : ''}
+    ${d.inviante === 'altro' ? `<div class="sub">${campo('invAltro', 'Chi? (facoltativo)', 'text')}</div>` : ''}
+
+    <div class="field">
+      <span class="lab" id="lab-files">Documenti in PDF (facoltativo)</span>
+      <span class="hint">Referti, verbali, lettere. Fino a ${CONFIG.allegati.maxFile} file da ${CONFIG.allegati.maxMB} MB. Può anche portarli il giorno della visita.</span>
+      ${d.files.length ? `<ul class="files">${d.files.map((f, i) => `<li><span>${esc(f.name)} · ${(f.size / 1048576).toFixed(1)} MB</span><button type="button" class="link-btn" data-rm="${i}">Togli<span class="sr"> ${esc(f.name)}</span></button></li>`).join('')}</ul>` : ''}
+      ${d.files.length < CONFIG.allegati.maxFile ? `<div class="upload"><span class="btn btn-ghost btn-block" aria-hidden="true">Aggiungi un PDF</span><input type="file" id="f-files" accept="application/pdf,.pdf" multiple aria-labelledby="lab-files"></div>` : ''}
+      ${E.files ? `<span class="err">${esc(E.files)}</span>` : ''}
+    </div>
+
+    <div class="field">
+      <label class="check" for="f-privacy"><input type="checkbox" id="f-privacy" name="privacy" ${d.privacy ? 'checked' : ''} ${E.privacy ? 'aria-invalid="true" aria-describedby="e-privacy"' : ''}>
+        <span>${esc(CONFIG.testi.privacy)} <a href="#prenota" data-act="privacy">Leggi l'informativa</a></span></label>
+      <p id="privacy-txt" class="muted small" hidden>[Testo dell'informativa privacy: in arrivo.]</p>
+      ${E.privacy ? `<span class="err" id="e-privacy">${esc(E.privacy)}</span>` : ''}
+    </div>
+  </form>
+  ${nav('Vai al riepilogo')}`;
+}
+function riga(dt, dd, step) {
+  return `<div><dt>${dt}</dt><dd>${dd}</dd>${step ? `<button type="button" class="link-btn" data-goto="${step}">Modifica<span class="sr"> ${dt}</span></button>` : ''}</div>`;
+}
+function stepRiepilogo() {
+  const sede = sedeById(S.sede), p = prestById(S.prest), d = S.dati, t = new Date(S.slot);
+  const f = fondoSpese({ prest: S.prest }, d);
+  return `${progress()}
+  <h2 id="step-h" tabindex="-1">${TITOLI[4]}</h2>
+  <dl class="summary" style="margin:0">
+    ${riga('Sede', `${esc(sede.nome)}<br><span class="muted small">${esc(sede.indirizzo)}</span>`, 1)}
+    ${riga('Visita', esc(p.nome), 2)}
+    ${riga('Giorno e ora', `${giorno(t)}, ore ${ora(t)}`, 3)}
+    ${riga('Nome', esc(d.nome + ' ' + d.cognome), 4)}
+    ${riga('Telefono ed email', `${esc(d.tel)}<br>${esc(d.email)}`, 4)}
+    ${riga('Indicata da', esc(invianteTesto(d)), 4)}
+    ${riga('Documenti allegati', d.files.length ? d.files.map(x => esc(x.name)).join('<br>') : 'Nessuno', 4)}
+  </dl>
+  <div class="fondo">
+    <span class="eyebrow">Fondo spese da portare</span>
+    <span class="cifra">${f.cifra ? f.cifra + ' €' : 'Nessuno'}</span>
+    ${f.testo ? `<span>${esc(f.testo)}</span>` : ''}
+    ${f.cifra ? `<span class="small">${esc(CONFIG.testi.fondoScalato)}</span>` : ''}
+    <span class="small">${esc(CONFIG.testi.pagamento)}</span>
+  </div>
+  <div class="stack">
+    <h3>Da portare alla visita</h3>
+    <ul class="list">${documenti(S.prest).map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+  </div>
+  ${nav(S.confermaManuale ? 'Invia la richiesta' : 'Prenota')}`;
+}
+function stepFatto() {
+  const P = S.inviata, t = new Date(P.slot), sede = sedeById(P.sede);
+  const manuale = P.stato === 'in_attesa';
+  return `<div class="notice ${manuale ? 'wait' : 'ok'}" role="status">
+      <h2 id="step-h" tabindex="-1">${manuale ? 'Richiesta inviata' : 'Prenotazione confermata'}</h2>
+      <p>${manuale
+        ? `L'orario di <b>${giorno(t)} alle ${ora(t)}</b> è riservato per lei. La dottoressa conferma a breve: riceverà una mail a <b>${esc(P.dati.email)}</b>.`
+        : `La aspettiamo <b>${giorno(t)} alle ${ora(t)}</b> a ${esc(sede.nome)}. Le abbiamo mandato una mail a <b>${esc(P.dati.email)}</b> con tutti i dettagli.`}</p>
+    </div>
+    <p class="muted">${manuale ? 'Nella mail di conferma troverà indirizzo, documenti da portare, fondo spese e il link per disdire.' : 'Il giorno prima riceverà un promemoria. Se non può venire, nella mail trova il link per disdire.'}</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="#dottoressa">Guarda cosa riceve la dottoressa</a>
+      <button type="button" class="btn btn-ghost" data-act="ricomincia">Prova un'altra prenotazione</button>
+    </div>`;
+}
+
+function renderWizard(focus = true) {
+  const w = $('#wizard');
+  w.innerHTML = S.inviata && S.step === 6 ? stepFatto() : [stepSede, stepPrest, stepGiorno, stepDati, stepRiepilogo][S.step - 1]();
+  if (focus) { const h = $('#step-h'); if (h) { h.focus({ preventScroll: true }); window.scrollTo({ top: 0 }); } }
+}
+
+function valida() {
+  const d = S.dati, E = {};
+  if (!d.nome.trim()) E.nome = 'Scriva il nome.';
+  if (!d.cognome.trim()) E.cognome = 'Scriva il cognome.';
+  if (d.tel.replace(/\D/g, '').length < 8) E.tel = 'Scriva un numero di telefono valido, per esempio 333 123 4567.';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email.trim())) E.email = 'Scriva un indirizzo email valido, per esempio nome@esempio.it.';
+  if (!d.inviante) E.inviante = 'Scelga chi le ha indicato la dottoressa.';
+  if (d.inviante === 'avvocato' && !d.invNome.trim()) E.invNome = "Scriva il nome dell'avvocato o dell'agenzia.";
+  if (d.inviante === 'avvocato' && !d.invPaga) E.invPaga = 'Indichi se paga direttamente la dottoressa.';
+  if (!d.privacy) E.privacy = "Per prenotare serve il consenso all'informativa privacy.";
+  return E;
+}
+
+function avanti() {
+  if (S.step === 1 && !S.sede) return segnala('Scelga una sede per continuare.');
+  if (S.step === 2 && !S.prest) return segnala('Scelga il tipo di visita per continuare.');
+  if (S.step === 3 && !S.slot) { S.errori = 'Scelga un orario per continuare.'; renderWizard(false); $('.err')?.scrollIntoView({ block: 'center' }); return; }
+  if (S.step === 4) {
+    const E = valida();
+    if (Object.keys(E).length) { S.errori = E; renderWizard(false); $('.err-box')?.focus?.(); $('.err-box')?.scrollIntoView({ block: 'start' }); return; }
+  }
+  if (S.step === 5) return invia();
+  S.errori = null; S.step++; renderWizard();
+}
+function segnala(msg) {
+  let el = $('#wizard .err');
+  if (!el) { el = document.createElement('p'); el.className = 'err'; el.setAttribute('role', 'alert'); $('#wizard .btn-row').before(el); }
+  el.textContent = msg;
+}
+function invia() {
+  const id = Math.random().toString(36).slice(2, 10).toUpperCase();
+  S.inviata = { id, sede: S.sede, prest: S.prest, slot: S.slot, dati: { ...S.dati, files: S.dati.files.map(f => ({ name: f.name, size: f.size })) },
+    stato: S.confermaManuale ? 'in_attesa' : 'confermata', creata: new Date(), consenso: new Date(), esempio: false };
+  prenotatiInDemo.add(S.slot);
+  S.step = 6; renderWizard(); renderDott();
+}
+
+/* eventi del percorso */
+$('#wizard').addEventListener('click', e => {
+  const b = e.target.closest('button, a'); if (!b) return;
+  const act = b.dataset.act;
+  if (act === 'avanti') return avanti();
+  if (act === 'indietro') { S.errori = null; S.step--; return renderWizard(); }
+  if (act === 'altri') { S.mostraTutti = true; return renderWizard(false); }
+  if (act === 'ricomincia') { Object.assign(S, { step: 1, sede: null, prest: null, slot: null, giornoAperto: null, dati: vuoti(), errori: null, mostraTutti: false }); return renderWizard(); }
+  if (act === 'privacy') { e.preventDefault(); const p = $('#privacy-txt'); p.hidden = !p.hidden; return; }
+  if (b.dataset.giorno) { S.giornoAperto = S.giornoAperto === b.dataset.giorno ? null : b.dataset.giorno; renderWizard(false); $(`[data-giorno="${b.dataset.giorno}"]`).focus(); return; }
+  if (b.dataset.slot) { S.slot = Number(b.dataset.slot); S.errori = null; renderWizard(false); $(`[data-slot="${b.dataset.slot}"]`).focus(); return; }
+  if (b.dataset.goto) { S.step = Number(b.dataset.goto); return renderWizard(); }
+  if (b.dataset.rm) { S.dati.files.splice(Number(b.dataset.rm), 1); return renderWizard(false); }
+});
+$('#wizard').addEventListener('change', e => {
+  const t = e.target;
+  if (t.name === 'sede') { S.sede = t.value; S.slot = null; S.giornoAperto = null; S.mostraTutti = false; }
+  else if (t.name === 'prest') S.prest = t.value;
+  else if (t.name === 'inviante' || t.name === 'invPaga') { S.dati[t.name] = t.value; renderWizard(false); $(`input[name="${t.name}"][value="${t.value}"]`)?.focus(); }
+  else if (t.name === 'privacy') S.dati.privacy = t.checked;
+  else if (t.id === 'f-files') {
+    const err = [];
+    for (const f of t.files) {
+      if (S.dati.files.length >= CONFIG.allegati.maxFile) { err.push(`Al massimo ${CONFIG.allegati.maxFile} file.`); break; }
+      if (!(f.type === 'application/pdf' || /\.pdf$/i.test(f.name))) { err.push(`"${f.name}" non è un PDF.`); continue; }
+      if (f.size > CONFIG.allegati.maxMB * 1048576) { err.push(`"${f.name}" supera ${CONFIG.allegati.maxMB} MB.`); continue; }
+      S.dati.files.push(f);
+    }
+    S.errori = Object.assign({}, S.errori || {}); delete S.errori.files; if (err.length) S.errori.files = err.join(' ');
+    if (!Object.keys(S.errori).length) S.errori = null;
+    renderWizard(false);
+  }
+});
+$('#wizard').addEventListener('input', e => {
+  const t = e.target; if (t.name && t.name in S.dati && typeof S.dati[t.name] === 'string') S.dati[t.name] = t.value;
+});
+
+/* =====================================================================
+   LATO DOTTORESSA
+   ===================================================================== */
+function esempio() {
+  const sede = sedeById('fiano');
+  const g = giorniDisponibili(sede)[0];
+  return { id: 'ESEMPIO1', sede: 'fiano', prest: 'invalidita', slot: g.liberi[1 % g.liberi.length].getTime(),
+    dati: { nome: 'Mario', cognome: 'Rossi', tel: '333 000 1234', email: 'mario.rossi@esempio.it', inviante: 'caf', invNome: '', invPaga: '', invAltro: '',
+      files: [{ name: 'verbale-commissione-2025.pdf', size: 820000 }, { name: 'referto-cardiologico.pdf', size: 1450000 }], privacy: true },
+    stato: S.confermaManuale ? 'in_attesa' : 'confermata', creata: new Date(), consenso: new Date(), esempio: true };
+}
+let E_DOTT = null;
+const P = () => S.inviata || E_DOTT || (E_DOTT = esempio());
+
+function mail(da, a, oggetto, corpo) {
+  return `<div class="mail"><div class="hd"><span>Da</span><b>${esc(da)}</b><span>A</span><b>${esc(a)}</b><span>Oggetto</span><b>${esc(oggetto)}</b></div><div class="bd">${corpo}</div></div>`;
+}
+function dettagliVisita(p, conDisdetta) {
+  const sede = sedeById(p.sede), pr = prestById(p.prest), t = new Date(p.slot), f = fondoSpese(p, p.dati);
+  const limite = atTime(addDays(t, -1), CONFIG.limiteGiornoPrima);
+  return `<div><h4>Visita</h4><p>${esc(pr.nome)}</p></div>
+    <div><h4>Quando</h4><p>${giorno(t)}, ore ${ora(t)}</p></div>
+    <div><h4>Dove</h4><p>${esc(sede.nome)}<br>${esc(sede.indirizzo)}<br><span class="muted">${esc(sede.indicazioni)}</span>${sede.telefono ? `<br>Telefono dello studio: ${esc(sede.telefono)}` : ''}</p></div>
+    <div><h4>Da portare</h4><ul class="list">${documenti(p.prest).map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>
+    <div><h4>Fondo spese</h4><p>${f.cifra ? `<b>${f.cifra} €</b>. ` : ''}${esc(f.testo)} ${f.cifra ? esc(CONFIG.testi.fondoScalato) : ''} ${esc(CONFIG.testi.pagamento)}</p></div>
+    ${conDisdetta ? `<div class="btn-row"><button type="button" class="btn btn-ghost" data-d="disdetta">Non posso venire: disdico</button></div>
+      <p class="muted small">Si può disdire fino alle ${CONFIG.limiteGiornoPrima} di ${fmtGiorno.format(limite)}.</p>` : ''}
+    <p>Dott.ssa Federica Spadazzi<br><span class="muted small">Specialista in Medicina Legale e delle Assicurazioni</span></p>`;
+}
+
+let DISDETTA_APERTA = false;
+function renderDott() {
+  const p = P(), sede = sedeById(p.sede), pr = prestById(p.prest), t = new Date(p.slot), d = p.dati, f = fondoSpese(p, d);
+  const nomeCompleto = d.nome + ' ' + d.cognome;
+  const stato = p.stato;
+  const pill = { in_attesa: '<span class="pill wait">DA CONFERMARE</span>', confermata: '<span class="pill ok">CONFERMATA</span>', rifiutata: '<span class="pill no">RIFIUTATA</span>', disdetta: '<span class="pill no">DISDETTA DAL PAZIENTE</span>' }[stato];
+  $('#dott-intro').innerHTML = p.esempio
+    ? `Qui sotto c'è un esempio con un paziente inventato. Se prima <a href="#prenota">fai una prenotazione come paziente</a>, qui compare la tua.`
+    : `Questa è la prenotazione che hai appena fatto come paziente.`;
+  document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.mode === 'manuale') === S.confermaManuale)));
+
+  const fineSlot = new Date(t.getTime() + 30 * 6e4);
+  const titoloEv = `${stato === 'in_attesa' ? '⏳ DA CONFERMARE – ' : ''}${d.cognome} – ${pr.nome}`;
+  const calSede = p.sede === 'fiano' ? 'Studio Fiano' : 'Studio Roma';
+  const colSede = p.sede === 'fiano' ? 'var(--cal-fiano)' : 'var(--cal-roma)';
+
+  /* agenda del giorno: impegni finti + la nuova visita */
+  const d0 = new Date(t); d0.setHours(0, 0, 0, 0);
+  const evs = slotDelGiorno(sede, d0).filter(s => s.occupato).map(s => ({ inizio: s.inizio, fine: new Date(s.inizio.getTime() + 18e5), titolo: s.occupato,
+    cal: p.sede === 'fiano' ? 'Studio Fiano' : /univ/.test(s.occupato) ? 'Università' : /personale/.test(s.occupato) ? 'Personale' : 'Principale',
+    col: p.sede === 'fiano' ? 'var(--cal-fiano)' : /univ/.test(s.occupato) ? 'var(--cal-uni)' : /personale/.test(s.occupato) ? 'var(--cal-pers)' : 'var(--cal-roma)' }));
+  if (p.sede === 'fiano') evs.push({ inizio: atTime(d0, '15:00'), fine: atTime(d0, '18:00'), titolo: 'Visite CAF UCI (le prenota il CAF)', cal: 'Studio Fiano', col: 'var(--cal-fiano)' });
+  else finestre(sede, d0).forEach(([a, b]) => evs.push({ inizio: a, fine: b, titolo: 'Disponibile', cal: 'Disponibile Roma', col: 'var(--cal-disp)' }));
+  if (stato === 'in_attesa' || stato === 'confermata') evs.push({ inizio: t, fine: fineSlot, titolo: titoloEv, cal: calSede, col: colSede, nuovo: true, pend: stato === 'in_attesa' });
+  evs.sort((a, b) => a.inizio - b.inizio || (a.nuovo ? 1 : -1));
+
+  const notifTesto = stato === 'in_attesa' ? 'Nuova richiesta da confermare' : stato === 'confermata' ? 'Nuova visita prenotata' : stato === 'disdetta' ? 'Visita disdetta dal paziente' : 'Richiesta rifiutata';
+  const ultimoGiornoPrima = addDays(d0, -1);
+
+  $('#dott').innerHTML = `
+  <div class="scene">
+    <div class="scene-h"><h2>1. La notifica sul telefono</h2>${pill}</div>
+    <p class="muted small">Arriva appena il paziente prenota. Può essere la notifica dell'app Gmail, che hai già, oppure una notifica dedicata.</p>
+    <div class="phone" aria-label="Telefono di esempio">
+      <div class="bar"><span>${ora(new Date())}</span><span>Android</span></div>
+      <div class="notif">
+        <div class="app"><i></i> Prenotazioni · ora</div>
+        <b>${notifTesto}</b>
+        <span>${esc(d.cognome)} – ${esc(pr.nome)}</span>
+        <span>${esc(cap(fmtGiornoBreve.format(t)))}, ${ora(t)} · ${p.sede === 'fiano' ? 'Fiano' : 'Roma'}</span>
+        ${stato === 'in_attesa' ? `<div class="acts"><button type="button" data-d="conferma">CONFERMA</button><button type="button" data-d="rifiuta">RIFIUTA</button></div>` : ''}
+      </div>
+    </div>
+  </div>
+
+  <div class="scene">
+    <h2>2. La mail per te</h2>
+    ${mail('Prenotazioni <' + CONFIG.mittente + '>', CONFIG.mittente,
+      `${stato === 'in_attesa' ? 'Da confermare' : 'Nuova visita'}: ${d.cognome} – ${pr.nome}, ${fmtGiornoBreve.format(t)} ${ora(t)}`,
+      `<p><b>${esc(nomeCompleto)}</b> ${stato === 'in_attesa' ? 'chiede' : 'ha prenotato'} una visita.</p>
+       <dl class="summary" style="margin:0">
+         ${riga('Visita', esc(pr.nome))}
+         ${riga('Quando', `${giorno(t)}, ore ${ora(t)}`)}
+         ${riga('Sede', esc(sede.nome))}
+         ${riga('Telefono ed email', `${esc(d.tel)}<br>${esc(d.email)}`)}
+         ${riga('Indicata da', esc(invianteTesto(d)))}
+         ${riga('Fondo spese', f.cifra ? f.cifra + ' €' : 'Nessuno' + (f.esente ? ' (paga ' + esc(d.invNome || "l'avvocato") + ')' : ''))}
+         ${riga('Documenti caricati', d.files.length ? d.files.length + ' PDF nella cartella Drive' : 'Nessuno')}
+       </dl>
+       ${stato === 'in_attesa' ? `<div class="btn-row"><button type="button" class="btn btn-ok" data-d="conferma">Conferma</button><button type="button" class="btn btn-no" data-d="rifiuta">Rifiuta</button></div>
+         <p class="muted small">Se non rispondi entro le ${CONFIG.limiteGiornoPrima} del giorno prima, la richiesta scade e l'orario torna libero. Il paziente viene avvisato.</p>`
+       : stato === 'confermata' ? `<p class="notice ok">Confermata. Al paziente è partita la mail di conferma.</p>`
+       : stato === 'rifiutata' ? `<p class="notice wait">Rifiutata. Il paziente riceve una mail cortese con l'invito a scegliere un altro orario, e l'orario torna libero.</p>`
+       : `<p class="notice wait">Il paziente ha disdetto. L'orario è di nuovo prenotabile.</p>`}
+       <p class="small muted">I pulsanti aprono una pagina con un secondo tocco di conferma, così un antivirus che "apre" i link non può confermare al posto tuo.</p>`)}
+    <div class="btn-row"><button type="button" class="btn btn-ghost" data-d="reset">Rimetti la richiesta in attesa (demo)</button></div>
+  </div>
+
+  <div class="scene">
+    <h2>3. Il tuo calendario</h2>
+    <p class="muted small">L'evento è già compilato: titolo con cognome e tipo di visita; nella descrizione contatti, chi l'ha indicato, fondo spese e link alla cartella Drive. ${stato === 'in_attesa' ? "Finché non confermi è segnato \"DA CONFERMARE\", ma l'orario è già bloccato." : ''}</p>
+    <div class="agenda">
+      <div class="dayh">${giorno(d0)}</div>
+      ${evs.map(e => `<div class="ev ${e.nuovo ? 'nuovo' : ''} ${e.pend ? 'pend' : ''}" style="--c:${e.col}">
+        <span class="h">${ora(e.inizio)}–${ora(e.fine)}</span>
+        <span class="b"><b>${esc(e.titolo)}</b><small>${esc(e.cal)}${e.nuovo ? ' · ' + esc(d.tel) + ' · indicata da: ' + esc(invianteTesto(d)) + ' · fondo spese: ' + euro(f.cifra) : ''}</small></span>
+      </div>`).join('')}
+    </div>
+    <div class="legend">
+      ${p.sede === 'fiano'
+        ? `<span style="--c:var(--cal-fiano)"><i></i>Studio Fiano (lo vede anche la segretaria)</span>`
+        : `<span style="--c:var(--cal-roma)"><i></i>Studio Roma / Principale</span><span style="--c:var(--cal-pers)"><i></i>Personale</span><span style="--c:var(--cal-uni)"><i></i>Università</span><span style="--c:var(--cal-disp)"><i></i>Disponibile Roma</span>`}
+    </div>
+    <p class="muted small">Gli altri orari della giornata erano già occupati, quindi la pagina non li ha mai offerti.</p>
+  </div>
+
+  <div class="scene">
+    <div class="scene-h"><h2>4. La mail che riceve il paziente</h2>${stato === 'confermata' ? '<span class="pill ok">INVIATA</span>' : stato === 'in_attesa' ? '<span class="pill wait">PARTE ALLA CONFERMA</span>' : ''}</div>
+    ${stato === 'rifiutata'
+      ? mail('Dott.ssa Federica Spadazzi <' + CONFIG.mittente + '>', d.email, 'La sua richiesta di visita', `<p>Gentile ${esc(nomeCompleto)},</p><p>purtroppo l'orario richiesto per ${giorno(t)} alle ${ora(t)} non è più disponibile. Può sceglierne un altro dalla pagina di prenotazione.</p><p><a href="#prenota">Scegli un altro orario</a></p><p>Dott.ssa Federica Spadazzi</p>`)
+      : stato === 'disdetta'
+      ? mail('Dott.ssa Federica Spadazzi <' + CONFIG.mittente + '>', d.email, 'Visita disdetta', `<p>Gentile ${esc(nomeCompleto)},</p><p>la sua visita di ${giorno(t)} alle ${ora(t)} è stata disdetta. Se vuole, può prenotarne un'altra quando preferisce.</p><p>Dott.ssa Federica Spadazzi</p>`)
+      : mail('Dott.ssa Federica Spadazzi <' + CONFIG.mittente + '>', d.email, `Visita confermata: ${fmtGiornoBreve.format(t)} ore ${ora(t)}`,
+        `<p>Gentile ${esc(nomeCompleto)},<br>la sua visita è confermata.</p>${dettagliVisita(p, true)}`)}
+    ${DISDETTA_APERTA && (stato === 'confermata' || stato === 'in_attesa') ? `<div class="notice wait" role="region" aria-label="Pagina di disdetta">
+        <h3>Pagina di disdetta (si apre dal link nella mail)</h3>
+        <p>Vuole disdire la visita di <b>${giorno(t)} alle ${ora(t)}</b>?</p>
+        <div class="btn-row"><button type="button" class="btn btn-no" data-d="disdici">Sì, disdico</button><button type="button" class="btn btn-ghost" data-d="tieni">No, la tengo</button></div>
+      </div>` : ''}
+  </div>
+
+  <div class="scene">
+    <h2>5. Il promemoria del giorno prima</h2>
+    <p class="muted small">Parte da solo ${fmtGiorno.format(ultimoGiornoPrima)} alle 10:00, con gli stessi contenuti della conferma.</p>
+    ${mail('Dott.ssa Federica Spadazzi <' + CONFIG.mittente + '>', d.email, `Promemoria: visita domani alle ${ora(t)}`,
+      `<p>Gentile ${esc(nomeCompleto)},<br>le ricordiamo la visita di domani.</p>${dettagliVisita(p, false)}`)}
+  </div>
+
+  <div class="scene">
+    <h2>6. La cartella su Drive</h2>
+    <p class="muted small">Il nome della cartella seguirà la stessa regola che usano già le tue skill (da definire).</p>
+    <div class="drive" aria-label="Esempio di cartella Drive">
+      <div>📁 Pazienti</div>
+      <div>&nbsp;&nbsp;└ 📁 ${esc(d.cognome.toUpperCase())} ${esc(d.nome)}</div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└ 📁 Documenti caricati dal paziente</div>
+      ${d.files.length ? d.files.map(x => `<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└ 📄 ${esc(x.name)}</div>`).join('') : '<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(nessun documento caricato)</div>'}
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="scene">
+    <h2>Come apri gli orari di Roma</h2>
+    <ol class="list">
+      <li>Apri Google Calendar sul telefono e tocca <b>+</b>, poi <b>Evento</b>.</li>
+      <li>Titolo: <b>Disponibile</b> (va bene qualsiasi titolo).</li>
+      <li>Scegli giorno e orario, per esempio <b>martedì 15:00–18:00</b>.</li>
+      <li>Come calendario scegli <b>Disponibile Roma</b> e salva.</li>
+    </ol>
+    <p>La pagina offre subito questi orari, tranne quelli in cui hai già un impegno in un qualsiasi calendario:</p>
+    <div class="chips" aria-label="Esempio di orari risultanti">
+      ${['15:00', '15:30', '16:00', '16:30', '17:00', '17:30'].map((h, i) => `<span class="chip ${i === 2 ? 'off' : ''}">${h}</span>`).join('')}
+    </div>
+    <p class="muted small">Nell'esempio le 16:00 non vengono offerte perché hai una lezione all'università. Per chiudere un giovedì a Fiano basta un evento qualsiasi quella mattina, per esempio "Chiuso".</p>
+  </div>`;
+}
+
+$('#dott').addEventListener('click', e => {
+  const b = e.target.closest('[data-d]'); if (!b) return;
+  const p = P(), a = b.dataset.d;
+  if (a === 'conferma') p.stato = 'confermata';
+  if (a === 'rifiuta') { p.stato = 'rifiutata'; prenotatiInDemo.delete(p.slot); }
+  if (a === 'reset') { p.stato = 'in_attesa'; prenotatiInDemo.add(p.slot); DISDETTA_APERTA = false; }
+  if (a === 'disdetta') DISDETTA_APERTA = true;
+  if (a === 'tieni') DISDETTA_APERTA = false;
+  if (a === 'disdici') { p.stato = 'disdetta'; DISDETTA_APERTA = false; prenotatiInDemo.delete(p.slot); }
+  renderDott();
+});
+document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => {
+  S.confermaManuale = b.dataset.mode === 'manuale';
+  const p = P(); if (p.stato === 'in_attesa' || p.stato === 'confermata') p.stato = S.confermaManuale ? 'in_attesa' : 'confermata';
+  renderDott();
+}));
+
+/* =====================================================================
+   DOMANDE PER FEDERICA (bozza salvata solo su questo dispositivo)
+   ===================================================================== */
+const FB_KEY = 'spadazzi-demo-feedback';
+const fb = $('#feedback');
+try { const s = JSON.parse(localStorage.getItem(FB_KEY) || '{}'); for (const [k, v] of Object.entries(s)) { const el = fb.elements[k]; if (!el) continue; if (el instanceof RadioNodeList) el.value = v; else el.value = v; } } catch (_) {}
+fb.addEventListener('input', () => {
+  const o = {}; for (const el of fb.elements) { if (!el.name) continue; if (el.type === 'radio') { if (el.checked) o[el.name] = el.value; } else o[el.name] = el.value; }
+  try { localStorage.setItem(FB_KEY, JSON.stringify(o)); } catch (_) {}
+});
+$('#fb-copy').addEventListener('click', () => {
+  const L = [];
+  for (const fs of fb.querySelectorAll('fieldset')) {
+    const q = fs.querySelector('legend').textContent.trim();
+    const r = fs.querySelector('input:checked')?.value || fs.querySelector('textarea')?.value.trim() || '(nessuna risposta)';
+    L.push('• ' + q + '\n  ' + r.replace(/\n/g, '\n  '));
+  }
+  const txt = 'Risposte sulla demo prenotazioni\n\n' + L.join('\n\n');
+  const pre = $('#fb-text'); pre.textContent = txt; pre.hidden = false;
+  const ok = () => { $('#fb-status').textContent = 'Copiate. Ora incollale in un messaggio ad Agostino.'; };
+  const ko = () => { $('#fb-status').textContent = 'Non riesco a copiare da qui: seleziona il testo qui sotto e copialo.'; const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+  try { navigator.clipboard.writeText(txt).then(ok, ko); } catch (_) { ko(); }
+});
+
+/* =====================================================================
+   NAVIGAZIONE
+   ===================================================================== */
+const VIEWS = ['presentazione', 'prenota', 'dottoressa'];
+function route() {
+  const v = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'presentazione';
+  VIEWS.forEach(x => { $('#v-' + x).hidden = x !== v; });
+  document.querySelectorAll('.tabs a').forEach(a => { if (a.getAttribute('href') === '#' + v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  if (v === 'prenota') renderWizard(false);
+  if (v === 'dottoressa') renderDott();
+  window.scrollTo({ top: 0 });
+}
+document.documentElement.lang = 'it';
+window.addEventListener('hashchange', route);
+renderWizard(false); renderDott(); route();
+</script>
+<script data-pwa>if ('serviceWorker' in navigator && window.top === window.self) navigator.serviceWorker.register('sw.js').catch(() => {});</script>

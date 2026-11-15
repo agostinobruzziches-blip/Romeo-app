@@ -1,0 +1,11 @@
+{
+  "name": "Prenotazioni Dott.ssa Federica Spadazzi",
+  "short_name": "Prenota visita",
+  "lang": "it",
+  "start_url": "./#prenota",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a1c4f",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
