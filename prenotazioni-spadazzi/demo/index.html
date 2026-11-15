@@ -153,6 +153,14 @@ main { padding-block: 28px 64px; }
 .files li { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 14px; background: var(--surface); border-radius: 10px; font-family: var(--font-ui); font-size: 1rem; min-width: 0; }
 .files li span { overflow-wrap: anywhere; }
 .upload { position: relative; }
+.doc { display: grid; gap: 8px; padding: 16px 18px; border: 2px solid var(--line); border-radius: var(--r); }
+.doc.ok { border-color: var(--ok); }
+.doc.manca { border-color: var(--err); }
+.doc-h { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.doc-h .lab { font-weight: 700; }
+.pill.neutro { background: var(--surface); color: var(--muted); border: 1px solid var(--line); }
+.fondo.manca { border-color: var(--err); }
+.fondo .check span { font-size: 1.15rem; }
 .upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
 .upload:has(input:focus-visible) .btn { outline: 3px solid var(--accent); outline-offset: 3px; }
 
@@ -315,7 +323,7 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
       <h2>Come funziona</h2>
       <ol class="steps3">
         <li><b>Tu apri gli orari, dal Calendar che usi già</b><span class="muted small">Fiano è automatico: ogni giovedì 9–14, tolti gli appuntamenti già in agenda (anche quelli della segretaria). Per Roma crei un evento "Disponibile" nel calendario "Disponibile Roma", per esempio martedì 15–18.</span></li>
-        <li><b>Il paziente prenota in 5 passaggi</b><span class="muted small">Sede, tipo di visita (con il fondo spese), giorno e ora, dati e documenti PDF, riepilogo. Vede solo orari liberi in <em>tutti</em> i tuoi calendari: studio, personale, università.</span></li>
+        <li><b>Il paziente prenota in 6 passaggi</b><span class="muted small">Sede, tipo di visita, giorno e ora, dati, documenti (foto col telefono o PDF), riepilogo con la presa visione del fondo spese. Vede solo orari liberi in <em>tutti</em> i tuoi calendari: studio, personale, università.</span></li>
         <li><b>Tu ricevi una notifica e confermi</b><span class="muted small">Nel frattempo l'orario è già bloccato. Alla conferma il paziente riceve la mail con tutto quello che deve sapere. Il giorno prima gli arriva il promemoria.</span></li>
         <li><b>Cambi e disdette si gestiscono da soli</b><span class="muted small">Fino alle 18:00 del giorno prima il paziente può spostare la visita su un altro orario libero o disdirla. L'orario lasciato torna prenotabile e tu ricevi una notifica. Anche tu puoi spostare o annullare una visita: il paziente viene avvisato per mail.</span></li>
       </ol>
@@ -328,7 +336,7 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
         <div><b>Nessun doppio impegno</b><p>Un orario occupato in qualsiasi tuo calendario non viene mai offerto.</p></div>
         <div><b>Nessun pannello nuovo</b><p>Gestisci tutto da Google Calendar e dalla mail, sul telefono o sul PC.</p></div>
         <div><b>Pazienti che arrivano preparati</b><p>Mail di conferma e promemoria con documenti, indicazioni e modalità di pagamento.</p></div>
-        <div><b>Documenti già al loro posto</b><p>I PDF caricati dal paziente finiscono nella sua cartella su Drive.</p></div>
+        <div><b>Documenti già al loro posto</b><p>Il paziente allega documento d'identità, tessera sanitaria e documentazione clinica. Arrivano nella sua cartella su Drive, già divisi per tipo, pronti per preparare la relazione.</p></div>
         <div><b>Dati che restano tuoi</b><p>Tutto resta nel tuo account Google: niente database esterni. Costo: zero euro al mese.</p></div>
       </div>
     </div>
@@ -487,7 +495,16 @@ const CONFIG = {
     altreInfo: 'Ogni altra informazione utile per la pratica',
     privacy: "Ho letto l'informativa sulla privacy e acconsento al trattamento dei miei dati, anche sanitari, per la gestione della visita.",
   },
-  allegati: { maxFile: 5, maxMB: 10 },
+  /* Documenti da allegare in fase di prenotazione. soloPer = solo per quelle prestazioni.
+     Vanno su Drive con il nome del documento davanti, per la lavorazione automatica. */
+  documenti: [
+    { id: 'identita', nome: "Documento d'identità", hint: 'Fronte e retro. Va bene una foto fatta con il telefono.', obbligatorio: true },
+    { id: 'tessera', nome: 'Tessera sanitaria', hint: 'Fronte e retro.', obbligatorio: true },
+    { id: 'clinica', nome: 'Documentazione clinica', hint: 'Referti, cartelle cliniche, certificati, esami relativi alla pratica. Può allegare più file.', obbligatorio: true },
+    { id: 'verbale', nome: 'Verbale dei vigili', hint: 'Se sono intervenuti dopo l\'incidente.', obbligatorio: false, soloPer: ['rc_lievi', 'rc_gravi'] },
+    { id: 'altro', nome: 'Altri documenti utili', hint: 'Qualsiasi altra cosa utile per la pratica.', obbligatorio: false },
+  ],
+  allegati: { maxFilePerDocumento: 5, maxMB: 10, tipi: 'PDF, JPG o PNG' },
 };
 
 /* Disponibilità di Roma simulate (nel sistema vero sono gli eventi del calendario "Disponibile Roma"). */
@@ -528,7 +545,7 @@ const invById = id => CONFIG.invianti.find(i => i.id === id);
    (dati nei tag privati) più una riga nel Foglio "Registro".
    Qui sta nel localStorage del browser, solo per le prove.
    ===================================================================== */
-const STORE = 'spadazzi-demo-v2';
+const STORE = 'spadazzi-demo-v3';
 let DB = { prenotazioni: [], confermaManuale: true };
 const attiva = p => p.stato === 'in_attesa' || p.stato === 'confermata';
 const trova = id => DB.prenotazioni.find(p => p.id === id);
@@ -654,14 +671,17 @@ function contattoSede(sede) {
 /* =====================================================================
    PRENOTA (PAZIENTE)
    ===================================================================== */
-const TITOLI = ['Dove vuole fare la visita?', 'Che tipo di visita le serve?', 'Scelga giorno e orario', 'I suoi dati', 'Controlli e invii'];
-const vuoti = () => ({ nome: '', cognome: '', tel: '', email: '', inviante: '', invNome: '', invPaga: '', invAltro: '', files: [], privacy: false });
+const TITOLI = ['Dove vuole fare la visita?', 'Che tipo di visita le serve?', 'Scelga giorno e orario', 'I suoi dati', 'I documenti per la pratica', 'Controlli e invii'];
+const PASSI = TITOLI.length, FATTO = PASSI + 1;
+const vuoti = () => ({ nome: '', cognome: '', tel: '', email: '', inviante: '', invNome: '', invPaga: '', invAltro: '', documenti: {}, privacy: false, fondoOk: false });
+const docsPer = prestId => CONFIG.documenti.filter(x => !x.soloPer || x.soloPer.includes(prestId));
+const nFile = docs => Object.values(docs || {}).reduce((n, l) => n + l.length, 0);
 const S = { step: 1, sede: null, prest: null, giornoAperto: null, slot: null, mostraTutti: false, dati: vuoti(), errori: null, ultima: null };
 
 function progress() {
   return `<div class="progress">
-    <ol aria-hidden="true">${[1, 2, 3, 4, 5].map(i => `<li class="${i <= S.step ? 'done' : ''}"></li>`).join('')}</ol>
-    <p>Passo ${S.step} di 5</p></div>`;
+    <ol aria-hidden="true" style="grid-template-columns:repeat(${PASSI},1fr)">${TITOLI.map((_, i) => `<li class="${i + 1 <= S.step ? 'done' : ''}"></li>`).join('')}</ol>
+    <p>Passo ${S.step} di ${PASSI}</p></div>`;
 }
 function nav(avantiLabel = 'Avanti') {
   return `<div class="btn-row">
@@ -683,14 +703,12 @@ function stepSede() {
 function stepPrest() {
   return `${progress()}
   <fieldset class="choices"><legend id="step-h" tabindex="-1">${TITOLI[1]}</legend>
-    <p class="muted small" style="margin-bottom:4px">Accanto a ogni visita c'è il fondo spese da portare il giorno della visita.</p>
     ${CONFIG.prestazioni.map(p => `<label class="choice">
       <input type="radio" name="prest" value="${p.id}" ${S.prest === p.id ? 'checked' : ''}>
-      <span class="t">${esc(p.nome)}</span><span class="prezzo">${p.fondo ? p.fondo + ' €' : 'Nessuno'}</span>
-      ${p.esempi || p.notaFondo ? `<span class="d">${esc([p.esempi, p.notaFondo].filter(Boolean).join('. '))}</span>` : ''}
+      <span class="t">${esc(p.nome)}</span><span></span>
+      ${p.esempi ? `<span class="d">${esc(p.esempi)}</span>` : ''}
     </label>`).join('')}
   </fieldset>
-  <p class="muted small">${esc(CONFIG.testi.fondoScalato)} Se la manda un avvocato o un'agenzia che paga direttamente, il fondo spese non è dovuto.</p>
   ${nav()}`;
 }
 function stepGiorno() {
@@ -743,27 +761,48 @@ function stepDati() {
     ${d.inviante === 'altro' ? `<div class="sub">${campo('invAltro', 'Chi? (facoltativo)', 'text')}</div>` : ''}
 
     <div class="field">
-      <span class="lab" id="lab-files">Documenti in PDF (facoltativo)</span>
-      <span class="hint">Referti, verbali, lettere. Fino a ${CONFIG.allegati.maxFile} file da ${CONFIG.allegati.maxMB} MB. Può anche portarli il giorno della visita.</span>
-      ${d.files.length ? `<ul class="files">${d.files.map((f, i) => `<li><span>${esc(f.name)} · ${(f.size / 1048576).toFixed(1)} MB</span><button type="button" class="link-btn" data-rm="${i}">Togli<span class="sr"> ${esc(f.name)}</span></button></li>`).join('')}</ul>` : ''}
-      ${d.files.length < CONFIG.allegati.maxFile ? `<div class="upload"><span class="btn btn-ghost btn-block" aria-hidden="true">Aggiungi un PDF</span><input type="file" id="f-files" accept="application/pdf,.pdf" multiple aria-labelledby="lab-files"></div>` : ''}
-      ${E.files ? `<span class="err">${esc(E.files)}</span>` : ''}
-    </div>
-
-    <div class="field">
       <label class="check" for="f-privacy"><input type="checkbox" id="f-privacy" name="privacy" ${d.privacy ? 'checked' : ''} ${E.privacy ? 'aria-invalid="true" aria-describedby="e-privacy"' : ''}>
         <span>${esc(CONFIG.testi.privacy)} <a href="#prenota" data-act="privacy">Leggi l'informativa</a></span></label>
       <p id="privacy-txt" class="muted small" hidden>[Testo dell'informativa privacy: in arrivo.]</p>
       ${E.privacy ? `<span class="err" id="e-privacy">${esc(E.privacy)}</span>` : ''}
     </div>
   </form>
+  ${nav()}`;
+}
+function stepDocumenti() {
+  const docs = docsPer(S.prest), E = (S.errori && typeof S.errori === 'object') ? S.errori : {};
+  const mancanti = Object.keys(E);
+  return `${progress()}
+  <div class="stack">
+    <h2 id="step-h" tabindex="-1">${TITOLI[4]}</h2>
+    <p class="muted small">Li alleghi adesso: la dottoressa li studia prima della visita e prepara la pratica più in fretta. Può fotografarli con il telefono oppure caricare file ${CONFIG.allegati.tipi}.</p>
+  </div>
+  ${mancanti.length ? `<div class="err-box" role="alert" tabindex="-1"><b>Mancano dei documenti:</b><ul>${mancanti.map(k => `<li><a href="#doc-${k}">${esc(E[k])}</a></li>`).join('')}</ul></div>` : ''}
+  ${docs.map(doc => {
+    const lista = S.dati.documenti[doc.id] || [];
+    const stato = lista.length ? '<span class="pill ok">ALLEGATO</span>' : doc.obbligatorio ? '<span class="pill wait">DA ALLEGARE</span>' : '<span class="pill neutro">FACOLTATIVO</span>';
+    return `<div class="doc ${lista.length ? 'ok' : E[doc.id] ? 'manca' : ''}" id="doc-${doc.id}" tabindex="-1">
+      <div class="doc-h"><span class="lab" id="lab-${doc.id}">${esc(doc.nome)}</span>${stato}</div>
+      <span class="hint muted small">${esc(doc.hint)}</span>
+      ${lista.length ? `<ul class="files">${lista.map((f, i) => `<li><span>${esc(f.name)} · ${(f.size / 1048576).toFixed(1)} MB</span><button type="button" class="link-btn" data-rm="${doc.id}:${i}">Togli<span class="sr"> ${esc(f.name)}</span></button></li>`).join('')}</ul>` : ''}
+      ${lista.length < CONFIG.allegati.maxFilePerDocumento ? `<div class="upload"><span class="btn btn-ghost btn-block" aria-hidden="true">${lista.length ? 'Aggiungi un altro file' : 'Allega ' + esc(doc.nome.toLowerCase())}</span><input type="file" data-doc="${doc.id}" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" multiple aria-labelledby="lab-${doc.id}"></div>` : ''}
+      ${E[doc.id] ? `<span class="err">${esc(E[doc.id])}</span>` : ''}
+    </div>`;
+  }).join('')}
+  <p class="muted small">Il giorno della visita porti comunque con sé gli originali del documento d'identità e della tessera sanitaria.</p>
   ${nav('Vai al riepilogo')}`;
+}
+function testoFondo(prestId, dati) {
+  const pr = prestById(prestId), f = fondoSpese({ prest: prestId, dati });
+  if (f.esente) return `Sono a conoscenza che per questa visita <b>non devo portare il fondo spese</b>, perché è pagata direttamente da ${esc(dati.invNome || "l'avvocato o l'agenzia")}.`;
+  if (!f.cifra) return `Sono a conoscenza che per questa pratica (${esc(pr.nome.toLowerCase())}) <b>non è previsto un fondo spese</b>: si paga alla consegna della relazione.`;
+  return `Sono a conoscenza che il fondo spese da portare il giorno della visita per questa pratica (${esc(pr.nome.toLowerCase())}) è di <b>${f.cifra} €</b>${pr.notaFondo ? ', ' + esc(pr.notaFondo.charAt(0).toLowerCase() + pr.notaFondo.slice(1, -1)) : ''}.`;
 }
 function stepRiepilogo() {
   const sede = sedeById(S.sede), p = prestById(S.prest), d = S.dati;
   const f = fondoSpese({ prest: S.prest, dati: d });
   return `${progress()}
-  <h2 id="step-h" tabindex="-1">${TITOLI[4]}</h2>
+  <h2 id="step-h" tabindex="-1">${TITOLI[5]}</h2>
   <dl class="summary" style="margin:0">
     ${riga('Sede', `${esc(sede.nome)}<br><span class="muted small">${esc(sede.indirizzo)}</span>`, 1)}
     ${riga('Visita', esc(p.nome), 2)}
@@ -771,20 +810,20 @@ function stepRiepilogo() {
     ${riga('Nome', esc(d.nome + ' ' + d.cognome), 4)}
     ${riga('Telefono ed email', `${esc(d.tel)}<br>${esc(d.email)}`, 4)}
     ${riga('Indicata da', esc(invianteTesto(d)), 4)}
-    ${riga('Documenti allegati', d.files.length ? d.files.map(x => esc(x.name)).join('<br>') : 'Nessuno', 4)}
+    ${riga('Documenti allegati', elencoDocumenti(d.documenti, S.prest), 5)}
   </dl>
-  <div class="fondo">
-    <span class="eyebrow">Fondo spese da portare</span>
-    <span class="cifra">${f.cifra ? f.cifra + ' €' : 'Nessuno'}</span>
-    ${f.testo ? `<span>${esc(f.testo)}</span>` : ''}
-    ${f.cifra ? `<span class="small">${esc(CONFIG.testi.fondoScalato)}</span>` : ''}
-    <span class="small">${esc(CONFIG.testi.pagamento)}</span>
-  </div>
-  <div class="stack">
-    <h3>Da portare alla visita</h3>
-    <ul class="list">${documenti(S.prest).map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+  <div class="fondo ${S.errori === 'fondo' ? 'manca' : ''}">
+    <span class="eyebrow">Fondo spese</span>
+    <label class="check" for="f-fondo"><input type="checkbox" id="f-fondo" ${d.fondoOk ? 'checked' : ''} ${S.errori === 'fondo' ? 'aria-invalid="true" aria-describedby="e-fondo"' : ''}>
+      <span>${testoFondo(S.prest, d)}</span></label>
+    ${f.cifra ? `<span class="small">${esc(CONFIG.testi.fondoScalato)} ${esc(CONFIG.testi.pagamento)}</span>` : ''}
+    ${S.errori === 'fondo' ? `<span class="err" id="e-fondo">Per inviare la richiesta spunti la casella sul fondo spese.</span>` : ''}
   </div>
   ${nav(DB.confermaManuale ? 'Invia la richiesta' : 'Prenota')}`;
+}
+function elencoDocumenti(docs, prestId) {
+  const righe = docsPer(prestId).filter(x => (docs?.[x.id] || []).length).map(x => `${esc(x.nome)}: ${docs[x.id].length} file`);
+  return righe.length ? righe.join('<br>') : 'Nessuno';
 }
 function stepFatto() {
   const p = trova(S.ultima); if (!p) { S.step = 1; return stepSede(); }
@@ -804,7 +843,7 @@ function stepFatto() {
 }
 function renderWizard(focus = true) {
   const w = $('#wizard');
-  w.innerHTML = S.step === 6 ? stepFatto() : [stepSede, stepPrest, stepGiorno, stepDati, stepRiepilogo][S.step - 1]();
+  w.innerHTML = S.step === FATTO ? stepFatto() : [stepSede, stepPrest, stepGiorno, stepDati, stepDocumenti, stepRiepilogo][S.step - 1]();
   if (focus) { const h = $('#step-h'); if (h) { h.focus({ preventScroll: true }); window.scrollTo({ top: 0 }); } }
 }
 function valida() {
@@ -832,7 +871,15 @@ function avanti() {
     const E = valida();
     if (Object.keys(E).length) { S.errori = E; renderWizard(false); const b = $('.err-box'); b?.focus({ preventScroll: true }); b?.scrollIntoView({ block: 'start' }); return; }
   }
-  if (S.step === 5) return invia();
+  if (S.step === 5) {
+    const E = {};
+    for (const doc of docsPer(S.prest)) if (doc.obbligatorio && !(S.dati.documenti[doc.id] || []).length) E[doc.id] = `Alleghi: ${doc.nome.toLowerCase()}.`;
+    if (Object.keys(E).length) { S.errori = E; renderWizard(false); const b = $('.err-box'); b?.focus({ preventScroll: true }); b?.scrollIntoView({ block: 'start' }); return; }
+  }
+  if (S.step === 6) {
+    if (!S.dati.fondoOk) { S.errori = 'fondo'; renderWizard(false); $('#f-fondo')?.focus(); $('#f-fondo')?.scrollIntoView({ block: 'center' }); return; }
+    return invia();
+  }
   S.errori = null; S.step++; renderWizard();
 }
 function invia() {
@@ -841,12 +888,13 @@ function invia() {
   }
   const manuale = DB.confermaManuale;
   const p = { id: nuovoId(), sede: S.sede, prest: S.prest, slot: S.slot,
-    dati: { ...S.dati, files: S.dati.files.map(f => ({ name: f.name, size: f.size })) },
+    dati: { ...S.dati, documenti: Object.fromEntries(Object.entries(S.dati.documenti).map(([k, l]) => [k, l.map(f => ({ name: f.name, size: f.size }))])) },
+    fondoPresaVisione: Date.now(),
     stato: manuale ? 'in_attesa' : 'confermata', consenso: Date.now(), storico: [], esempio: false };
   DB.prenotazioni.push(p);
   registra(p, manuale ? 'richiesta' : 'prenotata', { a: p.slot });
   S.ultima = p.id; G.selId = p.id; D.selId = p.id;
-  S.step = 6; renderWizard();
+  S.step = FATTO; renderWizard();
 }
 function ricominciaWizard() { Object.assign(S, { step: 1, sede: null, prest: null, slot: null, giornoAperto: null, mostraTutti: false, dati: vuoti(), errori: null }); }
 
@@ -859,7 +907,7 @@ $('#wizard').addEventListener('click', e => {
   if (act === 'privacy') { e.preventDefault(); const p = $('#privacy-txt'); p.hidden = !p.hidden; return; }
   if (S.step === 3 && toccoOrario(b, S, () => { S.errori = null; renderWizard(false); }, $('#wizard'))) return;
   if (b.dataset.goto) { S.step = Number(b.dataset.goto); return renderWizard(); }
-  if (b.dataset.rm) { S.dati.files.splice(Number(b.dataset.rm), 1); return renderWizard(false); }
+  if (b.dataset.rm) { const [k, i] = b.dataset.rm.split(':'); S.dati.documenti[k].splice(Number(i), 1); return renderWizard(false); }
 });
 $('#wizard').addEventListener('change', e => {
   const t = e.target;
@@ -867,18 +915,22 @@ $('#wizard').addEventListener('change', e => {
   else if (t.name === 'prest') S.prest = t.value;
   else if (t.name === 'inviante' || t.name === 'invPaga') { S.dati[t.name] = t.value; renderWizard(false); $(`input[name="${t.name}"][value="${t.value}"]`)?.focus(); }
   else if (t.name === 'privacy') S.dati.privacy = t.checked;
-  else if (t.id === 'f-files') {
+  else if (t.id === 'f-fondo') { S.dati.fondoOk = t.checked; if (t.checked && S.errori === 'fondo') { S.errori = null; renderWizard(false); $('#f-fondo')?.focus(); } }
+  else if (t.dataset.doc) {
+    const k = t.dataset.doc, nome = docsPer(S.prest).find(x => x.id === k).nome;
+    const lista = S.dati.documenti[k] = S.dati.documenti[k] || [];
     const err = [];
     for (const f of t.files) {
-      if (S.dati.files.length >= CONFIG.allegati.maxFile) { err.push(`Al massimo ${CONFIG.allegati.maxFile} file.`); break; }
-      if (!(f.type === 'application/pdf' || /\.pdf$/i.test(f.name))) { err.push(`"${f.name}" non è un PDF.`); continue; }
+      if (lista.length >= CONFIG.allegati.maxFilePerDocumento) { err.push(`Al massimo ${CONFIG.allegati.maxFilePerDocumento} file per voce.`); break; }
+      if (!(/^(application\/pdf|image\/(jpeg|png))$/.test(f.type) || /\.(pdf|jpe?g|png)$/i.test(f.name))) { err.push(`"${f.name}" non è un PDF né una foto.`); continue; }
       if (f.size > CONFIG.allegati.maxMB * 1048576) { err.push(`"${f.name}" supera ${CONFIG.allegati.maxMB} MB.`); continue; }
-      S.dati.files.push(f);
+      lista.push(f);
     }
     const E = (S.errori && typeof S.errori === 'object') ? { ...S.errori } : {};
-    delete E.files; if (err.length) E.files = err.join(' ');
+    delete E[k]; if (err.length) E[k] = err.join(' ');
     S.errori = Object.keys(E).length ? E : null;
     renderWizard(false);
+    document.querySelector(`#doc-${k}`)?.focus({ preventScroll: true });
   }
 });
 $('#wizard').addEventListener('input', e => {
@@ -994,7 +1046,9 @@ function esempio() {
   const manuale = DB.confermaManuale;
   return { id: 'ESEMPIO1', sede: 'fiano', prest: 'invalidita', slot,
     dati: { nome: 'Mario', cognome: 'Rossi', tel: '333 000 1234', email: 'mario.rossi@esempio.it', inviante: 'caf', invNome: '', invPaga: '', invAltro: '',
-      files: [{ name: 'verbale-commissione-2025.pdf', size: 820000 }, { name: 'referto-cardiologico.pdf', size: 1450000 }], privacy: true },
+      documenti: { identita: [{ name: 'carta-identita.jpg', size: 910000 }], tessera: [{ name: 'tessera-sanitaria.jpg', size: 640000 }],
+        clinica: [{ name: 'verbale-commissione-2025.pdf', size: 820000 }, { name: 'referto-cardiologico.pdf', size: 1450000 }] }, privacy: true, fondoOk: true },
+    fondoPresaVisione: Date.now() - 50 * 6e4,
     stato: manuale ? 'in_attesa' : 'confermata', consenso: Date.now() - 50 * 6e4,
     storico: [{ t: Date.now() - 50 * 6e4, tipo: manuale ? 'richiesta' : 'prenotata', a: slot }], esempio: true };
 }
@@ -1007,7 +1061,7 @@ function dettagliVisita(p, conGestione) {
   return `<div><h4>Visita</h4><p>${esc(pr.nome)}</p></div>
     <div><h4>Quando</h4><p>${lungo(p.slot)}</p></div>
     <div><h4>Dove</h4><p>${esc(sede.nome)}<br>${esc(sede.indirizzo)}<br><span class="muted">${esc(sede.indicazioni)}</span>${sede.telefono ? `<br>Telefono dello studio: ${esc(sede.telefono)}` : ''}</p></div>
-    <div><h4>Da portare</h4><ul class="list">${documenti(p.prest).map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>
+    <div><h4>Documenti</h4><p>Abbiamo ricevuto i documenti che ha allegato. Porti con sé gli originali del documento d'identità e della tessera sanitaria.</p></div>
     <div><h4>Fondo spese</h4><p>${f.cifra ? `<b>${f.cifra} €</b>. ` : ''}${esc(f.testo)} ${f.cifra ? esc(CONFIG.testi.fondoScalato) : ''} ${esc(CONFIG.testi.pagamento)}</p></div>
     ${conGestione ? `<div class="btn-row"><a class="btn btn-ghost" href="#gestisci" data-apri="${p.id}">Cambia data o disdici</a></div>
       <p class="muted small">Può cambiare o disdire fino alle ${CONFIG.limiteGiornoPrima} di ${fmtGiorno.format(limiteModifica(p))}.</p>` : ''}
@@ -1148,8 +1202,8 @@ function renderDott() {
          ${riga('Sede', esc(sede.nome))}
          ${riga('Telefono ed email', `${esc(d.tel)}<br>${esc(d.email)}`)}
          ${riga('Indicata da', esc(invianteTesto(d)))}
-         ${riga('Fondo spese', f.cifra ? f.cifra + ' €' : 'Nessuno' + (f.esente ? ' (paga ' + esc(d.invNome || "l'avvocato") + ')' : ''))}
-         ${riga('Documenti caricati', d.files.length ? d.files.length + ' PDF nella cartella Drive' : 'Nessuno')}
+         ${riga('Fondo spese', (f.cifra ? f.cifra + ' €' : 'Nessuno' + (f.esente ? ' (paga ' + esc(d.invNome || "l'avvocato") + ')' : '')) + '<br><span class="muted small">Il paziente ha confermato di esserne a conoscenza</span>')}
+         ${riga('Documenti caricati (nella cartella Drive)', elencoDocumenti(d.documenti, p.prest))}
        </dl>
        ${p.stato === 'in_attesa' && !D.modo ? `<div class="btn-row"><button type="button" class="btn btn-ok" data-d="conferma">Conferma</button><button type="button" class="btn btn-no" data-d="rifiuta">Rifiuta</button></div>
          <p class="muted small">Se non rispondi entro le ${CONFIG.limiteGiornoPrima} del giorno prima, la richiesta scade e l'orario torna libero. Il paziente viene avvisato.</p>` : ''}
@@ -1189,12 +1243,12 @@ function renderDott() {
 
   <div class="scene">
     <h2>${attiva(p) ? '6' : '5'}. La cartella su Drive</h2>
-    <p class="muted small">Il nome della cartella seguirà la stessa regola che usano già le tue skill (da definire). Se la visita viene disdetta, la cartella resta.</p>
+    <p class="muted small">Il nome della cartella seguirà la stessa regola che usano già le tue skill (da definire). Ogni file ha davanti il tipo di documento, così la lavorazione automatica sa cosa contiene. Se la visita viene disdetta, la cartella resta.</p>
     <div class="drive" aria-label="Esempio di cartella Drive">
       <div>📁 Pazienti</div>
       <div>&nbsp;&nbsp;└ 📁 ${esc(d.cognome.toUpperCase())} ${esc(d.nome)}</div>
       <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└ 📁 Documenti caricati dal paziente</div>
-      ${d.files.length ? d.files.map(x => `<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└ 📄 ${esc(x.name)}</div>`).join('') : '<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(nessun documento caricato)</div>'}
+      ${nFile(d.documenti) ? docsPer(p.prest).flatMap(x => (d.documenti[x.id] || []).map(f => `<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└ 📄 ${esc(x.nome)} – ${esc(f.name)}</div>`)).join('') : '<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(nessun documento caricato)</div>'}
     </div>
   </div>
 

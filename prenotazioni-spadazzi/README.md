@@ -19,7 +19,10 @@ Pagina web con cui i pazienti prenotano una visita medico-legale solo negli orar
 Quattro sezioni, raggiungibili dalla barra gialla in alto:
 
 - **Come funziona** (`#presentazione`): spiegazione, vantaggi, istruzioni per provarla e le domande aperte per Federica. Il pulsante "Copia le risposte" prepara un testo da mandare su WhatsApp o per mail.
-- **Prenota** (`#prenota`): il percorso vero in 5 passaggi. Si possono fare più prenotazioni. Gli slot sono calcolati con la stessa logica prevista per il sistema reale: finestre di disponibilità, slot da 30 minuti, impegni sottratti (anche le altre prenotazioni della demo), limite delle 18:00 del giorno prima.
+- **Prenota** (`#prenota`): il percorso vero in 6 passaggi (sede, tipo di visita, giorno e ora, dati, documenti, riepilogo).
+  - **Documenti:** documento d'identità, tessera sanitaria e documentazione clinica sono obbligatori; verbale dei vigili (solo incidenti) e altri documenti sono facoltativi. Si accettano PDF, JPG e PNG, anche foto fatte col telefono. Su Drive i file arrivano con il tipo di documento davanti al nome, pronti per la lavorazione automatica. Le voci stanno in `CONFIG.documenti`.
+  - **Fondo spese:** non compare più nella scelta del tipo di visita. Nel riepilogo c'è una casella obbligatoria "Sono a conoscenza che il fondo spese… è di X €", con l'importo calcolato dalla pratica (o la frase di esenzione). Il momento della spunta viene registrato come il consenso privacy.
+  Si possono fare più prenotazioni. Gli slot sono calcolati con la stessa logica prevista per il sistema reale: finestre di disponibilità, slot da 30 minuti, impegni sottratti (anche le altre prenotazioni della demo), limite delle 18:00 del giorno prima.
 - **Cambia o disdici** (`#gestisci`): la pagina che il paziente apre dal link nella mail. Permette di spostare la visita su un altro orario libero o di disdirla, fino alle 18:00 del giorno prima; dopo quell'ora indica come contattare lo studio.
 - **Lato dottoressa** (`#dottoressa`): elenco delle prenotazioni. Per ognuna:
   - stato e storico di cosa è successo;
@@ -28,7 +31,7 @@ Quattro sezioni, raggiungibili dalla barra gialla in alto:
 
   Si può passare da conferma manuale ad automatica, e un pulsante riporta la demo all'inizio.
 
-Le prenotazioni della demo restano nel `localStorage` del browser (chiave `spadazzi-demo-v2`), così Federica può interrompere e riprendere le prove. Nel sistema vero ogni prenotazione è un evento di Google Calendar con i dati nei tag privati, più una riga nel Foglio "Registro".
+Le prenotazioni della demo restano nel `localStorage` del browser (chiave `spadazzi-demo-v3`), così Federica può interrompere e riprendere le prove. Nel sistema vero ogni prenotazione è un evento di Google Calendar con i dati nei tag privati, più una riga nel Foglio "Registro".
 
 Nessun dato esce dal browser: i PDF scelti non vengono caricati, si legge solo il nome del file.
 
@@ -62,7 +65,7 @@ In alternativa, senza collegare la repo: `npx wrangler pages deploy prenotazioni
 
 - Limite per prenotare, cambiare data e disdire: 18:00 del giorno prima. Si prenota fino a 60 giorni in avanti.
 - Prezzi e testi in un file di configurazione, gestito da Agostino.
-- Allegati: al massimo 5 PDF da 10 MB.
+- Allegati: documenti obbligatori per tipo, al massimo 5 file da 10 MB per voce, in PDF, JPG o PNG.
 - Niente dominio per ora: si usa `pages.dev`.
 
 ### Da chiedere a Federica (sono anche nella demo)
