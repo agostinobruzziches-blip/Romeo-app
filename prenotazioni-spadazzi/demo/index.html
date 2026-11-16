@@ -142,7 +142,7 @@ main { padding-block: 28px 64px; }
 .field { display: grid; gap: 6px; }
 .field label, .field .lab { font-weight: 700; }
 .field .hint { color: var(--muted); font-size: 1.02rem; }
-.field input[type=text], .field input[type=tel], .field input[type=email] { font: inherit; font-family: var(--font-ui); font-size: 1.2rem; min-height: 56px; padding: 10px 14px; border: 2px solid var(--muted); border-radius: 10px; background: var(--bg); color: var(--fg); width: 100%; }
+.field input[type=text], .field input[type=tel], .field input[type=email], .field input[type=date], .field input[type=time], .field textarea.txt { font: inherit; font-family: var(--font-ui); font-size: 1.2rem; min-height: 56px; padding: 10px 14px; border: 2px solid var(--muted); border-radius: 10px; background: var(--bg); color: var(--fg); width: 100%; }
 .field input[aria-invalid="true"] { border-color: var(--err); }
 .err { color: var(--err); font-family: var(--font-ui); font-size: 1rem; font-weight: 600; }
 .err-box { border: 2px solid var(--err); background: var(--err-bg); border-radius: var(--r); padding: 14px 18px; }
@@ -315,10 +315,10 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
     <div class="stack">
       <h2>Come funziona</h2>
       <ol class="steps3">
-        <li><b>Tu apri gli orari, dal Calendar che usi già</b><span class="muted small">Fiano è automatico: ogni giovedì 9–14, tolti gli appuntamenti già in agenda (anche quelli della segretaria). Per Roma crei un evento "Disponibile" nel calendario "Disponibile Roma", per esempio martedì 15–18. Per le visite fuori studio fai lo stesso nel calendario "Disponibile fuori studio": si prenotano con almeno 7 giorni di anticipo.</span></li>
+        <li><b>Tu apri gli orari, dal Calendar che usi già</b><span class="muted small">Fiano è automatico: ogni giovedì 9–14, tolti gli appuntamenti già in agenda (anche quelli della segretaria). Per Roma crei un evento "Disponibile" nel calendario "Disponibile Roma", per esempio martedì 15–18. Le visite fuori studio e l'assistenza a visita INPS arrivano come richieste: le valuti tu, senti il paziente e fissi la data.</span></li>
         <li><b>Il paziente prenota in 6 passaggi</b><span class="muted small">Sede (Fiano, Roma o fuori studio), tipo di visita, giorno e ora, dati, documenti (facoltativi, anche foto col telefono), riepilogo con la presa visione del fondo spese. Vede solo orari liberi in <em>tutti</em> i tuoi calendari: studio, personale, università.</span></li>
         <li><b>Tu ricevi una notifica e confermi</b><span class="muted small">Nel frattempo l'orario è già bloccato. Alla conferma il paziente riceve la mail con tutto quello che deve sapere. Il giorno prima gli arriva il promemoria.</span></li>
-        <li><b>Cambi e disdette dal link nella mail</b><span class="muted small">Fino a 48 ore prima il paziente può disdire, o chiedere un altro orario libero: il cambio lo confermi tu, e fino ad allora vale l'appuntamento di prima. Anche tu puoi spostare o annullare una visita: il paziente viene avvisato per mail.</span></li>
+        <li><b>Cambi e disdette dal link nella mail</b><span class="muted small">Fino a 48 ore prima il paziente può disdire, o chiedere un altro orario libero: il cambio lo confermi tu, e fino ad allora vale l'appuntamento di prima. Se lo rifiuti, la visita viene annullata. Anche tu puoi spostare o annullare una visita: il paziente viene avvisato per mail.</span></li>
       </ol>
     </div>
 
@@ -348,54 +348,43 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
 
     <form class="fb" id="feedback" aria-labelledby="t-fb">
       <div class="stack">
-        <h2 id="t-fb">Da decidere al prossimo incontro</h2>
-        <p class="muted small">Grazie per le risposte: le modifiche sono già nella demo. Restano questi punti. Le risposte restano su questo dispositivo finché non premi "Copia le risposte".</p>
+        <h2 id="t-fb">Ultimi dettagli</h2>
+        <p class="muted small">Grazie: le tue risposte sono già nella demo. Restano questi dettagli. Le risposte restano su questo dispositivo finché non premi "Copia le risposte".</p>
       </div>
       <fieldset>
-        <legend>Invalidità con richiesta di accompagnamento: come va gestita?</legend>
-        <label class="sr" for="fb-accomp">Invalidità con richiesta di accompagnamento: come va gestita?</label>
-        <textarea id="fb-accomp" name="accomp" placeholder="Per esempio: voce a parte, domanda in più dentro invalidità, altro fondo spese…"></textarea>
+        <legend>Fondo spese per: responsabilità civile non stradale, lesioni da aggressione, polizza malattia/LTC/vita, causa di servizio, danno da vaccino o trasfusione, altro</legend>
+        <label class="sr" for="fb-fondi">Fondo spese per: responsabilità civile non stradale, lesioni da aggressione, polizza malattia/LTC/vita, causa di servizio, danno da vaccino o trasfusione, altro</label>
+        <textarea id="fb-fondi" name="fondi" placeholder="Un importo per riga. Nella demo per ora c'è scritto "le sarà comunicato dalla dottoressa"."></textarea>
       </fieldset>
       <fieldset>
-        <legend>Fondo spese per invalidità civile e Legge 104: quale importo?</legend>
-        <label class="sr" for="fb-fondoinv">Fondo spese per invalidità civile e Legge 104: quale importo?</label>
-        <textarea id="fb-fondoinv" name="fondoinv" placeholder="Oggi nella demo: 50 €"></textarea>
+        <legend>"Responsabilità civile auto": è la stessa cosa delle due voci "incidente stradale"?</legend>
+        <label class="opt"><input type="radio" name="rcauto" value="Sì, bastano le due voci"> Sì, bastano le due voci</label>
+        <label class="opt"><input type="radio" name="rcauto" value="No, serve una voce in più (vedi note)"> No, serve una voce in più (vedi note)</label>
       </fieldset>
       <fieldset>
-        <legend>Responsabilità medica (500 €): la teniamo nell'elenco?</legend>
-        <label class="opt"><input type="radio" name="respmed" value="Sì, così"> Sì, così</label>
-        <label class="opt"><input type="radio" name="respmed" value="Sì, ma da cambiare (vedi note)"> Sì, ma da cambiare (vedi note)</label>
-        <label class="opt"><input type="radio" name="respmed" value="No"> No</label>
+        <legend>Assistenza a visita INPS o collegiale:</legend>
+        <label class="opt"><input type="radio" name="assistenza" value="Tutto pagato alla visita (come nella demo)"> Tutto pagato alla visita (come nella demo)</label>
+        <label class="opt"><input type="radio" name="assistenza" value="Fondo spese di 100 € alla prenotazione"> Fondo spese di 100 € alla prenotazione</label>
       </fieldset>
       <fieldset>
-        <legend>Quali altre voci mancano nell'elenco delle visite?</legend>
-        <label class="sr" for="fb-altrevoci">Quali altre voci mancano nell'elenco delle visite?</label>
-        <textarea id="fb-altrevoci" name="altrevoci" placeholder="Una per riga, con il fondo spese"></textarea>
+        <legend>Telefono di Roma: scrivi "lasciamo il telefono fisso dello studio". Va mostrato il numero 06 del biglietto?</legend>
+        <label class="sr" for="fb-romatel">Telefono di Roma: scrivi "lasciamo il telefono fisso dello studio". Va mostrato il numero 06 del biglietto?</label>
+        <textarea id="fb-romatel" name="romatel" placeholder="All'inizio avevi chiesto di non mostrarlo"></textarea>
       </fieldset>
       <fieldset>
-        <legend>Se un paziente non riesce a prenotare dal link, cosa gli offriamo?</legend>
-        <label class="sr" for="fb-alternativa">Se un paziente non riesce a prenotare dal link, cosa gli offriamo?</label>
-        <textarea id="fb-alternativa" name="alternativa" placeholder="Nella demo, al primo passo: telefono di Fiano e mail per Roma"></textarea>
+        <legend>Visite fuori studio dal link:</legend>
+        <label class="opt"><input type="radio" name="fuori" value="Sì, come richiesta da valutare (come nella demo)"> Sì, come richiesta da valutare (come nella demo)</label>
+        <label class="opt"><input type="radio" name="fuori" value="No, solo per telefono o con la segretaria"> No, solo per telefono o con la segretaria</label>
       </fieldset>
       <fieldset>
-        <legend>WhatsApp solo messaggi per Roma: quale numero, e lo mostriamo già?</legend>
-        <label class="sr" for="fb-whatsapp">WhatsApp solo messaggi per Roma: quale numero, e lo mostriamo già?</label>
-        <textarea id="fb-whatsapp" name="whatsapp" placeholder=""></textarea>
+        <legend>"Chi le ha indicato la dottoressa": va bene "Un medico" con il nome facoltativo?</legend>
+        <label class="opt"><input type="radio" name="medico" value="Sì"> Sì</label>
+        <label class="opt"><input type="radio" name="medico" value="No (vedi note)"> No (vedi note)</label>
       </fieldset>
       <fieldset>
-        <legend>Visite fuori studio: in quali zone, in quali giorni, e con quale fondo spese?</legend>
-        <label class="sr" for="fb-fuoristudio">Visite fuori studio: in quali zone, in quali giorni, e con quale fondo spese?</label>
-        <textarea id="fb-fuoristudio" name="fuoristudio" placeholder="Per esempio: solo Roma e provincia; costo dello spostamento…"></textarea>
-      </fieldset>
-      <fieldset>
-        <legend>Se rifiuti un cambio data chiesto dal paziente:</legend>
-        <label class="opt"><input type="radio" name="rifiutocambio" value="Resta valido l'appuntamento di prima (come nella demo)"> Resta valido l'appuntamento di prima (come nella demo)</label>
-        <label class="opt"><input type="radio" name="rifiutocambio" value="La visita viene annullata"> La visita viene annullata</label>
-      </fieldset>
-      <fieldset>
-        <legend>Nome delle cartelle su Drive: va bene "COGNOME Nome - tipo di visita"?</legend>
-        <label class="sr" for="fb-cartelle">Nome delle cartelle su Drive: va bene "COGNOME Nome - tipo di visita"?</label>
-        <textarea id="fb-cartelle" name="cartelle" placeholder="Suggerimento: aggiungere anno e mese in fondo, per distinguere più pratiche della stessa persona"></textarea>
+        <legend>Durata delle altre voci (CTU, arbitrato, polizze…): 30 minuti va bene per tutte?</legend>
+        <label class="sr" for="fb-durate">Durata delle altre voci (CTU, arbitrato, polizze…): 30 minuti va bene per tutte?</label>
+        <textarea id="fb-durate" name="durate" placeholder=""></textarea>
       </fieldset>
       <fieldset>
         <legend>Altro</legend>
@@ -445,7 +434,7 @@ footer .wrap { padding-block: 18px 28px; font-family: var(--font-ui); font-size:
    toccare il codice. Qui è copiata per far funzionare la demo da sola.
    ===================================================================== */
 const CONFIG = {
-  durataMin: 30,
+  durataMin: 30,                       // passo della griglia e durata standard; alcune visite durano 60
   orizzonteGiorni: 60,
   limiteGiornoPrima: '18:00',          // prenotare: entro le 18 del giorno prima
   oreMinimePerModifica: 48,            // cambiare o disdire: fino a 48 ore prima
@@ -461,18 +450,41 @@ const CONFIG = {
       whatsapp: null,                   // numero solo messaggi: da definire
       quando: 'Giorni e orari variabili',
       disponibilita: { tipo: 'calendario', calendario: 'Disponibile Roma' } },
-    { id: 'fuori', nome: 'Visita fuori studio', breve: 'Fuori studio', indirizzo: "All'indirizzo che indica lei",
+    { id: 'fuori', nome: 'Visita fuori studio', breve: 'Fuori studio', indirizzo: 'A domicilio, in sede INPS o altrove',
       indicazioni: '', telefono: null, contatto: 'studiofedericaspadazzi@gmail.com',
-      quando: 'Con almeno 7 giorni di anticipo', anticipoGiorni: 7, chiediIndirizzo: true,
+      quando: 'Su richiesta, almeno 7 giorni prima: la dottoressa valuta e la contatta',
+      /* Niente orari da scegliere: il paziente manda una richiesta, Federica la valuta e fissa la data. */
+      richiesta: { anticipoGiorni: 7, dataObbligatoria: true,
+        etichettaData: 'Da che giorno in poi può fare la visita?', hintData: 'Almeno 7 giorni da oggi.',
+        etichettaLuogo: 'Dove si deve svolgere la visita?', hintLuogo: 'Indirizzo e comune: casa, sede INPS, studio del medico di controparte…' },
+      notaFondo: 'Per le visite a domicilio si aggiunge il rimborso del viaggio a tariffa ACI.',
       disponibilita: { tipo: 'calendario', calendario: 'Disponibile fuori studio' } },
   ],
+  /* Prestazioni. durata in minuti. fondo = cifra in euro (0 = nessuno); fondoTesto = regola a parole;
+     senza fondo né fondoTesto = da definire. altre: true = nel gruppo "Altri tipi di visita".
+     richiesta = non si sceglie un orario: si manda una richiesta che Federica valuta. */
   prestazioni: [
-    { id: 'rc_lievi', nome: 'Incidente stradale, lesioni lievi', esempi: 'Colpo di frusta, contusioni', fondo: 100, verbale: true },
-    { id: 'rc_gravi', nome: 'Incidente stradale, lesioni gravi', esempi: 'Fratture, ricoveri, interventi', fondo: 300, verbale: true },
-    { id: 'invalidita', nome: 'Invalidità civile e Legge 104', esempi: 'Prima domanda o aggravamento', fondo: 50, daRivedere: true },
-    { id: 'inail', nome: 'Infortunio sul lavoro o malattia professionale (INAIL)', esempi: '', fondo: 100 },
-    { id: 'polizza', nome: 'Polizza infortuni privata', esempi: '', fondo: 0, notaFondo: 'Nessun fondo spese: si paga alla consegna della relazione.' },
-    { id: 'resp_med', nome: 'Responsabilità medica', esempi: 'Presunto errore sanitario', fondo: 500, notaFondo: 'Per la valutazione preliminare del caso.' },
+    { id: 'rc_lievi', nome: 'Incidente stradale, lesioni lievi', esempi: 'Colpo di frusta, contusioni', fondo: 100, durata: 30, verbale: true },
+    { id: 'rc_gravi', nome: 'Incidente stradale, lesioni gravi', esempi: 'Fratture, ricoveri, interventi', fondo: 300, durata: 60, verbale: true },
+    { id: 'invalidita', nome: 'Domanda o aggravamento di invalidità civile – certificato introduttivo', esempi: "Anche Legge 104 e indennità di accompagnamento. Per chi chiede l'accompagnamento la visita può essere a domicilio.", fondo: 50, durata: 30 },
+    { id: 'pensione_inps', nome: 'Pensione INPS lavoratori', esempi: 'Assegno ordinario o pensione di inabilità (L. 222/84)', fondo: 50, durata: 30 },
+    { id: 'inail', nome: 'Infortunio sul lavoro o malattia professionale (INAIL)', esempi: '', fondo: 100, durata: 30 },
+    { id: 'polizza', nome: 'Polizza infortuni privata', esempi: '', fondo: 0, durata: 30, notaFondo: 'Nessun fondo spese: si paga alla consegna della relazione.' },
+    { id: 'resp_sanitaria', nome: 'Responsabilità professionale sanitaria – valutazione preliminare', esempi: 'Malasanità, anche dentale o estetica', fondo: 500, durata: 60, notaFondo: 'Tutto alla prima visita.' },
+    { id: 'assistenza_inps', altre: true, nome: 'Assistenza a visita INPS o collegiale (anche INAIL)', esempi: 'La dottoressa la accompagna alla visita in commissione', durata: 30,
+      fondoTesto: 'Si paga interamente alla visita; il costo dipende da dove si svolge.', fondoBreve: 'Intero alla visita',
+      richiesta: { dataObbligatoria: false, etichettaData: 'Data della visita in commissione, se la conosce', hintData: '',
+        etichettaLuogo: 'Dove si svolge la visita?', hintLuogo: 'Sede INPS o INAIL e città.' } },
+    { id: 'ctu', altre: true, nome: 'Consulente di parte in causa civile o previdenziale', esempi: 'Assistenza in ATP o CTU', durata: 30,
+      fondoTesto: "Si versa l'intero onorario alla prima visita.", fondoBreve: 'Intero onorario' },
+    { id: 'arbitrato', altre: true, nome: 'Arbitrato su polizza', esempi: '', durata: 30,
+      fondoTesto: "Si versa il 50% dell'onorario alla prima visita.", fondoBreve: "50% dell'onorario" },
+    { id: 'rc_non_stradale', altre: true, nome: 'Responsabilità civile non stradale', esempi: 'Caduta per una buca, infortunio in negozio o in palestra, morso di cane', durata: 30 },
+    { id: 'aggressione', altre: true, nome: 'Lesioni da aggressione', esempi: 'Certificazione e valutazione del danno', durata: 30 },
+    { id: 'polizza_malattia', altre: true, nome: 'Polizza malattia, LTC o vita', esempi: '', durata: 30 },
+    { id: 'causa_servizio', altre: true, nome: 'Causa di servizio o equo indennizzo', esempi: '', durata: 30 },
+    { id: 'vaccino', altre: true, nome: 'Danno da vaccino o trasfusione (L. 210/92)', esempi: '', durata: 30 },
+    { id: 'altro_nonso', altre: true, nome: 'Altro / non so', esempi: 'Lo descriva in poche parole', durata: 30, campoLibero: true },
   ],
   invianti: [
     { id: 'caf', etichetta: 'Un CAF' },
@@ -527,8 +539,8 @@ const fmtGiornoBreve = new Intl.DateTimeFormat('it-IT', { weekday: 'short', day:
 const fmtOra = new Intl.DateTimeFormat('it-IT', { hour: '2-digit', minute: '2-digit' });
 const giorno = d => cap(fmtGiorno.format(d));
 const ora = d => fmtOra.format(d);
-const breve = ms => cap(fmtGiornoBreve.format(new Date(ms))) + ', ' + ora(new Date(ms));
-const lungo = ms => giorno(new Date(ms)) + ', ore ' + ora(new Date(ms));
+const breve = ms => ms == null ? 'Da fissare' : cap(fmtGiornoBreve.format(new Date(ms))) + ', ' + ora(new Date(ms));
+const lungo = ms => ms == null ? 'Data da fissare' : giorno(new Date(ms)) + ', ore ' + ora(new Date(ms));
 const euro = n => n === 0 ? 'Nessuno' : n + ' €';
 function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
 function atTime(d, hhmm) { const [h, m] = hhmm.split(':').map(Number); const x = new Date(d); x.setHours(h, m, 0, 0); return x; }
@@ -539,6 +551,13 @@ const calNome = id => ({ fiano: 'Studio Fiano', roma: 'Studio Roma', fuori: 'Vis
 const sedeById = id => CONFIG.sedi.find(s => s.id === id);
 const prestById = id => CONFIG.prestazioni.find(p => p.id === id);
 const invById = id => CONFIG.invianti.find(i => i.id === id);
+const durataDi = prestId => prestById(prestId)?.durata || CONFIG.durataMin;
+const dur = p => durataDi(p.prest);
+/* Una prenotazione è una "richiesta" (senza orario scelto dal paziente) per le visite fuori studio
+   e per le prestazioni che lo prevedono, come l'assistenza a visita INPS. */
+const regolaRichiesta = (sedeId, prestId) => prestById(prestId)?.richiesta || sedeById(sedeId)?.richiesta || null;
+const nomeVisita = p => prestById(p.prest).campoLibero && p.dati.prestAltro ? 'Altro: ' + p.dati.prestAltro : prestById(p.prest).nome;
+const ordine = p => p.slot ?? (p.dati.rData ? new Date(p.dati.rData).getTime() : 9e15);
 
 /* =====================================================================
    ARCHIVIO DELLA DEMO
@@ -546,14 +565,14 @@ const invById = id => CONFIG.invianti.find(i => i.id === id);
    (dati nei tag privati) più una riga nel Foglio "Registro".
    Qui sta nel localStorage del browser, solo per le prove.
    ===================================================================== */
-const STORE = 'spadazzi-demo-v4';
+const STORE = 'spadazzi-demo-v5';
 let DB = { prenotazioni: [] };
 const attiva = p => p.stato === 'in_attesa' || p.stato === 'confermata';
 const trova = id => DB.prenotazioni.find(p => p.id === id);
 function salva() { try { localStorage.setItem(STORE, JSON.stringify(DB)); } catch (_) {} }
 function carica() {
   try { const x = JSON.parse(localStorage.getItem(STORE) || 'null'); if (x && Array.isArray(x.prenotazioni)) DB = x; } catch (_) {}
-  DB.prenotazioni = DB.prenotazioni.filter(p => p.slot > Date.now());
+  DB.prenotazioni = DB.prenotazioni.filter(p => p.slot == null || p.slot > Date.now());
   if (!DB.prenotazioni.length) DB.prenotazioni.push(esempio());
 }
 const nuovoId = () => Math.random().toString(36).slice(2, 10).toUpperCase();
@@ -566,17 +585,20 @@ const EVENTI = {
   rifiutata:            { chi: 'dottoressa', testo: () => 'Rifiutata da te' },
   spostata_paziente:    { chi: 'paziente',   notifica: 'Cambio data da confermare',     testo: e => `Il paziente chiede di spostare da ${breve(e.da)} a ${breve(e.a)}` },
   cambio_confermato:    { chi: 'dottoressa', testo: e => `Cambio confermato da te: ora ${breve(e.a)}` },
-  cambio_rifiutato:     { chi: 'dottoressa', testo: e => `Cambio rifiutato da te: resta ${breve(e.a)}` },
+  cambio_rifiutato:     { chi: 'dottoressa', testo: () => 'Cambio rifiutato da te: visita annullata' },
+  richiesta_libera:     { chi: 'paziente',   notifica: 'Nuova richiesta da valutare',   testo: () => 'Richiesta del paziente: visita da fissare' },
+  fissata:              { chi: 'dottoressa', testo: e => `Visita fissata da te: ${breve(e.a)}` },
   spostata_dottoressa:  { chi: 'dottoressa', testo: e => `Spostata da te: da ${breve(e.da)} a ${breve(e.a)}` },
   disdetta_paziente:    { chi: 'paziente',   notifica: 'Visita disdetta dal paziente',  testo: () => 'Disdetta dal paziente' },
   annullata_dottoressa: { chi: 'dottoressa', testo: () => 'Annullata da te' },
 };
 function registra(p, tipo, extra = {}) { p.storico.push({ t: Date.now(), tipo, ...extra }); salva(); }
 function limiteModifica(p) { return new Date(p.slot - CONFIG.oreMinimePerModifica * 36e5); }
-const pazientePuoModificare = p => attiva(p) && Date.now() < limiteModifica(p).getTime();
+const pazientePuoModificare = p => attiva(p) && p.slot != null && Date.now() < limiteModifica(p).getTime();
+const richiestaDaFissare = p => p.tipo === 'richiesta' && p.slot == null && p.stato === 'in_attesa';
 
 const cambioInAttesa = p => p.stato === 'in_attesa' && p.slotPrecedente != null;
-const pill = p => cambioInAttesa(p) ? '<span class="pill wait">CAMBIO DA CONFERMARE</span>' : PILL[p.stato];
+const pill = p => cambioInAttesa(p) ? '<span class="pill wait">CAMBIO DA CONFERMARE</span>' : richiestaDaFissare(p) ? '<span class="pill wait">DA VALUTARE</span>' : PILL[p.stato];
 const PILL = {
   in_attesa: '<span class="pill wait">DA CONFERMARE</span>', confermata: '<span class="pill ok">CONFERMATA</span>',
   rifiutata: '<span class="pill no">RIFIUTATA</span>', disdetta: '<span class="pill no">DISDETTA</span>', annullata: '<span class="pill no">ANNULLATA</span>',
@@ -606,16 +628,30 @@ function slotDelGiorno(sede, d) {
   }
   return out;
 }
-function giorniDisponibili(sede) {
+function giorniDisponibili(sede, durata = CONFIG.durataMin) {
   const oggi = new Date(); oggi.setHours(0, 0, 0, 0);
   const adesso = new Date();
-  const presi = new Set(DB.prenotazioni.filter(attiva).flatMap(p => p.slotPrecedente != null ? [p.slot, p.slotPrecedente] : [p.slot]));
+  /* intervalli già presi dalle prenotazioni della demo (anche l'orario vecchio durante un cambio) */
+  const presi = DB.prenotazioni.filter(p => attiva(p) && p.slot != null).flatMap(p => {
+    const m = dur(p) * 6e4;
+    return [[p.slot, p.slot + m], ...(p.slotPrecedente != null ? [[p.slotPrecedente, p.slotPrecedente + m]] : [])];
+  });
+  const libero = (a, b) => !presi.some(([x, y]) => a < y && x < b);
+  const passi = Math.ceil(durata / CONFIG.durataMin), passo = CONFIG.durataMin * 6e4;
   const res = [];
   for (let i = 1; i <= CONFIG.orizzonteGiorni; i++) {
     const d = addDays(oggi, i);
     if (adesso >= atTime(addDays(d, -1), CONFIG.limiteGiornoPrima)) continue;
     if (sede.anticipoGiorni && i < sede.anticipoGiorni) continue;
-    const liberi = slotDelGiorno(sede, d).filter(s => !s.occupato && !presi.has(s.inizio.getTime())).map(s => s.inizio);
+    const sl = slotDelGiorno(sede, d);
+    /* una visita da 60 minuti ha bisogno di due mezz'ore libere consecutive nella stessa finestra */
+    const liberi = sl.filter((s, i) => {
+      for (let j = 0; j < passi; j++) {
+        const q = sl[i + j];
+        if (!q || q.occupato || q.inizio.getTime() !== s.inizio.getTime() + j * passo) return false;
+      }
+      return libero(s.inizio.getTime(), s.inizio.getTime() + durata * 6e4);
+    }).map(s => s.inizio);
     if (liberi.length) res.push({ d, liberi });
   }
   return res;
@@ -623,8 +659,8 @@ function giorniDisponibili(sede) {
 
 /* Scelta di giorno e orario, usata per prenotare, per cambiare data (paziente) e per spostare (dottoressa).
    st = { giornoAperto, slot, mostraTutti } dello schermo che la usa. */
-function sceltaOrario(sede, st) {
-  const giorni = giorniDisponibili(sede);
+function sceltaOrario(sede, st, durata = CONFIG.durataMin) {
+  const giorni = giorniDisponibili(sede, durata);
   if (!giorni.length) return '<p class="notice wait">In questo momento non ci sono orari liberi.</p>';
   if (st.giornoAperto == null) st.giornoAperto = dayKey(giorni[0].d);
   const visibili = st.mostraTutti ? giorni : giorni.slice(0, 6);
@@ -652,10 +688,13 @@ function toccoOrario(b, st, ridisegna, root) {
 }
 
 function fondoSpese(p) {
-  const prest = prestById(p.prest), d = p.dati;
+  const prest = prestById(p.prest), d = p.dati, sede = sedeById(p.sede);
+  const extra = sede?.notaFondo ? ' ' + sede.notaFondo : '';
   if (d.inviante === 'avvocato' && d.invPaga === 'si')
-    return { cifra: 0, testo: CONFIG.testi.esenzione.replace('{inviante}', d.invNome || 'avvocato'), esente: true };
-  return { cifra: prest.fondo, testo: prest.notaFondo || '', esente: false };
+    return { cifra: 0, breve: "Nessuno (paga l'avvocato)", testo: CONFIG.testi.esenzione.replace('{inviante}', d.invNome || 'avvocato') + extra, esente: true };
+  if (prest.fondoTesto) return { cifra: null, breve: prest.fondoBreve, testo: prest.fondoTesto + extra, aParole: true };
+  if (prest.fondo == null) return { cifra: null, breve: 'Da definire', testo: 'Il fondo spese le sarà comunicato dalla dottoressa.' + extra, daDefinire: true };
+  return { cifra: prest.fondo, breve: prest.fondo ? prest.fondo + ' €' : 'Nessuno', testo: (prest.notaFondo || '') + extra };
 }
 function documenti(prestId) {
   const p = prestById(prestId);
@@ -681,10 +720,10 @@ function contattoSede(sede) {
    ===================================================================== */
 const TITOLI = ['Dove vuole fare la visita?', 'Che tipo di visita le serve?', 'Scelga giorno e orario', 'I suoi dati', 'I documenti per la pratica', 'Controlli e invii'];
 const PASSI = TITOLI.length, FATTO = PASSI + 1;
-const vuoti = () => ({ nome: '', cognome: '', tel: '', email: '', indirizzo: '', comune: '', inviante: '', invNome: '', invPaga: '', invMedico: '', invAltro: '', documenti: {}, privacy: false, fondoOk: false });
+const vuoti = () => ({ nome: '', cognome: '', tel: '', email: '', indirizzo: '', comune: '', prestAltro: '', rData: '', rLuogo: '', rDescr: '', inviante: '', invNome: '', invPaga: '', invMedico: '', invAltro: '', documenti: {}, privacy: false, fondoOk: false });
 const docsPer = prestId => CONFIG.documenti.filter(x => !x.soloPer || x.soloPer.includes(prestId));
 const nFile = docs => Object.values(docs || {}).reduce((n, l) => n + l.length, 0);
-const S = { step: 1, sede: null, prest: null, giornoAperto: null, slot: null, mostraTutti: false, dati: vuoti(), errori: null, ultima: null };
+const S = { step: 1, sede: null, prest: null, mostraAltre: false, giornoAperto: null, slot: null, mostraTutti: false, dati: vuoti(), errori: null, ultima: null };
 
 function progress() {
   return `<div class="progress">
@@ -709,29 +748,59 @@ function stepSede() {
   ${nav()}
   <div class="notice aiuto">
     <b>Non riesce a prenotare da qui?</b>
-    <span>Per Fiano chiami lo studio al ${esc(sedeById('fiano').telefono)}. Per Roma e per le visite fuori studio scriva a ${esc(CONFIG.mittente)}.</span>
-    <span class="small muted">Proposta da decidere con la dottoressa.</span>
+    <span>Chiami lo studio di Fiano al ${esc(sedeById('fiano').telefono)} oppure scriva a ${esc(CONFIG.mittente)}.</span>
   </div>`;
 }
-function stepPrest() {
-  return `${progress()}
-  <fieldset class="choices"><legend id="step-h" tabindex="-1">${TITOLI[1]}</legend>
-    ${CONFIG.prestazioni.map(p => `<label class="choice">
+function sceltaPrest(p) {
+  return `<label class="choice">
       <input type="radio" name="prest" value="${p.id}" ${S.prest === p.id ? 'checked' : ''}>
       <span class="t">${esc(p.nome)}</span><span></span>
       ${p.esempi ? `<span class="d">${esc(p.esempi)}</span>` : ''}
-    </label>`).join('')}
+    </label>`;
+}
+function stepPrest() {
+  const principali = CONFIG.prestazioni.filter(p => !p.altre), altre = CONFIG.prestazioni.filter(p => p.altre);
+  const aperte = S.mostraAltre || prestById(S.prest)?.altre;
+  return `${progress()}
+  <fieldset class="choices"><legend id="step-h" tabindex="-1">${TITOLI[1]}</legend>
+    ${principali.map(sceltaPrest).join('')}
+    <button type="button" class="btn btn-ghost btn-block" data-act="altre" aria-expanded="${!!aperte}">${aperte ? 'Nascondi gli altri tipi di visita' : `Altri tipi di visita (${altre.length})`}</button>
+    ${aperte ? altre.map(sceltaPrest).join('') : ''}
   </fieldset>
+  ${prestById(S.prest)?.campoLibero ? `<div class="sub">${campo('prestAltro', 'Di che cosa si tratta?', 'text', '', 'Bastano poche parole.')}</div>` : ''}
+  ${nav()}`;
+}
+function stepRichiesta(r) {
+  const sede = sedeById(S.sede), d = S.dati, E = (S.errori && typeof S.errori === 'object') ? S.errori : {};
+  const min = r.anticipoGiorni ? addDays(new Date(), r.anticipoGiorni) : null;
+  const iso = x => x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0');
+  return `${progress()}
+  <div class="stack">
+    <h2 id="step-h" tabindex="-1">Quando e dove</h2>
+    <p class="muted small">${sede.richiesta ? 'Le visite fuori studio si concordano: mandi la richiesta' : 'Per questo tipo di visita mandi una richiesta'} e la dottoressa la contatterà per fissare data e ora.</p>
+  </div>
+  ${Object.keys(E).length ? `<div class="err-box" role="alert" tabindex="-1"><b>Controlli questi campi:</b><ul>${Object.entries(E).map(([k, v]) => `<li><a href="#f-${k}">${esc(v)}</a></li>`).join('')}</ul></div>` : ''}
+  <div class="stack">
+    ${campo('rData', r.etichettaData + (r.dataObbligatoria ? '' : ' (facoltativo)'), 'date', min ? `min="${iso(min)}"` : '', r.hintData)}
+    ${campo('rLuogo', r.etichettaLuogo, 'text', '', r.hintLuogo)}
+    <div class="field">
+      <label for="f-rDescr">Di cosa si tratta?</label>
+      <span class="hint" id="h-rDescr">Poche righe: per esempio il tipo di pratica e il medico di controparte, se c'è.</span>
+      <textarea id="f-rDescr" name="rDescr" rows="4" class="txt" ${E.rDescr ? 'aria-invalid="true" aria-describedby="e-rDescr"' : 'aria-describedby="h-rDescr"'}>${esc(d.rDescr)}</textarea>
+      ${E.rDescr ? `<span class="err" id="e-rDescr">${esc(E.rDescr)}</span>` : ''}
+    </div>
+  </div>
   ${nav()}`;
 }
 function stepGiorno() {
   const sede = sedeById(S.sede);
+  const r = regolaRichiesta(S.sede, S.prest); if (r) return stepRichiesta(r);
   return `${progress()}
   <div class="stack">
     <h2 id="step-h" tabindex="-1">${TITOLI[2]}</h2>
-    <p class="muted small">${esc(sede.nome)}. Ogni visita dura ${CONFIG.durataMin} minuti. Vede solo gli orari liberi.${sede.anticipoGiorni ? ` Le visite fuori studio si prenotano con almeno ${sede.anticipoGiorni} giorni di anticipo.` : ''}</p>
+    <p class="muted small">${esc(sede.nome)}. Questa visita dura ${durataDi(S.prest)} minuti. Vede solo gli orari liberi.</p>
   </div>
-  ${sceltaOrario(sede, S)}
+  ${sceltaOrario(sede, S, durataDi(S.prest))}
   ${S.errori ? `<p class="err" role="alert">${esc(S.errori)}</p>` : ''}
   ${nav()}`;
 }
@@ -754,8 +823,8 @@ function stepDati() {
   <form id="form-dati" class="stack" novalidate>
     ${campo('nome', 'Nome', 'text', 'autocomplete="given-name"')}
     ${campo('cognome', 'Cognome', 'text', 'autocomplete="family-name"')}
-    ${campo('tel', 'Telefono', 'tel', 'autocomplete="tel" inputmode="tel"', 'Lo usiamo solo se dobbiamo avvisarla di un cambiamento.')}
-    ${campo('email', 'Email', 'email', 'autocomplete="email" inputmode="email"', 'Qui riceverà la conferma, il promemoria e il link per cambiare o disdire.')}
+    ${campo('tel', 'Telefono', 'tel', 'autocomplete="tel" inputmode="tel"', 'Obbligatorio: serve alla dottoressa per contattarla se necessario.')}
+    ${campo('email', 'Email', 'email', 'autocomplete="email" inputmode="email"', 'Obbligatoria: qui riceverà la conferma, il promemoria e il link per cambiare o disdire.')}
     ${sedeById(S.sede)?.chiediIndirizzo ? `<div class="sub">
       ${campo('indirizzo', 'Indirizzo della visita', 'text', 'autocomplete="street-address"', 'Via e numero civico, ed eventuali indicazioni (piano, citofono).')}
       ${campo('comune', 'Comune', 'text', 'autocomplete="address-level2"')}
@@ -811,11 +880,14 @@ function stepDocumenti() {
   <p class="muted small">Il giorno della visita porti comunque con sé gli originali del documento d'identità e della tessera sanitaria.</p>
   ${nav('Vai al riepilogo')}`;
 }
-function testoFondo(prestId, dati) {
-  const pr = prestById(prestId), f = fondoSpese({ prest: prestId, dati });
-  if (f.esente) return `Sono a conoscenza che per questa visita <b>non devo portare il fondo spese</b>, perché è pagata direttamente dall'avvocato (${esc(dati.invNome || 'indicato prima')}).`;
-  if (!f.cifra) return `Sono a conoscenza che per questa pratica (${esc(pr.nome.toLowerCase())}) <b>non è previsto un fondo spese</b>: si paga alla consegna della relazione.`;
-  return `Sono a conoscenza che il fondo spese da portare il giorno della visita per questa pratica (${esc(pr.nome.toLowerCase())}) è di <b>${f.cifra} €</b>${pr.notaFondo ? ', ' + esc(pr.notaFondo.charAt(0).toLowerCase() + pr.notaFondo.slice(1, -1)) : ''}.`;
+function testoFondo(q) {
+  const pr = prestById(q.prest), f = fondoSpese(q), nome = esc(nomeVisita(q).toLowerCase());
+  const aci = sedeById(q.sede)?.notaFondo ? ' ' + esc(sedeById(q.sede).notaFondo) : '';
+  if (f.esente) return `Sono a conoscenza che per questa visita <b>non devo portare il fondo spese</b>, perché è pagata direttamente dall'avvocato (${esc(q.dati.invNome || 'indicato prima')}).${aci}`;
+  if (f.daDefinire) return `Sono a conoscenza che per questa pratica (${nome}) è previsto un fondo spese, che <b>mi verrà comunicato dalla dottoressa</b>.${aci}`;
+  if (f.aParole) return `Sono a conoscenza che per questa pratica (${nome}) <b>${esc(pr.fondoTesto.charAt(0).toLowerCase() + pr.fondoTesto.slice(1))}</b>${aci}`;
+  if (!f.cifra) return `Sono a conoscenza che per questa pratica (${nome}) <b>non è previsto un fondo spese</b>: si paga alla consegna della relazione.${aci}`;
+  return `Sono a conoscenza che il fondo spese da portare il giorno della visita per questa pratica (${nome}) è di <b>${f.cifra} €</b>${pr.notaFondo ? ', ' + esc(pr.notaFondo.charAt(0).toLowerCase() + pr.notaFondo.slice(1, -1)) : ''}.${aci}`;
 }
 function stepRiepilogo() {
   const sede = sedeById(S.sede), p = prestById(S.prest), d = S.dati;
@@ -824,8 +896,10 @@ function stepRiepilogo() {
   <h2 id="step-h" tabindex="-1">${TITOLI[5]}</h2>
   <dl class="summary" style="margin:0">
     ${riga('Sede', `${esc(sede.nome)}<br><span class="muted small">${esc(sede.indirizzo)}</span>`, 1)}
-    ${riga('Visita', esc(p.nome), 2)}
-    ${riga('Giorno e ora', lungo(S.slot) + `<br><span class="muted small">Durata: ${CONFIG.durataMin} minuti</span>`, 3)}
+    ${riga('Visita', esc(nomeVisita({ prest: S.prest, dati: d })), 2)}
+    ${regolaRichiesta(S.sede, S.prest)
+      ? riga('Richiesta', `${d.rData ? 'Data: ' + esc(giorno(new Date(d.rData + 'T09:00'))) + '<br>' : ''}Dove: ${esc(d.rLuogo)}<br><span class="muted small">${esc(d.rDescr)}</span>`, 3)
+      : riga('Giorno e ora', lungo(S.slot) + `<br><span class="muted small">Durata: ${durataDi(S.prest)} minuti</span>`, 3)}
     ${d.indirizzo ? riga('Indirizzo della visita', esc(d.indirizzo + ', ' + d.comune), 4) : ''}
     ${riga('Nome', esc(d.nome + ' ' + d.cognome), 4)}
     ${riga('Telefono ed email', `${esc(d.tel)}<br>${esc(d.email)}`, 4)}
@@ -835,7 +909,7 @@ function stepRiepilogo() {
   <div class="fondo ${S.errori === 'fondo' ? 'manca' : ''}">
     <span class="eyebrow">Fondo spese</span>
     <label class="check" for="f-fondo"><input type="checkbox" id="f-fondo" ${d.fondoOk ? 'checked' : ''} ${S.errori === 'fondo' ? 'aria-invalid="true" aria-describedby="e-fondo"' : ''}>
-      <span>${testoFondo(S.prest, d)}</span></label>
+      <span>${testoFondo({ prest: S.prest, sede: S.sede, dati: d })}</span></label>
     ${f.cifra ? `<span class="small">${esc(CONFIG.testi.fondoScalato)} ${esc(CONFIG.testi.pagamento)}</span>` : ''}
     ${S.errori === 'fondo' ? `<span class="err" id="e-fondo">Per inviare la richiesta spunti la casella sul fondo spese.</span>` : ''}
   </div>
@@ -848,6 +922,14 @@ function elencoDocumenti(docs, prestId) {
 function stepFatto() {
   const p = trova(S.ultima); if (!p) { S.step = 1; return stepSede(); }
   const sede = sedeById(p.sede), manuale = p.stato === 'in_attesa';
+  if (p.tipo === 'richiesta') return `<div class="notice wait" role="status">
+      <h2 id="step-h" tabindex="-1">Richiesta inviata</h2>
+      <p>La dottoressa valuta la richiesta e la contatterà al <b>${esc(p.dati.tel)}</b> o a <b>${esc(p.dati.email)}</b> per fissare data e ora.</p>
+    </div>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="#dottoressa" data-apri="${p.id}">Guarda cosa riceve la dottoressa</a>
+    </div>
+    <button type="button" class="btn btn-ghost btn-block" data-act="ricomincia">Prenota un'altra visita</button>`;
   return `<div class="notice ${manuale ? 'wait' : 'ok'}" role="status">
       <h2 id="step-h" tabindex="-1">${manuale ? 'Richiesta inviata' : 'Prenotazione confermata'}</h2>
       <p>${manuale
@@ -889,6 +971,17 @@ function segnala(msg) {
 function avanti() {
   if (S.step === 1 && !S.sede) return segnala('Scelga una sede per continuare.');
   if (S.step === 2 && !S.prest) return segnala('Scelga il tipo di visita per continuare.');
+  if (S.step === 2 && prestById(S.prest).campoLibero && !S.dati.prestAltro.trim()) { S.errori = { prestAltro: 'Scriva in poche parole di che cosa si tratta.' }; renderWizard(false); $('#f-prestAltro')?.focus(); return; }
+  const r = regolaRichiesta(S.sede, S.prest);
+  if (S.step === 3 && r) {
+    const E = {}, d = S.dati;
+    if (r.dataObbligatoria && !d.rData) E.rData = 'Indichi da che giorno in poi può fare la visita.';
+    else if (d.rData && r.anticipoGiorni && new Date(d.rData + 'T23:59') < addDays(new Date(), r.anticipoGiorni)) E.rData = `La data deve essere almeno ${r.anticipoGiorni} giorni da oggi.`;
+    if (!d.rLuogo.trim()) E.rLuogo = 'Scriva dove si deve svolgere la visita.';
+    if (!d.rDescr.trim()) E.rDescr = 'Scriva in poche righe di cosa si tratta.';
+    if (Object.keys(E).length) { S.errori = E; renderWizard(false); const b = $('.err-box'); b?.focus({ preventScroll: true }); b?.scrollIntoView({ block: 'start' }); return; }
+    S.errori = null; S.step++; return renderWizard();
+  }
   if (S.step === 3 && !S.slot) { S.errori = 'Scelga un orario per continuare.'; renderWizard(false); $('#wizard .err')?.scrollIntoView({ block: 'center' }); return; }
   if (S.step === 4) {
     const E = valida();
@@ -901,16 +994,17 @@ function avanti() {
   S.errori = null; S.step++; renderWizard();
 }
 function invia() {
-  if (!giorniDisponibili(sedeById(S.sede)).some(g => g.liberi.some(t => t.getTime() === S.slot))) {
+  const r = regolaRichiesta(S.sede, S.prest);
+  if (!r && !giorniDisponibili(sedeById(S.sede), durataDi(S.prest)).some(g => g.liberi.some(t => t.getTime() === S.slot))) {
     S.step = 3; S.slot = null; S.errori = "Nel frattempo quest'orario è stato preso. Ne scelga un altro."; return renderWizard();
   }
   const manuale = CONFIG.confermaManuale;
-  const p = { id: nuovoId(), sede: S.sede, prest: S.prest, slot: S.slot,
+  const p = { id: nuovoId(), sede: S.sede, prest: S.prest, slot: r ? null : S.slot, tipo: r ? 'richiesta' : 'prenotazione',
     dati: { ...S.dati, documenti: Object.fromEntries(Object.entries(S.dati.documenti).map(([k, l]) => [k, l.map(f => ({ name: f.name, size: f.size }))])) },
     fondoPresaVisione: Date.now(),
     stato: manuale ? 'in_attesa' : 'confermata', consenso: Date.now(), storico: [], esempio: false };
   DB.prenotazioni.push(p);
-  registra(p, manuale ? 'richiesta' : 'prenotata', { a: p.slot });
+  registra(p, r ? 'richiesta_libera' : manuale ? 'richiesta' : 'prenotata', { a: p.slot });
   S.ultima = p.id; G.selId = p.id; D.selId = p.id;
   S.step = FATTO; renderWizard();
 }
@@ -923,6 +1017,7 @@ $('#wizard').addEventListener('click', e => {
   if (act === 'indietro') { S.errori = null; S.step--; return renderWizard(); }
   if (act === 'ricomincia') { ricominciaWizard(); return renderWizard(); }
   if (act === 'privacy') { e.preventDefault(); const p = $('#privacy-txt'); p.hidden = !p.hidden; return; }
+  if (act === 'altre') { const ap = S.mostraAltre || prestById(S.prest)?.altre; S.mostraAltre = !ap; if (ap && prestById(S.prest)?.altre) S.prest = null; renderWizard(false); $('[data-act=altre]')?.focus(); return; }
   if (S.step === 3 && toccoOrario(b, S, () => { S.errori = null; renderWizard(false); }, $('#wizard'))) return;
   if (b.dataset.goto) { S.step = Number(b.dataset.goto); return renderWizard(); }
   if (b.dataset.rm) { const [k, i] = b.dataset.rm.split(':'); S.dati.documenti[k].splice(Number(i), 1); return renderWizard(false); }
@@ -930,7 +1025,7 @@ $('#wizard').addEventListener('click', e => {
 $('#wizard').addEventListener('change', e => {
   const t = e.target;
   if (t.name === 'sede') { S.sede = t.value; S.slot = null; S.giornoAperto = null; S.mostraTutti = false; }
-  else if (t.name === 'prest') S.prest = t.value;
+  else if (t.name === 'prest') { const prima = !!prestById(S.prest)?.campoLibero; S.prest = t.value; S.slot = null; S.giornoAperto = null; if (prima !== !!prestById(S.prest).campoLibero) { renderWizard(false); $(`input[name=prest][value="${t.value}"]`)?.focus(); } }
   else if (t.name === 'inviante' || t.name === 'invPaga') { S.dati[t.name] = t.value; renderWizard(false); $(`input[name="${t.name}"][value="${t.value}"]`)?.focus(); }
   else if (t.name === 'privacy') S.dati.privacy = t.checked;
   else if (t.id === 'f-fondo') { S.dati.fondoOk = t.checked; if (t.checked && S.errori === 'fondo') { S.errori = null; renderWizard(false); $('#f-fondo')?.focus(); } }
@@ -962,10 +1057,10 @@ $('#wizard').addEventListener('input', e => {
    ===================================================================== */
 const G = { selId: null, modo: null, st: { giornoAperto: null, slot: null, mostraTutti: false }, msg: null };
 function elencoPrenotazioni(selId, attr) {
-  const list = [...DB.prenotazioni].sort((a, b) => a.slot - b.slot);
+  const list = [...DB.prenotazioni].sort((a, b) => ordine(a) - ordine(b));
   return `<div class="bks">${list.map(p => `<button type="button" class="bk" ${attr}="${p.id}" aria-current="${p.id === selId}">
       <span class="q">${breve(p.slot)} · ${esc(sedeById(p.sede).breve)}</span>
-      <span class="w">${esc(p.dati.cognome)} ${esc(p.dati.nome)} – ${esc(prestById(p.prest).nome)}</span>
+      <span class="w">${esc(p.dati.cognome)} ${esc(p.dati.nome)} – ${esc(nomeVisita(p))}</span>
       ${pill(p)}
     </button>`).join('')}</div>`;
 }
@@ -982,7 +1077,8 @@ function renderGestisci() {
     azioni = `<div class="panel">
       <h2 id="g-h" tabindex="-1">Scelga il nuovo giorno e orario</h2>
       <p class="muted small">${esc(sede.nome)}. Vede solo gli orari liberi.</p>
-      ${sceltaOrario(sede, G.st)}
+      ${sceltaOrario(sede, G.st, dur(p))}
+      <p class="small notice wait">Il nuovo orario lo deve confermare la dottoressa. Se non può confermarlo, la visita viene annullata.</p>
       ${nuovo ? `<div class="cambio" aria-live="polite"><span>Prima: <s>${lungo(p.slot)}</s></span><span>Dopo: <b>${lungo(nuovo)}</b></span></div>` : ''}
       <div class="btn-row">
         <button type="button" class="btn btn-ghost" data-g="chiudi">Lascio com'è</button>
@@ -991,15 +1087,21 @@ function renderGestisci() {
     </div>`;
   } else if (G.modo === 'disdici') {
     azioni = `<div class="panel">
-      <h2 id="g-h" tabindex="-1">Vuole disdire la visita?</h2>
+      <h2 id="g-h" tabindex="-1">${richiestaDaFissare(p) ? 'Vuole annullare la richiesta?' : 'Vuole disdire la visita?'}</h2>
       <p>${lungo(p.slot)}, ${esc(sede.nome)}.</p>
       <div class="btn-row">
         <button type="button" class="btn btn-ghost" data-g="chiudi">No, la tengo</button>
         <button type="button" class="btn btn-no" data-g="conferma-disdetta">Sì, disdico</button>
       </div>
     </div>`;
+  } else if (richiestaDaFissare(p)) {
+    azioni = `<p class="notice wait">La richiesta è in valutazione: la dottoressa la contatterà per fissare data e ora.</p>
+      <div class="btn-row"><button type="button" class="btn btn-no" data-g="disdici">Annulla la richiesta</button></div>`;
+  } else if (p.tipo === 'richiesta' && pazientePuoModificare(p)) {
+    azioni = `<div class="btn-row"><button type="button" class="btn btn-no" data-g="disdici">Disdici la visita</button></div>
+      <p class="muted small">Questa visita è stata concordata con la dottoressa: per cambiarla, ${contattoSede(sede)}. Può disdirla fino a ${CONFIG.oreMinimePerModifica} ore prima.</p>`;
   } else if (cambioInAttesa(p)) {
-    azioni = `<p class="notice wait">Ha chiesto di spostare la visita da ${lungo(p.slotPrecedente)} a <b>${lungo(p.slot)}</b>. La dottoressa deve confermare il cambio: riceverà una mail. Fino ad allora vale l'appuntamento di prima.</p>
+    azioni = `<p class="notice wait">Ha chiesto di spostare la visita da ${lungo(p.slotPrecedente)} a <b>${lungo(p.slot)}</b>. La dottoressa deve confermare il cambio: riceverà una mail. Fino ad allora vale l'appuntamento di prima. Se non può confermarlo, la visita viene annullata.</p>
       ${pazientePuoModificare(p) ? '<div class="btn-row"><button type="button" class="btn btn-no" data-g="disdici">Disdici la visita</button></div>' : ''}`;
   } else if (pazientePuoModificare(p)) {
     azioni = `<div class="btn-row">
@@ -1022,10 +1124,10 @@ function renderGestisci() {
     <dl class="summary" style="margin:0">
       ${riga('Stato', pill(p))}
       ${riga('Nome', esc(p.dati.nome + ' ' + p.dati.cognome))}
-      ${riga('Visita', esc(pr.nome))}
-      ${riga('Quando', lungo(p.slot))}
-      ${riga('Dove', `${esc(sede.nome)}<br><span class="muted small">${esc(sede.indirizzo)}. ${esc(sede.indicazioni)}</span>`)}
-      ${riga('Fondo spese', f.cifra ? f.cifra + ' €' : 'Nessuno')}
+      ${riga('Visita', esc(nomeVisita(p)))}
+      ${riga('Quando', lungo(p.slot) + (p.slot ? ` <span class="muted small">(${dur(p)} minuti)</span>` : ''))}
+      ${riga('Dove', p.tipo === 'richiesta' ? esc(p.dati.rLuogo) : `${esc(sede.nome)}<br><span class="muted small">${esc(sede.indirizzo)}. ${esc(sede.indicazioni)}</span>`)}
+      ${riga('Fondo spese', esc(f.breve))}
     </dl>
     ${azioni}`;
 }
@@ -1036,7 +1138,7 @@ $('#gestisci').addEventListener('click', e => {
   if (G.modo === 'cambia' && toccoOrario(b, G.st, renderGestisci, $('#gestisci'))) return;
   const a = b.dataset.g; if (!a || !p) return;
   if (a === 'cambia' || a === 'disdici') {
-    G.modo = a; G.msg = null; G.st = { giornoAperto: dayKey(new Date(p.slot)), slot: null, mostraTutti: false };
+    G.modo = a; G.msg = null; G.st = { giornoAperto: p.slot ? dayKey(new Date(p.slot)) : null, slot: null, mostraTutti: false };
     renderGestisci(); $('#g-h')?.focus(); $('#g-h')?.scrollIntoView({ block: 'start' }); return;
   }
   if (a === 'chiudi') { G.modo = null; return renderGestisci(); }
@@ -1081,12 +1183,12 @@ function mail(da, a, oggetto, corpo) {
 }
 function dettagliVisita(p, conGestione) {
   const sede = sedeById(p.sede), pr = prestById(p.prest), f = fondoSpese(p);
-  return `<div><h4>Visita</h4><p>${esc(pr.nome)}</p></div>
-    <div><h4>Quando</h4><p>${lungo(p.slot)} (durata ${CONFIG.durataMin} minuti)</p></div>
-    <div><h4>Dove</h4><p>${esc(sede.nome)}<br>${p.dati.indirizzo ? esc(p.dati.indirizzo + ', ' + p.dati.comune) : esc(sede.indirizzo) + (sede.indicazioni ? `<br><span class="muted">${esc(sede.indicazioni)}</span>` : '')}${sede.telefono ? `<br>Telefono dello studio: ${esc(sede.telefono)}` : ''}</p></div>
+  return `<div><h4>Visita</h4><p>${esc(nomeVisita(p))}</p></div>
+    <div><h4>Quando</h4><p>${lungo(p.slot)} (durata ${dur(p)} minuti)</p></div>
+    <div><h4>Dove</h4><p>${p.tipo === 'richiesta' ? esc(p.dati.rLuogo) + '<br>' : esc(sede.nome) + '<br>'}${p.tipo === 'richiesta' ? '' : p.dati.indirizzo ? esc(p.dati.indirizzo + ', ' + p.dati.comune) : esc(sede.indirizzo) + (sede.indicazioni ? `<br><span class="muted">${esc(sede.indicazioni)}</span>` : '')}${p.tipo !== 'richiesta' && sede.telefono ? `<br>Telefono dello studio: ${esc(sede.telefono)}` : ''}</p></div>
     <div><h4>Documenti</h4>${documentiMail(p)}</div>
     <div><h4>Fondo spese</h4><p>${f.cifra ? `<b>${f.cifra} €</b>. ` : ''}${esc(f.testo)} ${f.cifra ? esc(CONFIG.testi.fondoScalato) : ''} ${esc(CONFIG.testi.pagamento)}</p></div>
-    ${conGestione ? `<div class="btn-row"><a class="btn btn-ghost" href="#gestisci" data-apri="${p.id}">Cambia data o disdici</a></div>
+    ${conGestione && p.slot ? `<div class="btn-row"><a class="btn btn-ghost" href="#gestisci" data-apri="${p.id}">${p.tipo === 'richiesta' ? 'Disdici' : 'Cambia data o disdici'}</a></div>
       <p class="muted small">Può cambiare o disdire fino a ${CONFIG.oreMinimePerModifica} ore prima: entro ${fmtGiorno.format(limiteModifica(p))} alle ${ora(limiteModifica(p))}.</p>` : ''}
     <p>Dott.ssa Federica Spadazzi<br><span class="muted small">Specialista in Medicina Legale e delle Assicurazioni</span></p>`;
 }
@@ -1107,7 +1209,9 @@ function mailPaziente(p, e) {
     case 'confermata': return { oggetto: `Visita confermata: ${breve(p.slot)}`, corpo: `<p>Gentile ${nome},<br>la sua visita è confermata.</p>${dettagliVisita(p, attiva(p))}` };
     case 'spostata_paziente': return { oggetto: 'Richiesta di cambio data ricevuta', corpo: `<p>Gentile ${nome},<br>abbiamo ricevuto la sua richiesta di spostare la visita.</p><div class="cambio"><span>Appuntamento attuale: ${lungo(e.da)}</span><span>Nuovo orario richiesto: <b>${lungo(e.a)}</b></span></div><p>Il nuovo orario è riservato per lei. Riceverà una mail appena la dottoressa conferma il cambio.</p><p>Dott.ssa Federica Spadazzi</p>` };
     case 'cambio_confermato': return { oggetto: `Nuovo orario confermato: ${breve(e.a)}`, corpo: `<p>Gentile ${nome},<br>la dottoressa ha confermato il cambio. La sua visita è ora:</p><div class="cambio"><span>Prima: <s>${lungo(e.da)}</s></span><span>Ora: <b>${lungo(e.a)}</b></span></div>${dettagliVisita(p, attiva(p))}` };
-    case 'cambio_rifiutato': return { oggetto: 'Cambio data non possibile', corpo: `<p>Gentile ${nome},<br>purtroppo il nuovo orario richiesto non è disponibile. Resta valido l'appuntamento di <b>${lungo(e.a)}</b>.</p>${dettagliVisita(p, attiva(p))}` };
+    case 'cambio_rifiutato': return { oggetto: 'Cambio data non possibile: visita annullata', corpo: `<p>Gentile ${nome},<br>purtroppo il nuovo orario richiesto non è disponibile e, come indicato al momento della richiesta, la visita è annullata. Può prenotarne un'altra quando preferisce.</p><p><a href="#prenota">Prenota un'altra visita</a></p><p>Dott.ssa Federica Spadazzi</p>` };
+    case 'richiesta_libera': return { oggetto: 'Richiesta di visita ricevuta', corpo: `<p>Gentile ${nome},<br>abbiamo ricevuto la sua richiesta (${esc(nomeVisita(p))}, ${esc(p.dati.rLuogo)}). La dottoressa la valuta e la contatterà al ${esc(p.dati.tel)} o per mail per fissare data e ora.</p><p>Dott.ssa Federica Spadazzi</p>` };
+    case 'fissata': return { oggetto: `Visita fissata: ${breve(e.a)}`, corpo: `<p>Gentile ${nome},<br>come concordato, la sua visita è fissata.</p>${dettagliVisita(p, attiva(p))}` };
     case 'spostata_dottoressa': return { oggetto: `La sua visita è stata spostata: ${breve(e.a)}`, corpo: `<p>Gentile ${nome},<br>la dottoressa ha dovuto spostare la sua visita. Ci scusiamo per il cambiamento.</p><div class="cambio"><span>Prima: <s>${lungo(e.da)}</s></span><span>Ora: <b>${lungo(e.a)}</b></span></div><p>Se il nuovo orario non le va bene, può sceglierne un altro dal pulsante qui sotto.</p>${dettagliVisita(p, attiva(p))}` };
     case 'rifiutata': return { oggetto: 'La sua richiesta di visita', corpo: `<p>Gentile ${nome},<br>purtroppo l'orario richiesto non è più disponibile. Può sceglierne un altro dalla pagina di prenotazione.</p><p><a href="#prenota">Scegli un altro orario</a></p><p>Dott.ssa Federica Spadazzi</p>` };
     case 'disdetta_paziente': return { oggetto: 'Visita disdetta', corpo: `<p>Gentile ${nome},<br>la sua visita di ${lungo(p.slot)} è stata disdetta. Se vuole, può prenotarne un'altra quando preferisce.</p><p><a href="#prenota">Prenota un'altra visita</a></p><p>Dott.ssa Federica Spadazzi</p>` };
@@ -1117,7 +1221,7 @@ function mailPaziente(p, e) {
 
 function renderDott() {
   const root = $('#dott');
-  if (!trova(D.selId)) D.selId = [...DB.prenotazioni].sort((a, b) => a.slot - b.slot)[0]?.id;
+  if (!trova(D.selId)) D.selId = [...DB.prenotazioni].sort((a, b) => ordine(a) - ordine(b))[0]?.id;
   const p = trova(D.selId);
   if (!p) { root.innerHTML = `<p>Nessuna prenotazione. <a href="#prenota">Prova a prenotare</a>.</p>`; return; }
   const sede = sedeById(p.sede), pr = prestById(p.prest), d = p.dati, f = fondoSpese(p);
@@ -1126,10 +1230,21 @@ function renderDott() {
 
   /* --- azioni della dottoressa --- */
   let azioni = '';
-  if (D.modo === 'sposta') {
+  if (D.modo === 'fissa') {
+    azioni = `<div class="panel">
+      <h3 id="d-h" tabindex="-1">Fissa la visita di ${esc(d.cognome)}</h3>
+      <p class="muted small">Di solito la concordi prima al telefono (${esc(d.tel)}). Poi la segni qui: il paziente riceve la mail con tutti i dettagli.</p>
+      <div class="field"><label for="d-data">Giorno</label><input type="date" id="d-data" value="${esc(d.rData)}"></div>
+      <div class="field"><label for="d-ora">Ora</label><input type="time" id="d-ora" step="1800" value="10:00"></div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-ghost" data-d="chiudi">Non ora</button>
+        <button type="button" class="btn btn-primary" data-d="conferma-fissa">Fissa e avvisa il paziente</button>
+      </div>
+    </div>`;
+  } else if (D.modo === 'sposta') {
     azioni = `<div class="panel">
       <h3 id="d-h" tabindex="-1">Sposta ${esc(d.cognome)} a un altro orario</h3>
-      ${sceltaOrario(sede, D.st)}
+      ${sceltaOrario(sede, D.st, dur(p))}
       ${D.st.slot ? `<div class="cambio" aria-live="polite"><span>Prima: <s>${lungo(p.slot)}</s></span><span>Dopo: <b>${lungo(D.st.slot)}</b></span></div>` : ''}
       <div class="btn-row">
         <button type="button" class="btn btn-ghost" data-d="chiudi">Lascia com'è</button>
@@ -1150,7 +1265,10 @@ function renderDott() {
   } else if (cambioInAttesa(p)) {
     azioni = `<div class="cambio"><span>Appuntamento attuale (ancora valido): ${lungo(p.slotPrecedente)}</span><span>Nuovo orario chiesto dal paziente: <b>${lungo(p.slot)}</b></span></div>
       <div class="btn-row"><button type="button" class="btn btn-ok" data-d="conferma">Conferma il cambio</button><button type="button" class="btn btn-no" data-d="rifiuta">Rifiuta il cambio</button></div>
-      <p class="muted small">Se rifiuti, resta valido l'appuntamento di prima e il paziente viene avvisato.</p>`;
+      <p class="muted small">Se rifiuti, la visita viene annullata e il paziente viene avvisato.</p>`;
+  } else if (richiestaDaFissare(p)) {
+    azioni = `<div class="cambio"><span>Data: ${p.dati.rData ? esc(giorno(new Date(p.dati.rData + 'T09:00'))) + (p.sede === 'fuori' ? ' in poi' : '') : 'non indicata'}</span><span>Dove: <b>${esc(p.dati.rLuogo)}</b></span><span>${esc(p.dati.rDescr)}</span></div>
+      <div class="btn-row"><button type="button" class="btn btn-ok" data-d="fissa">Fissa la visita</button><button type="button" class="btn btn-no" data-d="rifiuta">Rifiuta</button></div>`;
   } else if (p.stato === 'in_attesa') {
     azioni = `<div class="btn-row"><button type="button" class="btn btn-ok" data-d="conferma">Conferma</button><button type="button" class="btn btn-no" data-d="rifiuta">Rifiuta</button></div>
       <div class="btn-row"><button type="button" class="btn btn-ghost" data-d="sposta">Proponi un altro orario</button></div>`;
@@ -1170,12 +1288,14 @@ function renderDott() {
     prenotata: `Nuova visita: ${d.cognome} – ${pr.nome}, ${breve(ultimaPaz?.a ?? p.slot)}`,
     spostata_paziente: `Cambio data da confermare: ${d.cognome}, da ${breve(ultimaPaz?.da ?? p.slot)} a ${breve(ultimaPaz?.a ?? p.slot)}`,
     disdetta_paziente: `Visita disdetta: ${d.cognome}, ${breve(p.slot)}`,
+    richiesta_libera: `Richiesta da valutare: ${d.cognome} – ${nomeVisita(p)}`,
   }[ultimaPaz?.tipo] || '';
   const introDott = !ultimaPaz ? '' : ({
     richiesta: () => `<b>${esc(nomeCompleto)}</b> chiede una visita.`,
     prenotata: () => `<b>${esc(nomeCompleto)}</b> ha prenotato una visita.`,
     spostata_paziente: () => `<b>${esc(nomeCompleto)}</b> chiede di spostare la visita da ${lungo(ultimaPaz.da)} a <b>${lungo(ultimaPaz.a)}</b>. Entrambi gli orari restano bloccati finché non decidi.`,
     disdetta_paziente: () => `<b>${esc(nomeCompleto)}</b> ha disdetto la visita di ${lungo(p.slot)}. L'orario è di nuovo prenotabile.`,
+    richiesta_libera: () => `<b>${esc(nomeCompleto)}</b> chiede una visita${p.sede === 'fuori' ? ' fuori studio' : ''}. Dove: <b>${esc(d.rLuogo)}</b>${d.rData ? `, dal ${esc(giorno(new Date(d.rData + 'T09:00')))}` : ''}. «${esc(d.rDescr)}»`,
   }[ultimaPaz.tipo] || (() => ''))();
 
   /* --- agenda del giorno: impegni finti + prenotazioni della demo --- */
@@ -1185,12 +1305,12 @@ function renderDott() {
   if (p.sede === 'fiano') evs.push({ inizio: atTime(d0, '15:00'), fine: atTime(d0, '18:00'), titolo: 'Visite CAF UCI (le prenota il CAF)', cal: 'Studio Fiano', col: 'var(--cal-fiano)' });
   else finestre(sede, d0).forEach(([a, b]) => evs.push({ inizio: a, fine: b, titolo: 'Disponibile', cal: 'Disponibile Roma', col: 'var(--cal-disp)' }));
   DB.prenotazioni.filter(q => attiva(q) && q.sede === p.sede && dayKey(new Date(q.slot)) === dayKey(d0)).forEach(q => {
-    evs.push({ inizio: new Date(q.slot), fine: new Date(q.slot + 18e5), cal: calNome(q.sede), col: q.sede === 'fiano' ? 'var(--cal-fiano)' : 'var(--cal-roma)',
-      titolo: `${q.stato === 'in_attesa' ? '⏳ DA CONFERMARE – ' : ''}${q.dati.cognome} – ${prestById(q.prest).nome}`,
+    evs.push({ inizio: new Date(q.slot), fine: new Date(q.slot + dur(q) * 6e4), cal: calNome(q.sede), col: q.sede === 'fiano' ? 'var(--cal-fiano)' : 'var(--cal-roma)',
+      titolo: `${q.stato === 'in_attesa' ? '⏳ DA CONFERMARE – ' : ''}${q.dati.cognome} – ${nomeVisita(q)}`,
       nuovo: q.id === p.id, pend: q.stato === 'in_attesa', q });
   });
   DB.prenotazioni.filter(q => cambioInAttesa(q) && q.sede === p.sede && dayKey(new Date(q.slotPrecedente)) === dayKey(d0)).forEach(q => {
-    evs.push({ inizio: new Date(q.slotPrecedente), fine: new Date(q.slotPrecedente + 18e5), cal: calNome(q.sede), col: q.sede === 'fiano' ? 'var(--cal-fiano)' : 'var(--cal-roma)',
+    evs.push({ inizio: new Date(q.slotPrecedente), fine: new Date(q.slotPrecedente + dur(q) * 6e4), cal: calNome(q.sede), col: q.sede === 'fiano' ? 'var(--cal-fiano)' : 'var(--cal-roma)',
       titolo: `${q.dati.cognome} – ${prestById(q.prest).nome} (orario attuale, cambio in attesa)`, nuovo: q.id === p.id, q });
   });
   evs.sort((a, b) => a.inizio - b.inizio);
@@ -1208,7 +1328,7 @@ function renderDott() {
 
   <div class="scene">
     <div class="scene-h"><h2>${esc(d.cognome)} ${esc(d.nome)}</h2>${pill(p)}</div>
-    <p class="muted small">${esc(pr.nome)} · ${lungo(p.slot)} · ${esc(sede.nome)}</p>
+    <p class="muted small">${esc(nomeVisita(p))} · ${lungo(p.slot)}${p.slot ? ` (${dur(p)} min)` : ''} · ${esc(sede.nome)}</p>
     ${D.msg ? `<div class="notice ${D.msg.tipo}" role="status"><b>${D.msg.titolo}</b><span>${D.msg.testo}</span></div>` : ''}
     ${azioni}
     <h3>Cosa è successo</h3>
@@ -1225,9 +1345,9 @@ function renderDott() {
       ${notifiche.length ? notifiche.map((e, i) => `<div class="notif">
         <div class="app"><i></i> Prenotazioni · ${ora(new Date(e.t))}</div>
         <b>${EVENTI[e.tipo].notifica}</b>
-        <span>${esc(d.cognome)} – ${esc(pr.nome)}</span>
+        <span>${esc(d.cognome)} – ${esc(nomeVisita(p))}</span>
         <span>${e.tipo === 'spostata_paziente' ? `Da ${breve(e.da)} a ${breve(e.a)}` : breve(e.a ?? p.slot)} · ${esc(sede.breve)}</span>
-        ${i === 0 && p.stato === 'in_attesa' && !D.modo ? `<div class="acts"><button type="button" data-d="conferma">CONFERMA</button><button type="button" data-d="rifiuta">RIFIUTA</button></div>` : ''}
+        ${i === 0 && p.stato === 'in_attesa' && !D.modo ? `<div class="acts"><button type="button" data-d="${richiestaDaFissare(p) ? 'fissa' : 'conferma'}">${richiestaDaFissare(p) ? 'FISSA' : 'CONFERMA'}</button><button type="button" data-d="rifiuta">RIFIUTA</button></div>` : ''}
       </div>`).join('') : '<p class="small muted" style="padding:0 8px">Nessuna notifica.</p>'}
     </div>
   </div>
@@ -1237,27 +1357,31 @@ function renderDott() {
     ${mail('Prenotazioni <' + CONFIG.mittente + '>', CONFIG.mittente, oggettoDott,
       `<p>${introDott}</p>
        <dl class="summary" style="margin:0">
-         ${riga('Visita', esc(pr.nome))}
-         ${riga('Quando', lungo(p.slot))}
+         ${riga('Visita', esc(nomeVisita(p)))}
+         ${riga('Quando', lungo(p.slot) + (p.slot ? ` (${dur(p)} minuti)` : ''))}
          ${riga('Sede', esc(sede.nome))}
          ${riga('Telefono ed email', `${esc(d.tel)}<br>${esc(d.email)}`)}
          ${riga('Indicata da', esc(invianteTesto(d)))}
-         ${riga('Fondo spese', (f.cifra ? f.cifra + ' €' : 'Nessuno' + (f.esente ? ' (paga ' + esc(d.invNome || "l'avvocato") + ')' : '')) + '<br><span class="muted small">Il paziente ha confermato di esserne a conoscenza</span>')}
+         ${riga('Fondo spese', esc(f.breve) + '<br><span class="muted small">Il paziente ha confermato di esserne a conoscenza</span>')}
          ${riga('Documenti caricati (nella cartella Drive)', elencoDocumenti(d.documenti, p.prest))}
        </dl>
-       ${p.stato === 'in_attesa' && !D.modo ? `<div class="btn-row"><button type="button" class="btn btn-ok" data-d="conferma">${cambioInAttesa(p) ? 'Conferma il cambio' : 'Conferma'}</button><button type="button" class="btn btn-no" data-d="rifiuta">${cambioInAttesa(p) ? 'Rifiuta il cambio' : 'Rifiuta'}</button></div>
+       ${p.stato === 'in_attesa' && !D.modo ? `<div class="btn-row"><button type="button" class="btn btn-ok" data-d="${richiestaDaFissare(p) ? 'fissa' : 'conferma'}">${cambioInAttesa(p) ? 'Conferma il cambio' : richiestaDaFissare(p) ? 'Fissa la visita' : 'Conferma'}</button><button type="button" class="btn btn-no" data-d="rifiuta">${cambioInAttesa(p) ? 'Rifiuta il cambio' : 'Rifiuta'}</button></div>
          <p class="muted small">Se non rispondi entro le ${CONFIG.limiteGiornoPrima} del giorno prima, la richiesta scade e l'orario torna libero. Il paziente viene avvisato.</p>` : ''}
        <p class="small muted">I pulsanti nelle mail aprono una pagina con un secondo tocco di conferma, così un antivirus che "apre" i link non può agire al posto tuo.</p>`)}
   </div>` : ''}
 
-  <div class="scene">
+  ${!p.slot ? `<div class="scene">
+    <h2>3. Il tuo calendario</h2>
+    <p class="muted small">Finché non fissi la data, la richiesta non occupa nessun orario. Quando la fissi, l'evento compare in calendario già compilato.</p>
+  </div>` : ''}
+  <div class="scene" ${!p.slot ? 'hidden' : ''}>
     <h2>3. Il tuo calendario</h2>
     <p class="muted small">L'evento è già compilato: titolo con cognome e tipo di visita; nella descrizione contatti, chi l'ha indicato, fondo spese e link alla cartella Drive. Se la visita viene spostata, l'evento si sposta; se viene disdetta, sparisce e l'orario torna libero.</p>
     <div class="agenda">
       <div class="dayh">${giorno(d0)}</div>
       ${evs.map(e => `<div class="ev ${e.nuovo ? 'nuovo' : ''} ${e.pend ? 'pend' : ''}" style="--c:${e.col}">
         <span class="h">${ora(e.inizio)}–${ora(e.fine)}</span>
-        <span class="b"><b>${esc(e.titolo)}</b><small>${esc(e.cal)}${e.q ? ' · ' + esc(e.q.dati.tel) + ' · fondo spese: ' + euro(fondoSpese(e.q).cifra) : ''}</small></span>
+        <span class="b"><b>${esc(e.titolo)}</b><small>${esc(e.cal)}${e.q ? ' · ' + esc(e.q.dati.tel) + ' · fondo spese: ' + esc(fondoSpese(e.q).breve) : ''}</small></span>
       </div>`).join('')}
     </div>
     ${!attiva(p) ? `<p class="notice wait small">La visita di ${esc(d.cognome)} non è più in calendario: l'orario ${ora(t)} è di nuovo prenotabile.</p>` : ''}
@@ -1274,7 +1398,7 @@ function renderDott() {
     ${mailP.length > 1 ? `<p class="small"><b>Mail già inviate a ${esc(d.nome)}:</b></p><ul class="oldmails">${mailP.slice(0, -1).reverse().map(x => `<li>${ora(new Date(x.e.t))} · ${esc(x.m.oggetto)}</li>`).join('')}</ul>` : ''}
   </div>
 
-  ${attiva(p) ? `<div class="scene">
+  ${attiva(p) && p.slot ? `<div class="scene">
     <h2>5. Il promemoria del giorno prima</h2>
     <p class="muted small">Parte da solo ${fmtGiorno.format(addDays(d0, -1))} alle 10:00, con gli stessi contenuti della conferma. Se la visita viene spostata, parte il giorno prima della nuova data.</p>
     ${mail(daMittente, d.email, `Promemoria: visita domani alle ${ora(t)}`,
@@ -1282,11 +1406,11 @@ function renderDott() {
   </div>` : ''}
 
   <div class="scene">
-    <h2>${attiva(p) ? '6' : '5'}. La cartella su Drive</h2>
-    <p class="muted small">Il nome segue la tua regola: COGNOME Nome - di cosa si tratta. Ogni file ha davanti il tipo di documento, così la lavorazione automatica sa cosa contiene. Se la visita viene disdetta, la cartella resta.</p>
+    <h2>${attiva(p) && p.slot ? '6' : '5'}. La cartella su Drive</h2>
+    <p class="muted small">Il nome segue la tua regola: COGNOME Nome - di cosa si tratta - anno e mese. Ogni file ha davanti il tipo di documento, così la lavorazione automatica sa cosa contiene. Se la visita viene disdetta, la cartella resta.</p>
     <div class="drive" aria-label="Esempio di cartella Drive">
       <div>📁 Pazienti</div>
-      <div>&nbsp;&nbsp;└ 📁 ${esc(d.cognome.toUpperCase())} ${esc(d.nome)} - ${esc(pr.nome)}</div>
+      <div>&nbsp;&nbsp;└ 📁 ${esc(d.cognome.toUpperCase())} ${esc(d.nome)} - ${esc(nomeVisita(p))} - ${new Date(p.storico[0].t).getFullYear()}-${String(new Date(p.storico[0].t).getMonth() + 1).padStart(2, '0')}</div>
       <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└ 📁 Documenti caricati dal paziente</div>
       ${nFile(d.documenti) ? docsPer(p.prest).flatMap(x => (d.documenti[x.id] || []).map(f => `<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└ 📄 ${esc(x.nome)} – ${esc(f.name)}</div>`)).join('') : '<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(nessun documento caricato)</div>'}
     </div>
@@ -1328,8 +1452,17 @@ $('#dott').addEventListener('click', e => {
     ricominciaWizard(); renderWizard(false); renderDott(); window.scrollTo({ top: 0 }); return;
   }
   if (!p) return;
+  if (a === 'conferma-fissa') {
+    const g = $('#d-data').value, o = $('#d-ora').value;
+    if (!g || !o) { D.msg = { tipo: 'wait', titolo: 'Manca la data', testo: 'Indica giorno e ora della visita.' }; return renderDott(); }
+    p.slot = new Date(g + 'T' + o).getTime(); p.stato = 'confermata'; D.modo = null;
+    registra(p, 'fissata', { a: p.slot });
+    D.msg = { tipo: 'ok', titolo: 'Visita fissata', testo: `${lungo(p.slot)}. Al paziente è partita la mail con tutti i dettagli.` };
+    renderDott(); $('#dott .scene')?.scrollIntoView({ block: 'start' }); return;
+  }
+  if (a === 'fissa') { D.modo = 'fissa'; D.msg = null; renderDott(); $('#d-h')?.focus(); $('#d-h')?.scrollIntoView({ block: 'start' }); return; }
   if (a === 'sposta' || a === 'annulla') {
-    D.modo = a; D.msg = null; D.st = { giornoAperto: dayKey(new Date(p.slot)), slot: null, mostraTutti: false };
+    D.modo = a; D.msg = null; D.st = { giornoAperto: p.slot ? dayKey(new Date(p.slot)) : null, slot: null, mostraTutti: false };
     renderDott(); $('#d-h')?.focus(); $('#d-h')?.scrollIntoView({ block: 'start' }); return;
   }
   if (a === 'chiudi') { D.modo = null; return renderDott(); }
@@ -1340,9 +1473,9 @@ $('#dott').addEventListener('click', e => {
     renderDott(); $('#dott .scene')?.scrollIntoView({ block: 'start' }); return;
   }
   if (a === 'rifiuta' && cambioInAttesa(p)) {
-    p.slot = p.slotPrecedente; p.slotPrecedente = null; p.stato = p.statoPrecedente || 'confermata';
+    p.slot = p.slotPrecedente; p.slotPrecedente = null; p.stato = 'annullata';
     registra(p, 'cambio_rifiutato', { a: p.slot });
-    D.msg = { tipo: 'wait', titolo: 'Cambio rifiutato', testo: `Resta valido l'appuntamento di ${lungo(p.slot)}. Il paziente è stato avvisato.` };
+    D.msg = { tipo: 'wait', titolo: 'Cambio rifiutato: visita annullata', testo: 'Il paziente è stato avvisato per mail. Entrambi gli orari tornano liberi.' };
     renderDott(); $('#dott .scene')?.scrollIntoView({ block: 'start' }); return;
   }
   if (a === 'conferma') { p.stato = 'confermata'; registra(p, 'confermata'); D.msg = { tipo: 'ok', titolo: 'Confermata', testo: 'Al paziente è partita la mail di conferma.' }; }
@@ -1385,7 +1518,7 @@ $('#fb-copy').addEventListener('click', () => {
     const r = fs.querySelector('input:checked')?.value || fs.querySelector('textarea')?.value.trim() || '(nessuna risposta)';
     L.push('• ' + q + '\n  ' + r.replace(/\n/g, '\n  '));
   }
-  const txt = 'Punti da decidere – demo prenotazioni\n\n' + L.join('\n\n');
+  const txt = 'Ultimi dettagli – demo prenotazioni\n\n' + L.join('\n\n');
   const pre = $('#fb-text'); pre.textContent = txt; pre.hidden = false;
   const ok = () => { $('#fb-status').textContent = 'Copiate. Ora incollale in un messaggio ad Agostino.'; };
   const ko = () => { $('#fb-status').textContent = 'Non riesco a copiare da qui: seleziona il testo qui sotto e copialo.'; const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };

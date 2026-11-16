@@ -31,7 +31,7 @@ Quattro sezioni, raggiungibili dalla barra gialla in alto:
 
   Si può passare da conferma manuale ad automatica, e un pulsante riporta la demo all'inizio.
 
-Le prenotazioni della demo restano nel `localStorage` del browser (chiave `spadazzi-demo-v4`), così Federica può interrompere e riprendere le prove. Nel sistema vero ogni prenotazione è un evento di Google Calendar con i dati nei tag privati, più una riga nel Foglio "Registro".
+Le prenotazioni della demo restano nel `localStorage` del browser (chiave `spadazzi-demo-v5`), così Federica può interrompere e riprendere le prove. Nel sistema vero ogni prenotazione è un evento di Google Calendar con i dati nei tag privati, più una riga nel Foglio "Registro".
 
 Nessun dato esce dal browser: i PDF scelti non vengono caricati, si legge solo il nome del file.
 
@@ -61,28 +61,30 @@ In alternativa, senza collegare la repo: `npx wrangler pages deploy prenotazioni
 - **Calendari**: "Studio Fiano" (condiviso con la segretaria), "Studio Roma", "Disponibile Roma", il principale non condiviso.
 - **Notifiche a Federica**: mail (app Gmail) e, se lo vuole, notifica push dedicata della PWA su Android.
 
-### Decisioni già prese (risposte di Federica del 15/11)
+### Decisioni già prese (risposte di Federica del 15 e 16/11)
 
-- **Conferma:** manuale, una per una. Anche ogni cambio data chiesto dal paziente va riconfermato. Se lei rifiuta il cambio, resta valido l'appuntamento di prima (da confermare con lei). Durante il cambio restano bloccati sia l'orario vecchio sia quello nuovo.
+- **Conferma:** manuale, una per una. Anche ogni cambio data chiesto dal paziente va riconfermato. **Se lei rifiuta il cambio, la visita viene annullata** (il paziente ne è avvisato quando chiede il cambio). Durante il cambio restano bloccati sia l'orario vecchio sia quello nuovo.
 - **Limiti:** prenotare entro le 18:00 del giorno prima; cambiare o disdire fino a 48 ore prima. Dopo, la pagina indica come contattare lo studio.
 - **Notifiche:** sia mail sia notifica sul telefono.
-- **Visite fuori studio:** prenotabili dal link con almeno 7 giorni di anticipo, nei blocchi del calendario "Disponibile fuori studio". Il paziente indica indirizzo e comune.
-- **Tipi di visita:** invalidità civile e Legge 104 unite in una sola voce. INAIL comprende anche la malattia professionale. Tolta la voce "accompagnamento", da rivedere.
-- **Chi ha indicato la dottoressa:** CAF, un medico (nome facoltativo), un avvocato (nome e se paga direttamente), altro (campo obbligatorio). Tolta "agenzia".
-- **Documenti:** tutti facoltativi; i tre principali sono segnati come consigliati. La mail al paziente elenca quelli da portare perché non allegati.
-- **Durata:** 30 minuti, ora indicata anche nel riepilogo e nelle mail.
-- **Cartelle Drive:** `COGNOME Nome - tipo di visita`.
+- **Tipi di visita:** 7 voci principali, le altre in "Altri tipi di visita" (vedi `CONFIG.prestazioni`).
+  - Principali: lesioni lievi (100 €), lesioni gravi (300 €, **60 min**), invalidità civile – certificato introduttivo (50 €; comprende Legge 104 e accompagnamento), pensione INPS lavoratori L. 222/84 (50 €), INAIL (100 €), polizza infortuni (nessuno), responsabilità professionale sanitaria (500 € alla prima visita, **60 min**).
+  - Altre: assistenza a visita INPS o collegiale (intero alla visita, come richiesta), consulente di parte ATP/CTU (intero onorario), arbitrato su polizza (50% dell'onorario), RC non stradale, aggressione, polizza malattia/LTC/vita, causa di servizio, danno da vaccino L. 210/92 (fondo da definire), "Altro / non so" con campo libero.
+- **Durata variabile:** gli slot da 60 minuti richiedono due mezz'ore libere consecutive.
+- **Richieste invece di prenotazioni:** visite fuori studio (almeno 7 giorni prima, con luogo e descrizione) e assistenza a visita INPS. Il paziente non sceglie un orario; Federica valuta, lo sente e fissa la data, e il paziente riceve la mail. Per il domicilio si aggiunge il rimborso del viaggio a tariffa ACI.
+- **Chi ha indicato la dottoressa:** CAF, un medico (nome facoltativo), un avvocato (nome e se paga direttamente), altro (campo obbligatorio).
+- **Telefono ed email** del paziente obbligatori. **Documenti** facoltativi.
+- **Chi non riesce a prenotare:** telefono dello studio di Fiano e mail, mostrati al primo passo.
+- **Cartelle Drive:** `COGNOME Nome - tipo di visita - AAAA-MM`.
 - **Logo:** caduceo vettoriale estratto dal biglietto da visita (Canva), usato nella testata e nell'icona.
 - Prezzi e testi in un file di configurazione, gestito da Agostino. Allegati: al massimo 5 file da 10 MB per voce, in PDF, JPG o PNG. Si prenota fino a 60 giorni in avanti. Niente dominio per ora: si usa `pages.dev`.
 
-### Da decidere con Federica (sono anche nella demo, in "Come funziona")
+### Ultimi dettagli da chiudere (sono anche nella demo, in "Come funziona")
 
-- Invalidità con richiesta di accompagnamento: come gestirla.
-- Fondo spese per invalidità civile e Legge 104 (oggi 50 €, provvisorio).
-- Responsabilità medica (500 €): non citata nella sua risposta, da confermare.
-- Altre voci mancanti nell'elenco delle visite.
-- Alternativa per chi non riesce a prenotare dal link: nella demo c'è una proposta al primo passo.
-- Numero WhatsApp solo messaggi per Roma.
-- Visite fuori studio: zone servite, giorni, fondo spese o costo dello spostamento.
-- Cosa succede se rifiuta un cambio data.
-- Nome cartelle Drive: proposta di aggiungere anno e mese.
+- Fondo spese per: RC non stradale, aggressione, polizza malattia/LTC/vita, causa di servizio, danno da vaccino, "altro". Nella demo: "le sarà comunicato dalla dottoressa".
+- "Responsabilità civile auto": è già coperta dalle due voci "incidente stradale"?
+- Assistenza a visita INPS: tutto alla visita oppure fondo di 100 €?
+- Telefono di Roma: Federica scrive di lasciare il fisso dello studio, ma all'inizio aveva chiesto di non mostrare il numero 06. Per ora **non** è mostrato.
+- Visite fuori studio dal link: lei ha dubbi; nella demo sono una richiesta da valutare.
+- "Un medico" con nome facoltativo: va confermato.
+- Durata delle voci secondarie (oggi 30 minuti).
+- Testo dell'informativa privacy.
